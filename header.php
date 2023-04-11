@@ -17,7 +17,7 @@
         <!-- End Google Tag Manager -->
     </head>
     <body>
-        
+
         <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5QBSL8G"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -46,7 +46,7 @@
                             <li class="headercart">
                                 <a class="cart-customlocation" href="<?php echo wc_get_cart_url(); ?>" title="<?php _e( 'View your shopping cart' ); ?>">
 
-                               sss<?php echo WC()->cart->get_cart_total() . ' (' . WC()->cart->get_cart_contents_count() .')' ; ?></a>
+                               <?php echo WC()->cart->get_cart_total() . ' (' . WC()->cart->get_cart_contents_count() .')' ; ?></a>
                         </li>
                         </ul>
                 </div><!-- shop details end -->
