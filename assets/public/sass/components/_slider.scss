@@ -1,0 +1,18 @@
+.outerslider{
+    margin: 0px 0;
+    .sliderimages{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        figure{
+            margin: 0px;
+            padding:0px;
+            img{
+                width: 100%;
+            }
+        }
+    }
+    
+    
+}

@@ -1,0 +1,27 @@
+.container{
+    #pagecontent{
+        h1{
+            margin: 0px;
+            padding: 0px;
+            font-size: var(--fs-xxl);
+            font-family: var(--f-second);
+            text-align: center;
+        }
+
+        ol{
+            list-style: decimal;
+            line-height: 36px;
+            margin-left: 20px;
+        }
+    }
+}
+
+.wp-block-woocommerce-cart{
+    margin-top: 30px;
+    a{
+        color: var(--clr-primary);
+        &:hover{
+            color: var(--clr-primary-hover);
+        }
+    }
+}

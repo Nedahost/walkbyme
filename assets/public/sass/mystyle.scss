@@ -1,0 +1,174 @@
+
+@use './base';
+@use './components';
+@use './layouts';
+@use './pages';
+
+// @import 'abstracts/index';
+
+
+
+
+    @font-face {
+        text-rendering: optimizeLegibility;
+        font-family: CFDIN;
+        src: url(../../fonts/cf_din_light-webfont.eot);
+        src: url(../../fonts/cf_din_light-webfont.eot?#iefix) format("embedded-opentype"), url(../../fonts/cf_din_light-webfont.woff) format("woff"), url(../../fonts/CFDIN-LIGHT-WEBFONT.TTF) format("truetype")
+    }
+
+
+    .woocommerce .woocommerce-MyAccount-navigation {
+        width: 20%;
+            float: left;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-content {
+        float: left;
+        display: inline-block;
+       
+      margin-left: 5%;
+      width: 75%;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul {
+        padding: 0;
+        border-top: 1px solid #eee;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li {
+        list-style: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.is-active a:before {
+        opacity: 1;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li a {
+        padding: 10px 5px;
+        display: block;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li a:before {
+        margin-right: 20px;
+        opacity: .25;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li a:hover:before {
+        opacity: 1;
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--dashboard a:before {
+        font-family: 'FontAwesome';
+        content: "\f0e4";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--orders a:before {
+        font-family: 'FontAwesome';
+        content: "\f291";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--downloads a:before {
+        font-family: 'FontAwesome';
+        content: "\f1c6";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--edit-address a:before {
+        font-family: 'FontAwesome';
+        content: "\f015";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--payment-methods a:before {
+        font-family: 'FontAwesome';
+        content: "\f09d";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--edit-account a:before {
+        font-family: 'FontAwesome';
+        content: "\f007";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--customer-logout a:before {
+        font-family: 'FontAwesome';
+        content: "\f08b";
+    }
+    
+    .woocommerce .woocommerce-MyAccount-content h2 {
+        font-size: 25px;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .woocommercet p.order-again {
+        text-align: right;
+    }
+    
+    .woocommerce .woocommerce-EditAccountForm input[type="submit"] {
+        margin-top: 50px;
+        float: right;
+    }
+    
+    
+    
+    /****************CHECKOUT***************/
+    .woocommerce form .form-row {
+        width: 100% !important;
+    }
+    .woocommerce-checkout #payment div.payment_box input.input-text, .woocommerce-checkout #payment div.payment_box textarea {
+        width: 100% !important;
+        padding: 8px;
+    }
+    .woocommerce #payment .form-row select, .woocommerce-page #payment .form-row select {
+        width: 100%;
+        height: 30px;
+    }
+    .woocommerce .col2-set .col-1, .woocommerce-page .col2-set .col-1,.woocommerce .col2-set .col-2, .woocommerce-page .col2-set .col-2 {
+        float: left;
+        width: 100%;
+    }
+    .custom-checkout h3 {
+        background-color: #165f1c;  /****CHANGE TO COLOR YOU WANT TO USE FOR TITLE BACKGROUND ****/
+        width: 45%;
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 50px;
+        color: #FFF;
+        float: right;
+    }
+    .woocommerce form .form-row input.input-text, .woocommerce form .form-row textarea {
+        padding: .6180469716em;
+        background-color: #f2f2f2;
+        color: #43454b;
+        outline: 0;
+        border: 0;
+        -webkit-appearance: none;
+        border-radius: 2px;
+        box-sizing: border-box;
+        font-weight: 400;
+       border:solid 2px #e4e4e4;
+    }
+    
+    #wc_checkout_add_ons {
+        width: 45%;
+        float: right;
+        text-align: center;
+    }
+    
+    @media screen and (min-width: 980px) {
+    .woocommerce-shipping-fields h3, .woocommerce-billing-fields h3 {width:100%;}
+    .woocommerce .col2-set, .woocommerce-page .col2-set {
+     width: 45%;
+     float: left;
+    }
+    .woocommerce-checkout-review-order{
+     width: 45%;
+     float: right;
+    }
+    }
+    @media screen and (max-width: 979px) {
+    .custom-checkout h3 {
+     width: 100%;
+    }
+    }

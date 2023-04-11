@@ -1,0 +1,59 @@
+#outercontact{
+        padding: 40px 0;
+        h1{
+            margin: 0px;
+            padding: 0px;
+            font-size: var(--fs-xxl);
+            font-family: var(--f-second);
+            text-align: center;
+        }
+        
+        .contactform{
+            .topContact ul { 
+                margin: 0px; 
+                padding: 0px; 
+                li { 
+                    
+                        width: 48%; 
+                        float: left;
+                    
+                    
+                    margin-right: 30px;
+                    margin-bottom: 30px;
+                    &:last-child , &:nth-child(2) { 
+                        margin-right: 0px; 
+                    }
+                    span.wpcf7-form-control-wrap > input{
+                        border-bottom: 1px solid #1d1d1b;
+                        border-top: none;
+                        border-left: none;
+                        border-right: none;
+                        outline: none; 
+                        padding: 2px 5px; 
+                        font-size: 0.75rem; 
+                        width: 97%;
+                    }
+                }
+            }
+            .bottomContact { 
+                clear: both; 
+                textarea { 
+                    width: 98.6%; 
+                    border: 1px solid #1d1d1b; 
+                    outline: none; 
+                    padding: 5px; 
+                    margin-top: 5px; 
+                }
+            }
+            .btnSend input { 
+                border: 0px; 
+                background-color: #1d1d1b;
+                width: 285px;
+                height: 55px;
+                color: #fff;
+                float: right;
+                clear: both;
+                margin-top: 25px;
+            }
+        }
+    }

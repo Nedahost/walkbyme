@@ -1,0 +1,63 @@
+@use '../abstracts' as a;
+
+.hm_categories{
+    margin: 40px 0 50px;
+    ul{
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        gap: 45px;
+        text-align: center;
+        @include a.breakpoint(medium){
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-evenly; 
+        }
+        li{
+            @include a.breakpoint(medium){
+                width: 25%;
+            }
+            figure{
+                margin:0px;
+                padding: 0px;
+                img{
+                  width: 100%;  
+                }
+            }
+            h3{
+                font-size: 1.575rem;
+                font-weight: normal;
+                padding-top: 15px;
+                a{
+                    color: var(--clr-primary);
+                    transition: 0.3s;
+                    &:hover{
+                        color: var(--clr-primary-hover);
+                    }
+                }
+            }
+            span{
+                a{
+                    color: var(--clr-primary);
+                    font-size: 1.063rem;
+                    font-family: var(--f-second);
+                    transition: 0.3s;
+                    &:hover{
+                        color: var(--clr-primary-hover);
+                    }
+                }
+            }
+        }
+    }
+}
+
+#outerparallax{
+    background: url(/wp-content/themes/walkbyme/assets/images/parallax.jpg)  no-repeat center bottom;
+    min-height: 550px;
+    position: relative;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

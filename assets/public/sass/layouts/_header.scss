@@ -1,0 +1,69 @@
+header{
+    
+    
+    #logo{
+        text-align: center;
+        
+    }
+    
+    nav{
+        padding-top: 25px;
+        border-bottom: 1px solid #DEDEDE;
+    }
+    
+    .shopdetails{
+        text-align: right;
+        padding-bottom: 10px;
+        ul{
+            li{
+                display: inline-flex;
+                padding: 0 10px;
+                font-size: 14px; 
+                font-weight: 300;
+                a{
+                    color: var(--clr-primary);
+                    &:hover{
+                        color: var(--clr-primary-hover);
+                    }
+                }
+
+            }
+
+            .headeraccount{
+                a{
+                    &:before{
+                        font-family: "FontAwesome";
+                        content: "\f007";
+                    }
+                    
+                    span{
+                        display: none;
+                          
+                    }
+                }
+            }
+            .headerlogout{
+                a{
+                    &:before{
+                    font-family: "FontAwesome";
+                    content: "\f08b";
+                    }
+                    
+                    span{
+                        display: none;
+                           
+                    }
+                }
+            }
+            .headercart{
+                a{
+                    &:before{
+                        font-family: "FontAwesome";
+                        content: "\f291";
+                    }
+                }
+            }
+        }
+    }
+}
+

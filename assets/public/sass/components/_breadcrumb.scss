@@ -1,0 +1,17 @@
+.outerbreadcrumb{
+  
+   font-size: 13px;
+   font-weight: 300;
+   color: var(--clr-primary);
+   padding:10px 0px;
+   margin: 0px 0px;
+   span{
+       padding: 0 0 0;
+       a{
+           color: var(--clr-primary);
+           &:hover{
+                color: var(--clr-primary-hover);
+            }
+       }
+   }
+}
