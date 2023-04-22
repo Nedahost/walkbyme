@@ -1,63 +1,73 @@
-header{
-    
-    
-    #logo{
+@use '../abstracts' as a;
+
+header {
+
+
+    #logo {
         text-align: center;
-        
+
     }
-    
-    nav{
+
+    nav {
         padding-top: 25px;
         border-bottom: 1px solid #DEDEDE;
     }
-    
-    .shopdetails{
+
+    .shopdetails {
         text-align: right;
         padding-bottom: 10px;
-        ul{
-            li{
+
+        ul {
+            li {
                 display: inline-flex;
                 padding: 0 10px;
-                font-size: 14px; 
+                font-size: 14px;
                 font-weight: 300;
-                a{
+
+                a {
                     color: var(--clr-primary);
-                    &:hover{
+
+                    &:hover {
                         color: var(--clr-primary-hover);
                     }
                 }
 
             }
 
-            .headeraccount{
-                a{
-                    &:before{
+            .headeraccount {
+                a {
+                    &:before {
                         font-family: "FontAwesome";
                         content: "\f007";
                     }
-                    
-                    span{
-                        display: none;
-                          
+
+                    @include a.breakpoint-down(xmedium) {
+                        span {
+                            display: none;
+
+                        }
                     }
                 }
             }
-            .headerlogout{
-                a{
-                    &:before{
-                    font-family: "FontAwesome";
-                    content: "\f08b";
+
+            .headerlogout {
+                a {
+                    &:before {
+                        font-family: "FontAwesome";
+                        content: "\f08b";
                     }
-                    
-                    span{
-                        display: none;
-                           
+                    @include a.breakpoint-down(xmedium) {
+                        span {
+                            display: none;
+
+                        }
                     }
                 }
             }
-            .headercart{
-                a{
-                    &:before{
+
+            .headercart {
+                a {
+                    &:before {
                         font-family: "FontAwesome";
                         content: "\f291";
                     }
@@ -66,4 +76,3 @@ header{
         }
     }
 }
-
