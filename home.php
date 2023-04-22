@@ -17,7 +17,12 @@
     <section class="hm_categories"><!-- home categories start -->
 
     <div class="generic-titles"><!-- generic title start -->
-        ΚΑΤΗΓΟΡΙΕΣ
+        <p>
+            <span class="font-size-24">ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ</span>
+        </p>
+        <p>
+            Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
+        </p>
     </div><!-- generic title end -->
     
         <ul>

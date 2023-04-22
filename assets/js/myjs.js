@@ -2,8 +2,8 @@ jQuery(document).on("ready", function() {
         
         
         jQuery(".carousel").slick({
-        dots: false,
-        arrows:false,
+        dots: true,
+        arrows:true,
         autoplay:true,
         infinite: true,
         slidesToShow: 4,
@@ -29,7 +29,8 @@ jQuery(document).on("ready", function() {
           breakpoint: 480,
           settings: {
             slidesToShow: 1,
-            slidesToScroll: 1
+            slidesToScroll: 1,
+            dots: false
           }
         }
         // You can unslick at a given breakpoint now by adding:
