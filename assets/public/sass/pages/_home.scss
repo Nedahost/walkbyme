@@ -37,17 +37,17 @@
                     }
                 }
             }
-            span{
-                a{
-                    color: var(--clr-primary);
-                    font-size: 1.063rem;
-                    font-family: var(--f-second);
-                    transition: 0.3s;
-                    &:hover{
-                        color: var(--clr-primary-hover);
-                    }
-                }
-            }
+            // span{
+            //     a{
+            //         color: var(--clr-primary);
+            //         font-size: 1.063rem;
+            //         font-family: var(--f-second);
+            //         transition: 0.3s;
+            //         &:hover{
+            //             color: var(--clr-primary-hover);
+            //         }
+            //     }
+            // }
         }
     }
 }

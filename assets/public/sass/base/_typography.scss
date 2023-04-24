@@ -1,9 +1,27 @@
+@use './../abstracts/functions' as f;
+
 .generic-titles{
     
     text-align: center;
     margin-bottom: 25px;
+    p{
+        font-size: f.rem(13); 
+    }
 }
 
 .font-size-24{
     font-size: 24px; 
+}
+
+
+.more {
+    a{
+        color: #000;
+        position: relative;
+        text-decoration: none;
+        display: inline-block; 
+        &:hover{
+            color: red;
+        }
+    }
 }

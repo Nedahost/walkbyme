@@ -8,9 +8,9 @@
    span{
        padding: 0 0 0;
        a{
-           color: var(--clr-primary);
+           color: #000;
            &:hover{
-                color: var(--clr-primary-hover);
+                color: red;
             }
        }
    }
