@@ -5,7 +5,7 @@ jQuery(document).on("ready", function() {
         dots: true,
         arrows:true,
         autoplay:true,
-        infinite: true,
+        infinite: false,
         slidesToShow: 4,
         slidesToScroll: 4,
         responsive: [

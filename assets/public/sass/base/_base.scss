@@ -1,3 +1,5 @@
+@use './typography' as t;
+
 html{
     font-size: 100%;
     box-sizing: border-box;
@@ -25,7 +27,7 @@ body{
     background: var(--clr-background);
     font-family: var(--f-primary);
     color: var(--clr-primary);
-    font-size: 16px;
+    font-size: t.$font-size-body;
 }
 
 main{

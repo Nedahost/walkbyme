@@ -1,4 +1,5 @@
 @use '../abstracts' as a;
+@use '../base' as t;
 
 .hm_categories{
     margin: 40px 0 50px;
@@ -26,7 +27,7 @@
                 }
             }
             h3{
-                font-size: 1.575rem;
+                font-size: t.$font-size-h3;
                 font-weight: normal;
                 padding-top: 15px;
                 a{
@@ -35,6 +36,15 @@
                     &:hover{
                         color: var(--clr-primary-hover);
                     }
+                }
+            }
+            
+            p{
+                font-size: t.$font-size-p;
+            }
+            .more {
+                a{
+                    font-size: t.$font-size-more;
                 }
             }
             // span{

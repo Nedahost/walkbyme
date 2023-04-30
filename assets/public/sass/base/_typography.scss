@@ -1,13 +1,29 @@
 @use './../abstracts/functions' as f;
 
+$font-size-body: f.rem(16);
+$font-size-h1: f.rem(25);
+$font-size-h2: f.rem(24);
+$font-size-h3: f.rem(20);
+
+$font-size-p: f.rem(14);
+
+$font-size-more: f.rem(12);
+
 .generic-titles{
-    
+    h2{
+        font-size: $font-size-h2;
+        font-weight: 400;
+    }    
     text-align: center;
     margin-bottom: 25px;
     p{
-        font-size: f.rem(13); 
+        font-size: f.rem(11);
+        font-style: italic;
+        margin: 0;
     }
 }
+
+
 
 .font-size-24{
     font-size: 24px; 

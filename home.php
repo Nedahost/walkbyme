@@ -17,9 +17,9 @@
     <section class="hm_categories"><!-- home categories start -->
 
     <div class="generic-titles"><!-- generic title start -->
-        <p>
-            <span class="font-size-24">ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ</span>
-        </p>
+        <h2>
+            ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
+        </h2>
         <p>
             Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
         </p>
@@ -143,9 +143,11 @@
     
     <div class="outercarousel"><!-- outer carousel start -->
 
-    <div class="carouseltitle"> <!-- carousel title start -->
-        Οι ΠΡΟΤΑΣΕΙΣ ΜΑΣ
-    </div><!-- carousel title end -->
+    <div class="generic-titles"><!-- generic title start -->
+        <h2>
+            Οι ΠΡΟΤΑΣΕΙΣ ΜΑΣ
+        </h2>
+    </div><!-- generic title end -->
 
         
             <div class="carousel"><!-- carousel start -->
