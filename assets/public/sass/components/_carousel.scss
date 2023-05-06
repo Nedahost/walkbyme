@@ -11,9 +11,6 @@
     
 
     .carousel{ 
-      
-            
-            
             div > div > div{
                 padding: 0 15px;
                 figure{
@@ -193,7 +190,7 @@
     line-height: 1;
 
     opacity: .75;
-    color: white;
+    color: black;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -300,7 +297,7 @@
 .slick-dots li button:before
 {
     font-family: 'slick';
-    font-size: 6px;
+    font-size: 30px; 
     line-height: 20px;
 
     position: absolute;
