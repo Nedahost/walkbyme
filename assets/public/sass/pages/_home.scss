@@ -30,6 +30,7 @@
                 font-size: t.$font-size-h3;
                 font-weight: normal;
                 padding-top: 15px;
+                letter-spacing: t.$letter-spacing;
                 a{
                     color: var(--clr-primary);
                     transition: 0.3s;
@@ -42,6 +43,12 @@
             p{
                 font-size: t.$font-size-p;
             }
+
+            .more{
+                font-size: t.$font-size-more;
+                letter-spacing: t.$letter-spacing;
+            }
+
             // span{
             //     a{
             //         color: var(--clr-primary);

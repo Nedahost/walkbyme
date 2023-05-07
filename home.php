@@ -12,7 +12,9 @@
 
     </div><!-- outer slider end -->
 
-    
+    <div id="greekdesigners">
+        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/designed.png" />
+    </div>
 
     <section class="hm_categories"><!-- home categories start -->
 

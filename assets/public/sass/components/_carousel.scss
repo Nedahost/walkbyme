@@ -1,3 +1,4 @@
+@use "../base" as t;
 
 .outercarousel{
     
@@ -25,8 +26,10 @@
                 h3{
                     margin: 0px;
                     padding: 25px 0 14px; 
-                    font-size: 1rem;
+                    font-size: t.$font-size-h3;
+                    letter-spacing: t.$letter-spacing;
                     font-weight: 300;
+                    clear: both;
                     a{
                         color: var(--clr-primary);
                     }
