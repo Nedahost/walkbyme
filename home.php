@@ -31,7 +31,7 @@
             <li>
                 <figure>
                     <a href="">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/ringbanner.jpg" />
+                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/rinksbanner.jpg" />
                     </a>
                 </figure>
                 <h3>
