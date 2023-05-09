@@ -35,6 +35,7 @@ $letter-spacing: f.rem(1);
 .more { 
     a{
         color: #000;
+        position: relative; 
         &::after{
             content: '';
             position: absolute;
