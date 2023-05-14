@@ -33,7 +33,11 @@
 
         <?php woocommerce_product_loop_end(); ?>
 
-        <?php do_action('woocommerce_after_shop_loop'); ?>
+        <?php // do_action('woocommerce_after_shop_loop'); 
+        
+        custom_pagination();
+
+        ?>
 
     <?php elseif (!woocommerce_product_subcategories(array('before' => woocommerce_product_loop_start(false), 'after' => woocommerce_product_loop_end(false)))) : ?>
 

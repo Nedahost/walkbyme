@@ -73,30 +73,15 @@
 }
 
 #outerparallax{
-<<<<<<< Updated upstream
-    background: url(/wp-content/themes/walkbyme/assets/images/parallax.jpg)  no-repeat center bottom;
-    min-height: 550px;
-    position: relative; 
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-=======
-   
-   
-    position: relative;
-    overflow: hidden;
-
-  /* Centering the container's content vertically 
-  and horizontally */
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-video{
-    width: 100%;
-  max-width: 100%;
->>>>>>> Stashed changes
+    background-attachment: scroll;
+    -webkit-overflow-scrolling: touch;
+    &__parallax{
+        background: url(/wp-content/themes/walkbyme/assets/images/paralax.jpg)  no-repeat center bottom;
+        min-height: 550px;
+        position: relative;
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
 }

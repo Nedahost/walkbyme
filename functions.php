@@ -251,7 +251,43 @@ function hide_shipping_when_free_is_available( $rates, $package ) {
 
 add_filter( 'woocommerce_package_rates', 'hide_shipping_when_free_is_available', 10, 2 );
 
+remove_action( 'woocommerce_after_shop_loop', 'woocommerce_pagination', 10 );
 
+
+function custom_pagination() {
+    global $wp_query;
+    $big = 999999999;
+    $pages = paginate_links(array(
+        'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+        'format' => '?page=%#%',
+        'current' => max(1, get_query_var('paged')),
+        'total' => $wp_query->max_num_pages,
+        'prev_next' => false,
+        'type' => 'array',
+        'prev_next' => TRUE,
+        'prev_text' => '&larr; Προηγούμενη',
+        'next_text' => 'Επόμενη &rarr;',
+            ));
+    if (is_array($pages)) {
+        $current_page = ( get_query_var('paged') == 0 ) ? 1 : get_query_var('paged');
+        echo '<ul class="pagination">';
+        foreach ($pages as $i => $page) {
+            if ($current_page == 1 && $i == 0) {
+                echo "<li class='active'>$page</li>";
+            } else {
+                if ($current_page != 1 && $current_page == $i) {
+                    echo "<li class='active'>$page</li>";
+                } else {
+                    echo "<li>$page</li>";
+                }
+            }
+        }
+        echo '</ul>';
+    }
+}
+
+
+remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
 
 // add_action( 'woocommerce_archive_description', 'woocommerce_category_image', 2 );
 // function woocommerce_category_image() {
