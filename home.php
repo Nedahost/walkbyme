@@ -4,7 +4,7 @@
         <div class="sliderimages"><!-- slider images start -->
             <figure><!-- figure start -->
                 <a href="">
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/slider-rings.png" />
+                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/banner.jpg" />
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->
@@ -13,7 +13,7 @@
     </div><!-- outer slider end -->
 
     <div id="greekdesigners">
-        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/designed.png" />
+        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/greek.png" /> 
     </div>
 
     <section class="hm_categories"><!-- home categories start -->

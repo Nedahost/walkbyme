@@ -64,10 +64,18 @@
     }
 }
 
+#greekdesigners{
+    text-align: center;
+    img{
+        width: 70%;
+        height: auto; 
+    }
+}
+
 #outerparallax{
     background: url(/wp-content/themes/walkbyme/assets/images/parallax.jpg)  no-repeat center bottom;
     min-height: 550px;
-    position: relative;
+    position: relative; 
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
