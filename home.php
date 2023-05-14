@@ -137,7 +137,10 @@
 
 
 <div id="outerparallax"><!-- outer parallax stat -->
-
+    <video autoplay muted loop>
+        <source src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bg_video.mov" type="video/mp4">
+        <source src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bg_video.mov" type="video/ogg">
+    </video>
 </div><!-- outer parallax end -->
 
 
