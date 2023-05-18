@@ -1,3 +1,6 @@
+@use '../abstracts' as a;
+@use '../base' as t;
+
 #outerexperiences{
     background-color: var(--clr-grey);
     width:100%;
@@ -37,40 +40,49 @@
 
 
 footer{
-    border-top: 8px solid #000000;
+    border-top: 8px solid #9a715b;
     padding: 55px 0 35px;
-    background-color: var(--clr-grey);
+    //background-color: var(--clr-grey); 
+    background-color:  #eed8c9;
     
     .footer_details{
-        
-                flex-direction: column;
-                align-items: stretch;
-                flex-wrap: nowrap;
-                justify-content: center;
-                gap: 25px;
-            
         section{
-            display: flex; 
-            justify-content: space-around;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            @include a.breakpoint-down(large){
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
             .widget_nav_menu{
                 h3{
-                    color: var(--clr-white);
+                    color: black;
                     font-size: 13px;
                     font-weight: bold;
+                    &::after{
+                        text-decoration: underline;
+                    }
                 }
                 div{
                     margin-top:15px;
-                    color: var(--footer-clr);
+                    color: black;
                     ul{
                         li{
                             line-height: 24px;
                             font-size: 13px;
                             font-weight: 300;
                             a{
-                                color: var(--footer-clr);
+                                color: black; 
                                 &:hover{
-                                    color: var(--clr-primary-hover);   
+                                    color: #9a715b;  
+                                    text-decoration: underline; 
                                 }
+                            }
+                        }
+                        .current-menu-item{
+                            a{
+                                color: #9a715b; 
+                                text-decoration: underline;
                             }
                         }
                     }
@@ -110,8 +122,9 @@ footer{
 }
 
 .powerby{
-    background-color: var(--powerby-clr);
-    color: var(--clr-white);
+    //background-color: var(--powerby-clr);
+    background-color: #eed8c9;
+    color: black;
     .copyright{
         font-size: 13px;
         padding: 10px 0;
@@ -120,7 +133,10 @@ footer{
             justify-content: space-between;
             li{
                 a{
-                    color: var(--clr-white);
+                    color: black;
+                    &:hover{
+                        color: #9a715b;  
+                    }
                 }
             }
         }

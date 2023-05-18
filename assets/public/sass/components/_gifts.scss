@@ -1,33 +1,30 @@
 .homegifts{
     display: flex;
-    @include bp(large) {
+    
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: space-between;
-    }
-    @include bp (mobilePortrait){
-        @include bp-max(sm){
-            flex-direction: column;
-            align-items: center;
-            flex-wrap: nowrap;
-            justify-content: center;
-        }
-    }
+    
+
+   
+            // flex-direction: column;
+            // align-items: center;
+            // flex-wrap: nowrap;
+   
     figure{
         margin: 0px;
-        padding: 0px;
-        @include bp(large) {
-            width: 50%;
-        }
+        padding: 0px 0px 0px 15px;
+        width: 49%;
+      
         img{
             width: 100%;
         }
     } 
     
     .giftscontent{
-        @include bp(large) {
+        
             width: 50%;
-        }
+        
         display: flex;
         margin: auto 0;
         flex-direction: column;

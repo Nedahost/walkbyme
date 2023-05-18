@@ -43,8 +43,8 @@
         <div class="wrapper"><!-- wrapper start -->
             <div class="copyright">
                 <ul>
-                    <li>&copy; <?php echo date('Y');  ?> Walk By Me - all rights reserved.</li>
-                    <li><a href="https://www.nedahost.gr" alt="Nedahost Κατασκευη ιστοσελιδων" target="_blank" > Design & Development by Nedahost </a></li>
+                    <li>&copy; 2023 - <?php echo date('Y');  ?> Walk By Me - all rights reserved.</li>
+                    <li>Product Photography by Angel Koulogiannis | <a href="https://www.nedahost.gr" alt="Nedahost Κατασκευη ιστοσελιδων" target="_blank" > Design & Development by Nedahost </a></li>
                 </ul>
             </div>
         </div><!-- wrapper end -->

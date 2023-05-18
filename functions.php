@@ -265,12 +265,12 @@ function custom_pagination() {
         'prev_next' => false,
         'type' => 'array',
         'prev_next' => TRUE,
-        'prev_text' => '&larr; Προηγούμενη',
-        'next_text' => 'Επόμενη &rarr;',
+        'prev_text' => '&larr;',
+        'next_text' => '&rarr;',
             ));
     if (is_array($pages)) {
         $current_page = ( get_query_var('paged') == 0 ) ? 1 : get_query_var('paged');
-        echo '<ul class="pagination">';
+        echo '<nav class="outerpagination"><ul class="pagination">';
         foreach ($pages as $i => $page) {
             if ($current_page == 1 && $i == 0) {
                 echo "<li class='active'>$page</li>";
@@ -282,7 +282,7 @@ function custom_pagination() {
                 }
             }
         }
-        echo '</ul>';
+        echo '</ul></nav>';
     }
 }
 

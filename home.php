@@ -1,156 +1,22 @@
 <?php get_header(); ?>
+
 <div class="wrapper"><!-- wrapper start -->
 <div class="outerslider"><!-- outer slider start -->
         <div class="sliderimages"><!-- slider images start -->
             <figure><!-- figure start -->
                 <a href="">
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/banner.jpg" />
+                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/mainimage.jpg" />
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->
         
 
     </div><!-- outer slider end -->
-
-    <div id="greekdesigners">
-        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/greek.png" /> 
-    </div>
-
-    <section class="hm_categories"><!-- home categories start -->
-
-    <div class="generic-titles"><!-- generic title start -->
-        <h2>
-            ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
-        </h2>
-        <p>
-            Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
-        </p>
-    </div><!-- generic title end -->
-    
-        <ul>
-            <li>
-                <figure>
-                    <a href="">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/rinksbanner.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="">
-                        Δαχτυλίδια
-                    </a>
-                </h3>
-                <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                </p>
-                <span class="more">
-                    <a href="">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-            <li>
-                <figure>
-                    <a href="">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/demo.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="">
-                        Κολιέ
-                    </a>
-                </h3>
-                <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                </p>
-                <span class="more">
-                    <a href="">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-            <li>
-                <figure>
-                    <a href="">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/demo.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="">
-                        Σκουλαρίκια
-                    </a>
-                </h3>
-                <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                </p>
-                <span class="more">
-                    <a href="">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-            <li>
-                <figure>
-                    <a href="">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/demo.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="">
-                        Βραχιόλια
-                    </a>
-                </h3>
-                <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                </p>
-                <span class="more">
-                    <a href="">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-        </ul>
-    </section><!-- home categories end -->
-</div> <!-- wrapper end -->
-<?php /*
-    <div class="homegifts"><!-- home gifts start -->
-        <figure>
-            <a href="">
-            <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/4.jpg" />
-            </a>
-        </figure>
-        <div class="giftscontent"><!-- gifts content start -->
-            <h4>
-                Special gifts for her
-            </h4>
-            <p>
-                Κοσμήματα που θα κάνουν κάθε περίσταση ξεχωστή.
-            </p>
-            <span>
-                <a href="" class="buttonstyle">
-                    Αγόρασε τώρα &raquo;
-                </a>
-            </span>
-        </div><!-- gifts content end -->
-    </div><!-- home gifts end -->
-    */
-?>
-
-
-<div id="outerparallax"><!-- outer parallax stat -->
-    <video autoplay muted loop>
-        <source src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bg_video.mov" type="video/mp4">
-        <source src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bg_video.mov" type="video/ogg">
-    </video>
-</div><!-- outer parallax end -->
-
-
-<div class="wrapper"><!-- wrapper start -->
-    
     <div class="outercarousel"><!-- outer carousel start -->
 
     <div class="generic-titles"><!-- generic title start -->
         <h2>
-            Οι ΠΡΟΤΑΣΕΙΣ ΜΑΣ
+            ΟΙ ΠΡΟΤΑΣΕΙΣ ΜΑΣ
         </h2>
     </div><!-- generic title end -->
 
@@ -202,8 +68,144 @@
             </div><!-- carousel end -->
         
     </div><!-- outer carousel end -->
+</div><!-- wrapper end -->
 
-    </div><!-- wrapper end -->
+
+<div id="outerparallax"><!-- outer parallax stat -->
+    <div id="outerparallax__parallax">
+
+    </div>
+</div><!-- outer parallax end -->
+
+<div class="wrapper"><!-- wrapper start -->
+
+<?php /*
+    <div id="greekdesigners">
+        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/greek.png" /> 
+    </div>
+*/ ?>
+    <section class="hm_categories"><!-- home categories start -->
+
+    <div class="generic-titles"><!-- generic title start -->
+        <h2>
+            ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
+        </h2>
+        <p>
+            Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
+        </p>
+    </div><!-- generic title end -->
+    
+        <ul>
+            <li>
+                <figure>
+                    <a href="">
+                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/ring.jpg" />
+                    </a>
+                </figure>
+                <h3>
+                    <a href="">
+                        Δαχτυλίδια
+                    </a>
+                </h3>
+                <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                </p>
+                <span class="more">
+                    <a href="">
+                        Ανακαλύψτε τα &raquo;
+                    </a>
+                </span>
+            </li>
+            <li>
+                <figure>
+                    <a href="">
+                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bracelets.jpg" />
+                    </a>
+                </figure>
+                <h3>
+                    <a href="">
+                        Βραχιόλια
+                    </a>
+                </h3>
+                <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                </p>
+                <span class="more">
+                    <a href="">
+                        Ανακαλύψτε τα &raquo;
+                    </a>
+                </span>
+            </li>
+            <li>
+                <figure>
+                    <a href="">
+                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/earrings.jpg" />
+                    </a>
+                </figure>
+                <h3>
+                    <a href="">
+                        Σκουλαρίκια
+                    </a>
+                </h3>
+                <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                </p>
+                <span class="more">
+                    <a href="">
+                        Ανακαλύψτε τα &raquo;
+                    </a>
+                </span>
+            </li>
+            <li>
+                <figure>
+                    <a href="">
+                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/necklace.jpg" />
+                    </a>
+                </figure>
+                <h3>
+                    <a href="">
+                        Κολιέ
+                    </a>
+                </h3>
+                <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                </p>
+                <span class="more">
+                    <a href="">
+                        Ανακαλύψτε τα &raquo;
+                    </a>
+                </span>
+            </li>
+        </ul>
+    </section><!-- home categories end -->
+</div> <!-- wrapper end -->
+
+
+
+    <?php /*
+    <div class="homegifts"><!-- home gifts start -->
+        <figure>
+            <a href="">
+            <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/4.jpg" />
+            </a>
+        </figure>
+        <div class="giftscontent"><!-- gifts content start -->
+            <h4>
+                Special gifts for her
+            </h4>
+            <p>
+                Κοσμήματα που θα κάνουν κάθε περίσταση ξεχωστή.
+            </p>
+            <span>
+                <a href="" class="buttonstyle">
+                    Αγόρασε τώρα &raquo;
+                </a>
+            </span>
+        </div><!-- gifts content end -->
+    </div><!-- home gifts end -->
+
+ */ ?>
+
 <?php /*
 <section class="smart_search"><!-- smart search start -->
   Βρες το ΙΔΑΝΙΚΟ ΚΟΣΜΗΜΑ για σένα

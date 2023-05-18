@@ -1,17 +1,27 @@
+@use '../abstracts' as a;
+@use '../base' as t;
+
 .container{
     #pagecontent{
         h1{
             margin: 0px;
             padding: 0px;
-            font-size: var(--fs-xxl);
+            font-size: a.rem(24);
+            font-weight: normal;
             font-family: var(--f-second);
             text-align: center;
+        }
+
+        p{
+            font-size: a.rem(15);
         }
 
         ol{
             list-style: decimal;
             line-height: 36px;
             margin-left: 20px;
+            font-size: a.rem(16);
+            letter-spacing: t.$letter-spacing;
         }
     }
 }

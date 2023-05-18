@@ -6,24 +6,29 @@
     ul{
         margin: 0px;
         padding: 0px;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         gap: 45px;
         text-align: center;
-        @include a.breakpoint(medium){
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-evenly; 
+        @include a.breakpoint-down(large){
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
         li{
-            @include a.breakpoint(medium){
-                width: 25%;
-            }
             figure{
                 margin:0px;
                 padding: 0px;
                 img{
                   width: 100%;  
+                  transition: var(--trans-image);
+                  object-position: center;
+                  object-fit: cover;
+                  &:hover{
+                    -webkit-transform: var(--image-scaleUp);
+                    -moz-transform: var(--image-scaleUp);
+                    -o-transform: var(--image-scaleUp);
+                    transform: var(--image-scaleUp);
+                  }
                 }
             }
             h3{
@@ -31,6 +36,7 @@
                 font-weight: normal;
                 padding-top: 15px;
                 letter-spacing: t.$letter-spacing;
+                font-family: var(--clr-primary);
                 a{
                     color: var(--clr-primary);
                     transition: 0.3s;
@@ -64,24 +70,19 @@
     }
 }
 
-#greekdesigners{
-    text-align: center;
-    img{
-        width: 70%;
-        height: auto; 
-    }
-}
+
 
 #outerparallax{
     background-attachment: scroll;
     -webkit-overflow-scrolling: touch;
     &__parallax{
-        background: url(/wp-content/themes/walkbyme/assets/images/paralax.jpg)  no-repeat center bottom;
+        background: url(/wp-content/themes/walkbyme/assets/images/photo.jpg)  no-repeat center bottom;
         min-height: 550px;
         position: relative;
         background-attachment: fixed;
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
+
     }
 }
