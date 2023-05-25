@@ -6,14 +6,6 @@
 
     <?php if (have_posts()) : ?>
 
-<!--        <div class="outerFilter">
-           
-                
-                <?php //dynamic_sidebar('Filter'); ?>
-            
-        </div>
-        
-        <div style="float: right; width: 80%;">-->
         
         <?php  do_action('woocommerce_before_shop_loop'); ?>
 
@@ -43,7 +35,7 @@
 
         <?php do_action('woocommerce_no_products_found'); ?>
 
-<!--    </div>-->
+
     <?php endif; ?>
         <div class="clear_0"></div>
     </div><!-- content products end -->
