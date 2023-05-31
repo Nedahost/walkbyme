@@ -18,11 +18,15 @@
             figure{
                 margin:0px;
                 padding: 0px;
+                position: relative;
+                overflow: hidden;
                 img{
                   width: 100%;  
                   transition: var(--trans-image);
                   object-position: center;
                   object-fit: cover;
+                  border: 0;
+                  vertical-align: bottom;
                   &:hover{
                     -webkit-transform: var(--image-scaleUp);
                     -moz-transform: var(--image-scaleUp);

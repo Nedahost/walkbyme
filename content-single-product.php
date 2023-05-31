@@ -33,7 +33,7 @@ if ( post_password_required() ) {
                 <?php
                 $sku = $product->get_sku();
                 if(!empty($sku)){
-                    echo '<b>Κωδικός:</b> '. $sku ;
+                    echo '<b>Ref.:</b> '. $sku ;
                 } ?>
             </div><!-- sky end -->
             <div class="stockproduct"><!-- stock start -->

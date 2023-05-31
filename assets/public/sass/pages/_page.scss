@@ -3,6 +3,7 @@
 
 .container{
     #pagecontent{
+        margin-top: 40px;
         h1{
             margin: 0px;
             padding: 0px;
@@ -22,6 +23,40 @@
             margin-left: 20px;
             font-size: a.rem(16);
             letter-spacing: t.$letter-spacing;
+        }
+
+        .outercontentpage{
+            
+            .imagepage{
+                float: left;
+                width: 40%;
+                img{
+                    width: 100%;
+                    height: auto;
+                }
+            }
+            .contentpage{
+                float: left;
+                width: 55%;
+                margin-left: 30px;
+
+                ul{
+                    margin-top: 20px;
+                    display: grid;
+                    grid-column-gap: 8px;
+                    grid-template-columns: repeat(3,1fr);
+                    li{
+                        a{
+                            filter: brightness(97%); 
+                            figure{
+                                img{
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

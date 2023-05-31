@@ -289,6 +289,9 @@ function custom_pagination() {
 
 remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
 
+
+add_filter( 'woocommerce_enqueue_styles', '__return_false' );
+
 // add_action( 'woocommerce_archive_description', 'woocommerce_category_image', 2 );
 // function woocommerce_category_image() {
 //     if ( is_product_category() ){
