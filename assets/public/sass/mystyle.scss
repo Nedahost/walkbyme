@@ -4,14 +4,3 @@
 @use './layouts';
 @use './pages';
 
-// @import 'abstracts/index';
-
-
-
-
-    @font-face {
-        text-rendering: optimizeLegibility;
-        font-family: CFDIN;
-        src: url(../../fonts/cf_din_light-webfont.eot);
-        src: url(../../fonts/cf_din_light-webfont.eot?#iefix) format("embedded-opentype"), url(../../fonts/cf_din_light-webfont.woff) format("woff"), url(../../fonts/CFDIN-LIGHT-WEBFONT.TTF) format("truetype")
-    }

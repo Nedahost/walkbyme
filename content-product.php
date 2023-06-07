@@ -31,7 +31,9 @@
     
     <h3>
          <a href="<?php the_permalink(); ?>">
-         <?php the_title(); ?>
+         <?php 
+          echo get_post_meta( get_the_ID(), '_text_field', true);
+         // the_title(); ?>
          </a>
      </h3>
     
@@ -81,7 +83,9 @@
     <div class="product-name"><!-- product name start -->
        <h3>
             <a href="<?php the_permalink(); ?>">
-            <?php the_title(); ?>
+            <?php 
+             echo get_post_meta( get_the_ID(), '_text_field', true);
+            //the_title(); ?>
             </a>
         </h3>
     </div><!-- product name end --> 

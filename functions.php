@@ -1,5 +1,8 @@
 <?php
 
+require_once (get_template_directory() . '/inc/details-product.php');
+
+
 // style load css
 
 function walkbyme_load_css() {

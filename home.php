@@ -98,20 +98,20 @@
         <ul>
             <li>
                 <figure>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/daxtilidia/">
                     <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/ring.jpg" />
                     </a>
                 </figure>
                 <h3>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/daxtilidia/">
                         Δαχτυλίδια
                     </a>
                 </h3>
                 <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ανακαλύψτε την εκλεπτυσμένη συλλογή μας με δαχτυλίδια, φτιαγμένα από ασήμι, χρυσό και ορείχαλκο. Αυτά τα χειροποίητα κοσμήματα διαθέτουν εντυπωσιακά σχέδια, με πολύτιμους λίθους και ποικίλα χρώματα, που τα καθιστούν ιδανικά για κάθε στιγμή της καθημερινής σας ζωής.
                 </p>
                 <span class="more">
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/daxtilidia/">
                         Ανακαλύψτε τα &raquo;
                     </a>
                 </span>
@@ -128,7 +128,7 @@
                     </a>
                 </h3>
                 <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ανακαλύψτε την εντυπωσιακή συλλογή μας από χειροποίητα βραχιόλια με κομψά σχέδια, πολύτιμους λίθους και επιλογές εναλλακτικών αλυσίδων. Προσθέστε μια ξεχωριστή πινελιά κομψότητας στη συλλογή κοσμημάτων σας και εντυπωσιάστε σε κάθε περίσταση.
                 </p>
                 <span class="more">
                     <a href="">
@@ -148,7 +148,7 @@
                     </a>
                 </h3>
                 <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                    Χειροποίητα σκουλαρίκια: Μοναδικότητα και κομψότητα σε κάθε εμφάνιση με λεπτομερή προσοχή στην τέχνη και ποικιλία υλικών. Ανακαλύψτε τα μοναδικά σχέδια που ταιριάζουν στο προσωπικό σας στιλ και δώστε στο στυλ σας μια ξεχωριστή πινελιά.
                 </p>
                 <span class="more">
                     <a href="">
@@ -168,7 +168,7 @@
                     </a>
                 </h3>
                 <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Μοναδικά χειροποίητα κολιέ δημιουργούνται με αγάπη και δεξιοτεχνία από εξειδικευμένους τεχνίτες. Χρησιμοποιώντας διάφορα υλικά όπως ασήμι, χρυσό και πέτρες, προσφέρουν μοναδικό στυλ και κομψότητα. Αυτά τα κοσμήματα προσθέτουν μια ξεχωριστή πινελιά στην εμφάνισή σας.
                 </p>
                 <span class="more">
                     <a href="">

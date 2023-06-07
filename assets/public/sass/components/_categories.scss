@@ -1,7 +1,30 @@
+.outercategories{
+    width: 100%;
+    height: auto;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .row{
+        display: flex;
+        flex-wrap: wrap;
+        .outerpageinfo{
+            padding-left: 40px;
+            .pageinfo{
+                width: 100%;
+                max-width: 430px;
+            }
+        }
+    }
+}
 
 
 #outerimageeshop{
-    text-align: center;
+    width: 100%;
+    max-width: 430px;
     h1{
         margin: 0px;
         padding: 0px;

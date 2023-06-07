@@ -28,6 +28,15 @@ if ( post_password_required() ) {
             <?php echo $product->get_name(); ?>
         </h1>
         
+        <?php 
+        
+        $slogan =  get_post_meta( get_the_ID(), '_text_field', true); 
+
+        $result = substr(strstr($slogan," "), 1);
+
+        echo $result;
+
+        ?>
         <div class="importantdetails"><!-- important details start -->
             <div class="skuproduct"><!-- sky start -->
                 <?php
@@ -69,16 +78,16 @@ if ( post_password_required() ) {
                 <ul>
                     <?php if(!empty($single_sales_price)){ ?>
                     <li class="first-value">
-                        <?php echo $single_regular_price .'&euro;'; ?>
+                        <?php echo $single_regular_price .' &euro;'; ?>
                     </li>
                     <li>
                         <b>
-                            <?php echo $single_sales_price .'&euro;'; ?>
+                            <?php echo $single_sales_price .' &euro;'; ?>
                         </b>
                     </li>
                     <?php } else { ?>
                     <li>
-                        <?php echo $single_regular_price .'&euro;'; ?>
+                        <?php echo $single_regular_price .' &euro;'; ?>
                     </li>
                     <?php } ?>
                 </ul>
@@ -99,18 +108,18 @@ if ( post_password_required() ) {
                 if(!empty($sales_price)){ ?>
             <div class="variablesalesprice"><!-- variable sales price start -->
                 <span style="text-decoration: line-through; opacity: .6; margin-right: .3em;">
-                    <?php echo $regular_price .'&euro;'; ?>
+                    <?php echo $regular_price .' &euro;'; ?>
                 </span>
                 <span style="font-size: 14pt;">
                     <b>
-                        <?php echo $sales_price .'&euro;'; ?>
+                        <?php echo $sales_price .' &euro;'; ?>
                     </b>
                 </span>
             </div><!-- variable sales price end -->
             <?php    } else { ?>
             <div class="singlevariableprice"><!-- single variable price start -->
                 <span style="font-size: 1.125rem;">
-                    <?php echo $regular_price .'&euro;'; ?>
+                    <?php echo $regular_price .' &euro;'; ?>
                 </span>
             </div><!-- single variable price end -->
             <?php }

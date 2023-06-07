@@ -2,32 +2,35 @@
 <div class="wrapper">
 <?php if ( is_product_category() ){
     global $wp_query;
-
     // get the query object
     $cat = $wp_query->get_queried_object();
-
     // get the thumbnail id using the queried category term_id
     $thumbnail_id = get_term_meta( $cat->term_id, 'thumbnail_id', true ); 
-
     // get the image URL
     $image = wp_get_attachment_url( $thumbnail_id ); 
-
     // print the IMG HTML
-    echo "<img src='{$image}' alt='' width='100%' height='auto' />";
-}
-
- /*if(!is_product()){ ?>
-    <div class="wrapper"><!-- wrapper start -->
-        <section id="outerimageeshop"><!-- outerslider start -->
-            <h1 class="page-title">
+   // echo "<img src='{$image}' alt='' width='100%' height='auto' />";
+?>  
+    <div class="outercategories" style="background-image:url(<?php echo $image; ?>); 
+    background-size: 100%;">
+        <div class="row"><!-- row start -->
+            <div class="outerpageinfo">
+                <div class="pageinfo"><!-- page info start -->
+                <h1 class="page-title">
                 <i> <?php woocommerce_page_title(); ?></i>
             </h1>
-            <div class="wrapper">
+            
                 <?php do_action('woocommerce_archive_description'); ?>
+                </div><!-- page info end -->
             </div>
-        </section><!-- outerslider end -->
-    </div><!-- wrapper end -->
-    <?php } */?>
+        </div><!-- row end -->
+            
+       
+    </div>
+<?php
+}
+
+ /* */?>
 
 
 
