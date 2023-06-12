@@ -11,13 +11,26 @@
     // print the IMG HTML
    // echo "<img src='{$image}' alt='' width='100%' height='auto' />";
 ?>  
-    <div class="outercategories" style="background-image:url(<?php echo $image; ?>); 
-    background-size: 100%;">
+    <div class="outercategories" style="background-image:url(<?php echo $image; ?>); ">
         <div class="row"><!-- row start -->
             <div class="outerpageinfo">
                 <div class="pageinfo"><!-- page info start -->
                 <h1 class="page-title">
                 <i> <?php woocommerce_page_title(); ?></i>
+                <?php global $wp_query;
+// get the query object
+$cat_obj = $wp_query->get_queried_object();
+
+
+if($cat_obj)    {
+    $category_name = $cat_obj->name;
+    $category_desc = $cat_obj->description;
+    $category_ID  = $cat_obj->term_id;
+}
+
+
+$term = get_term( $category_ID, 'product_cat' ); 
+echo '('. $term->count . ')'; ?>
             </h1>
             
                 <?php do_action('woocommerce_archive_description'); ?>
