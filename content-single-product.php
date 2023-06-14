@@ -45,6 +45,7 @@ if ( post_password_required() ) {
                     echo '<b>Ref.:</b> '. $sku ;
                 } ?>
             </div><!-- sky end -->
+            <?php /*
             <div class="stockproduct"><!-- stock start -->
                 <b>Διαθεσιμότητα:</b>
                 <?php 
@@ -60,6 +61,7 @@ if ( post_password_required() ) {
                     }
                 ?>
             </div><!-- stock end -->
+             */ ?>
             <div class="textsales" style="
     font-size: 18px;
     color: #e02929;
