@@ -70,3 +70,34 @@
         }
     }
 }
+
+
+.page{
+    >.titlepage{
+        h1{
+            margin: 0px;
+            padding: 0px;
+            font-size: a.rem(24);
+            font-weight: normal;
+            font-family: var(--f-second);
+            text-align: center;
+        }
+    }
+    .detailspages{
+        > p{
+            font-size: a.rem(17)!important;
+        }
+        ol{
+            list-style: decimal;
+            line-height: 36px;
+            margin-left: 20px;
+            font-size: a.rem(16);
+            letter-spacing: t.$letter-spacing;
+            ul{
+                margin: 0px 0 0px 25px;
+                padding: 0px;
+                list-style: disc;
+            }
+        }
+    }
+}

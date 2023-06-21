@@ -71,10 +71,9 @@
 </div><!-- wrapper end -->
 
 
-<div id="outerparallax"><!-- outer parallax stat -->
-    <div id="outerparallax__parallax">
-
-    </div>
+<div class="parallax-container"><!-- outer parallax stat -->
+    <div class="parallax-image"></div>
+    
 </div><!-- outer parallax end -->
 
 <div class="wrapper"><!-- wrapper start -->
@@ -118,12 +117,12 @@
             </li>
             <li>
                 <figure>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/vraxiolia/">
                     <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bracelets.jpg" />
                     </a>
                 </figure>
                 <h3>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/vraxiolia/">
                         Βραχιόλια
                     </a>
                 </h3>
@@ -131,19 +130,19 @@
                 Ανακαλύψτε την εντυπωσιακή συλλογή μας από χειροποίητα βραχιόλια με κομψά σχέδια, πολύτιμους λίθους και επιλογές εναλλακτικών αλυσίδων. Προσθέστε μια ξεχωριστή πινελιά κομψότητας στη συλλογή κοσμημάτων σας και εντυπωσιάστε σε κάθε περίσταση.
                 </p>
                 <span class="more">
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/vraxiolia/">
                         Ανακαλύψτε τα &raquo;
                     </a>
                 </span>
             </li>
             <li>
                 <figure>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/skoularikia/">
                     <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/earrings.jpg" />
                     </a>
                 </figure>
                 <h3>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/skoularikia/">
                         Σκουλαρίκια
                     </a>
                 </h3>
@@ -151,19 +150,19 @@
                     Χειροποίητα σκουλαρίκια: Μοναδικότητα και κομψότητα σε κάθε εμφάνιση με λεπτομερή προσοχή στην τέχνη και ποικιλία υλικών. Ανακαλύψτε τα μοναδικά σχέδια που ταιριάζουν στο προσωπικό σας στιλ και δώστε στο στυλ σας μια ξεχωριστή πινελιά.
                 </p>
                 <span class="more">
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/skoularikia/">
                         Ανακαλύψτε τα &raquo;
                     </a>
                 </span>
             </li>
             <li>
                 <figure>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/kolie/">
                     <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/necklace.jpg" />
                     </a>
                 </figure>
                 <h3>
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/kolie/">
                         Κολιέ
                     </a>
                 </h3>
@@ -171,7 +170,7 @@
                 Μοναδικά χειροποίητα κολιέ δημιουργούνται με αγάπη και δεξιοτεχνία από εξειδικευμένους τεχνίτες. Χρησιμοποιώντας διάφορα υλικά όπως ασήμι, χρυσό και πέτρες, προσφέρουν μοναδικό στυλ και κομψότητα. Αυτά τα κοσμήματα προσθέτουν μια ξεχωριστή πινελιά στην εμφάνισή σας.
                 </p>
                 <span class="more">
-                    <a href="">
+                    <a href="https://www.walkbyme.gr/product-category/kolie/">
                         Ανακαλύψτε τα &raquo;
                     </a>
                 </span>

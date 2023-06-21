@@ -10,8 +10,9 @@
     $image = wp_get_attachment_url( $thumbnail_id ); 
     // print the IMG HTML
    // echo "<img src='{$image}' alt='' width='100%' height='auto' />";
+   // background-image:url(<?php echo $image; );
 ?>  
-    <div class="outercategories" style="background-image:url(<?php echo $image; ?>); background-color: #f7f7f7;">
+    <div class="outercategories" style=" background-color: #f7f7f7;">
         <div class="row"><!-- row start -->
             <div class="outerpageinfo">
                 <div class="pageinfo"><!-- page info start -->

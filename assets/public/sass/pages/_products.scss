@@ -52,13 +52,16 @@
 .bgproducts{
     
     .productflex{
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        @include a.breakpoint-down(mlarge){
+            grid-template-columns: repeat(1, 1fr);
+        }
         
         
     .product-image{
             
            padding: 0 20px;
-           width: 50%;
             flex-grow: 1;
          .woocommerce-product-gallery__wrapper{
             display: grid;
@@ -96,8 +99,8 @@
     .rightdetailsproduct{
         
             
-                width: 50%;
-                flex-grow: 1;
+                
+                
                 margin: auto 0;
                 padding: 0 30px;
           

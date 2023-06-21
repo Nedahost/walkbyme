@@ -41,12 +41,17 @@
             </div>
         </div>
         <?php } else{ ?>
-            <h1>
-                <?php the_title(); ?>
-            </h1>
-        <?php
-            the_content();
-        } ?>
+            <div class="page">
+                <div class="titlepage">
+                    <h1>
+                        <?php the_title(); ?>
+                    </h1>
+                </div>
+                <div class="detailspages">
+                <?php the_content(); ?>               
+                </div>
+            </div>
+            <?php } ?>
     </div><!-- content page end -->
         
     
