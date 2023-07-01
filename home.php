@@ -5,7 +5,7 @@
         <div class="sliderimages"><!-- slider images start -->
             <figure><!-- figure start -->
                 <a href="">
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/mainimage.jpg" />
+                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/slider2a.jpg" />
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->
