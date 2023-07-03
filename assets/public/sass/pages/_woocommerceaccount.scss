@@ -116,4 +116,137 @@
 
 
 
+.woocommerce table.shop_attributes {
+    border: 0;
+      border-top-color: currentcolor;
+      border-top-style: none;
+      border-top-width: 0px;
+    border-top: 1px dotted rgba(0,0,0,.1);
+    margin-bottom: 1.618em;
+    width: 100%;
+  }
+
+  .woocommerce table.shop_attributes th {
+    width: 150px;
+    font-weight: 700;
+    padding: 8px;
+    border-top: 0;
+    border-bottom: 1px dotted rgba(0,0,0,.1);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .woocommerce table.shop_attributes tr:nth-child(2n) td, .woocommerce table.shop_attributes tr:nth-child(2n) th {
+    background: rgba(0,0,0,.025);
+  }
+
+  .woocommerce table.shop_attributes td {
+    font-style: italic;
+    padding: 0;
+    border-top: 0;
+    border-bottom: 1px dotted rgba(0,0,0,.1);
+    margin: 0;
+    line-height: 1.5;
+  }
+
   
+.woocommerce div.product form.cart::after {
+
+    clear: both;
+
+}
+.woocommerce div.product form.cart::after, .woocommerce div.product form.cart::before {
+
+    content: " ";
+    display: table;
+
+}
+
+.woocommerce div.product form.cart {
+    margin-bottom: 2em;
+  }
+  .woocommerce div.product form.cart .variations {
+    margin-bottom: 1em;
+    border: 0;
+    width: 100%;
+  }
+  .woocommerce div.product form.cart table {
+    border-width: 0 0 1px;
+}
+
+.woocommerce div.product form.cart .variations td, .woocommerce div.product form.cart .variations th {
+    border: 0;
+    line-height: 2em;
+    vertical-align: top;
+  }
+
+  .woocommerce div.product form.cart .variations label {
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .woocommerce div.product form.cart .variations td, .woocommerce div.product form.cart .variations th {
+    border: 0;
+    line-height: 2em;
+    vertical-align: top;
+  }
+  .woocommerce div.product form.cart table td {
+    padding-left: 0;
+  }
+
+  .woocommerce div.product form.cart .variations select {
+    max-width: 100%;
+    min-width: 75%;
+    display: inline-block;
+    margin-right: 1em;
+  }
+
+  .woocommerce div.product form.cart div.quantity {
+    float: left;
+    margin: 0 4px 0 0;
+  }
+
+  .woocommerce div.product form.cart .button {
+    vertical-align: middle;
+    float: left;
+  }
+
+  
+::selection {
+
+    color: #fff;
+    background-color: #e6e7e8;
+
+}
+::selection {
+
+    color: #fff;
+    background-color: #e6e7e8;
+
+}
+
+.screen-reader-text {
+
+    clip: rect(1px,1px,1px,1px);
+    height: 1px;
+    overflow: hidden;
+    position: absolute !important;
+    width: 1px;
+    word-wrap: normal !important;
+
+}
+
+.bgproducts .productflex .rightdetailsproduct button.button.alt {
+    background-color: #010101 !important;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 300;
+    font-family: var(--f-second);
+  }
+
+
+
+.woocommerce .quantity .qty {
+    width: 3.631em;
+    text-align: center;
+  }
