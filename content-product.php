@@ -88,9 +88,14 @@
     <div class="product-name"><!-- product name start -->
        <h3>
             <a href="<?php the_permalink(); ?>">
-            <?php 
-             echo get_post_meta( get_the_ID(), '_text_field', true);
-            //the_title(); ?>
+                <?php
+                $titlecategories = get_post_meta( get_the_ID(), '_text_field', true); 
+                if(!empty($titlecategories)){
+                        echo $titlecategories;
+                    }else{
+                        the_title();
+                    }
+                    ?>
             </a>
         </h3>
     </div><!-- product name end --> 
