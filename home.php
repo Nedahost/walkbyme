@@ -71,10 +71,39 @@
 </div><!-- wrapper end -->
 
 
+<?php /*
 <div class="parallax-container"><!-- outer parallax stat -->
     <div class="parallax-image"></div>
     
 </div><!-- outer parallax end -->
+
+ */ ?> 
+
+ <section>
+    <div class="felxbox">
+        <div class="outerimagelarge">
+            <div class="imagewrapper"></div>
+            <div class="imagecontent">
+                <header class="sectionheader"><!-- section header start -->
+                    <h2 class="sectionheader_title">
+                        A Passion for Handcrafted Sterling Silver.
+                    </h2>
+                    <div class="sectionheadaer_description">
+                        <p>
+                            Η κατασκευή χειροποίητων ασημένιων κοσμημάτων είναι το πάθος μας. Λαμβάνουμε μεγάλη προσοχή σε κάθε βήμα της διαδικασίας.
+                        </p>
+                        <p>
+                            <a href="">Δείτε ποιοί είμαστε</a>
+                        </p>
+                    </div>
+                </header>
+            </div>
+        </div>
+    </div>
+ </section>
+
+
+
 
 <div class="wrapper"><!-- wrapper start -->
 

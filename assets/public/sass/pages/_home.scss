@@ -74,7 +74,7 @@
     }
 }
 
-
+/*
 
 .parallax-container{
     background-attachment: scroll;
@@ -102,3 +102,24 @@
         }
     }
 }
+*/
+
+.parallax-container {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .parallax-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(/wp-content/themes/walkbyme/assets/images/photo.jpg); /* Αντικαταστήστε με τη διεύθυνση της εικόνας σας */
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: translateZ(0);
+    z-index: -1;
+  }
