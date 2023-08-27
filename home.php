@@ -80,7 +80,7 @@
  */ ?> 
 
  <section>
-    <div class="felxbox"> 
+    <div class="felxbox">
         <div class="outerimagelarge">
             <div class="imagewrapper"></div>
             <div class="imagecontent">
