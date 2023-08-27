@@ -74,18 +74,20 @@
 <section>
     <div class="felxbox">
         <div class="outerimagelarge">
-            <div class="imagewrapper"></div>
+            <div class="imagewrapper">
+            <picture style="display: none;"></picture>
+            </div>
             <div class="imagecontent">
                 <header class="sectionheader"><!-- section header start -->
                     <h2 class="sectionheader_title">
-                        A Passion for Handcrafted Sterling Silver.
+                        Το πάθος μας για χειροποίητα κοσμήματα από ασήμι 925 και χρυσό!
                     </h2>
                     <div class="sectionheadaer_description">
                         <p>
-                            Η κατασκευή χειροποίητων ασημένιων κοσμημάτων είναι το πάθος μας. Λαμβάνουμε μεγάλη προσοχή σε κάθε βήμα της διαδικασίας.
+                            Η κατασκευή χειροποίητων ασημένιων και χρυσών κοσμημάτων είναι το πάθος μας. Λαμβάνουμε μεγάλη προσοχή σε κάθε βήμα της διαδικασίας.
                         </p>
                         <p>
-                            <a href="">Δείτε ποιοί είμαστε</a>
+                            <a href="https://www.walkbyme.gr/%ce%b7-%ce%b5%cf%84%ce%b1%ce%b9%cf%81%ce%b5%ce%af%ce%b1-%ce%bc%ce%b1%cf%82/">Δείτε ποιοί είμαστε</a>
                         </p>
                     </div>
                 </header>

@@ -124,10 +124,10 @@
     text-align: center;
     background-size: cover;
     background-position: center;
-    min-height: 380px;
+    min-height: 550px;
     width: 100%;
     overflow: hidden;
-  .imagewrapper{ 
+  .imagewrapper{
     background-image: url(/wp-content/themes/walkbyme/assets/images/photo.jpg); 
     position: absolute;
     top: 0;
@@ -136,11 +136,13 @@
     height: 100%;
     background-size: cover;
     background-position: center;
+    filter: brightness(70%);
   }
   .imagecontent{
+    color: #ffffff;
     position: relative;
     -ms-flex-preferred-size: 425px;
-    flex-basis: 425px;
+    flex-basis: 450px;
     -webkit-box-flex: 0;
     -ms-flex-positive: 0;
     flex-grow: 0;
@@ -148,5 +150,12 @@
       padding-top: 0px;
       padding-bottom: 0px;
     text-shadow: 0 1px rgba(0,0,0,.5);
+    p{
+      line-height: 2;
+      a{
+        color: #ffffff;
+        text-decoration: underline;
+      }
+    }
   }
 }
