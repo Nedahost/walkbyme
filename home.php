@@ -71,15 +71,7 @@
 </div><!-- wrapper end -->
 
 
-<?php /*
-<div class="parallax-container"><!-- outer parallax stat -->
-    <div class="parallax-image"></div>
-    
-</div><!-- outer parallax end -->
-
- */ ?> 
-
- <section>
+<section>
     <div class="felxbox">
         <div class="outerimagelarge">
             <div class="imagewrapper"></div>
@@ -101,9 +93,6 @@
         </div>
     </div>
  </section>
-
-
-
 
 <div class="wrapper"><!-- wrapper start -->
 
