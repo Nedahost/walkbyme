@@ -36,7 +36,21 @@ echo '('. $term->count . ')';
 */ ?>
             </h1>
             
-                <?php do_action('woocommerce_archive_description'); ?>
+                <?php
+                
+                $args = array( 'taxonomy' => 'product_cat' );
+                $terms = wp_get_post_terms($post->ID, 'product_cat', $args);
+
+                $count = count($terms);
+                if ($count > 0) {
+                
+                    foreach ($terms as $term) {
+                        echo $term->description;
+                
+                    }
+                }
+                
+                ?> 
                 </div><!-- page info end -->
             </div>
         </div><!-- row end -->
