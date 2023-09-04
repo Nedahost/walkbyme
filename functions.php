@@ -298,3 +298,89 @@ add_filter( 'woocommerce_enqueue_styles', '__return_false' );
 // 		}
 // 	}
 // }
+
+
+
+// Συνάρτηση για τη δημιουργία και απόκτηση των προϊόντων στην αρχική σελίδα
+function get_featured_products() {
+    $meta_query  = WC()->query->get_meta_query();
+    $tax_query   = WC()->query->get_tax_query();
+    $tax_query[] = array(
+        'taxonomy' => 'product_visibility',
+        'field'    => 'name',
+        'terms'    => 'featured',
+        'operator' => 'IN',
+    );
+
+    $args = array(
+        'post_type'           => 'product',
+        'post_status'         => 'publish',
+        'posts_per_page'      => 12,
+        'meta_query'          => $meta_query,
+        'tax_query'           => $tax_query,
+    );
+
+    return new WP_Query( $args );
+}
+
+// Συνάρτηση για την εμφάνιση των προϊόντων στην αρχική σελίδα
+function display_featured_products() {
+    $wc_query = get_featured_products();
+
+    if ( $wc_query->have_posts() ) :
+        while ( $wc_query->have_posts() ) : $wc_query->the_post();
+            echo '<div>';
+            echo '<figure>';
+            echo '<a href="' . get_permalink() . '">';
+            $attr = array();
+            $thumb = get_the_post_thumbnail( $loop->ID, $attr );
+            echo $thumb;
+            echo '</a>';
+            echo '</figure>';
+            echo '<h3><a href="' . get_permalink() . '">' . get_the_title() . '</a></h3>';
+            echo '</div>';
+        endwhile;
+        wp_reset_postdata();
+    endif;
+}
+
+
+function add_custom_category_field() {
+    ?>
+    <div class="form-field">
+        <label for="show_on_homepage"><?php _e( 'Εμφάνιση στην αρχική σελίδα', 'walkbyme' ); ?></label>
+        <select name="show_on_homepage" id="show_on_homepage">
+            <option value="yes"><?php _e( 'Ναι', 'walkbyme' ); ?></option>
+            <option value="no"><?php _e( 'Όχι', 'walkbyme' ); ?></option>
+        </select>
+    </div>
+    <?php
+}
+add_action( 'product_cat_add_form_fields', 'add_custom_category_field', 10, 2 );
+
+// Αποθηκεύστε την τιμή του προσαρμοσμένου πεδίου για κάθε κατηγορία
+function save_custom_category_field( $term_id ) {
+    if ( isset( $_POST['show_on_homepage'] ) ) {
+        update_term_meta( $term_id, 'show_on_homepage', sanitize_text_field( $_POST['show_on_homepage'] ) );
+    }
+}
+add_action( 'edited_product_cat', 'save_custom_category_field', 10, 2 );
+add_action( 'create_product_cat', 'save_custom_category_field', 10, 2 );
+
+
+// Εμφανίστε το πεδίο στον πίνακα ελέγχου των κατηγοριών product_cat
+function display_category_custom_fields( $term ) {
+    $show_on_homepage = get_term_meta( $term->term_id, 'show_on_homepage', true );
+    ?>
+    <tr class="form-field">
+        <th scope="row" valign="top"><label for="show_on_homepage"><?php _e( 'Εμφάνιση στην αρχική σελίδα', 'walkbyme' ); ?></label></th>
+        <td>
+            <select name="show_on_homepage" id="show_on_homepage">
+                <option value="yes" <?php selected( $show_on_homepage, 'yes' ); ?>><?php _e( 'Ναι', 'walkbyme' ); ?></option>
+                <option value="no" <?php selected( $show_on_homepage, 'no' ); ?>><?php _e( 'Όχι', 'walkbyme' ); ?></option>
+            </select>
+        </td>
+    </tr>
+    <?php
+}
+add_action( 'product_cat_edit_form_fields', 'display_category_custom_fields', 10, 2 );

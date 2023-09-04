@@ -13,60 +13,14 @@
 
     </div><!-- outer slider end -->
     <div class="outercarousel"><!-- outer carousel start -->
-
-    <div class="generic-titles"><!-- generic title start -->
-        <h2>
-            ΟΙ ΠΡΟΤΑΣΕΙΣ ΜΑΣ
-        </h2>
-    </div><!-- generic title end -->
-
-        
-            <div class="carousel"><!-- carousel start -->
-                <?php
-                    $meta_query  = WC()->query->get_meta_query();
-                    $tax_query   = WC()->query->get_tax_query();
-                    $tax_query[] = array(
-                        'taxonomy' => 'product_visibility',
-                        'field'    => 'name',
-                        'terms'    => 'featured',
-                        'operator' => 'IN',
-                    );
-
-                    $args = array(
-                        'post_type'           => 'product',
-                        'post_status'         => 'publish',
-                        'posts_per_page'      => 12,
-                        'meta_query'          => $meta_query,
-                        'tax_query'           => $tax_query,
-                    );
-                    $wc_query = new WP_Query( $args );
-                    if ($wc_query->have_posts()) : ?>
-          
-                <?php while ($wc_query->have_posts()) : $wc_query->the_post();  ?>
-                    <div>
-                        <figure>
-                            <a href="<?php the_permalink(); ?>">
-                                <?php
-                                $attr = array(
-                                        // 'itemprop' => 'image'
-                                );
-                                $thumb = get_the_post_thumbnail($loop->ID, $attr);
-                                echo $thumb;
-                                ?>
-                            </a> 
-                        </figure>
-                        <h3>
-                            <a href="<?php the_permalink(); ?>">
-                                <?php the_title(); ?>
-                            </a>
-                        </h3>
-                    </div>
-                <?php endwhile;
-                wp_reset_postdata(); ?>
-                
-                <?php endif; ?>
-            </div><!-- carousel end -->
-        
+        <div class="generic-titles"><!-- generic title start -->
+            <h2>
+                ΟΙ ΠΡΟΤΑΣΕΙΣ ΜΑΣ
+            </h2>
+        </div><!-- generic title end -->
+        <div class="carousel"><!-- carousel start -->
+            <?php display_featured_products(); ?>
+        </div><!-- carousel end -->
     </div><!-- outer carousel end -->
 </div><!-- wrapper end -->
 
@@ -102,7 +56,24 @@
     <div id="greekdesigners">
         <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/greek.png" /> 
     </div>
-*/ ?>
+*/ 
+
+/* Λάβετε όλες τις κατηγορίες του WooCommerce
+$product_categories = get_terms( 'product_cat' );
+
+// Εμφανίστε μόνο τις κατηγορίες που έχετε επιλέξει με "Ναι"
+foreach ( $product_categories as $category ) {
+    $show_on_homepage = get_term_meta( $category->term_id, 'show_on_homepage', true );
+    
+    if ( $show_on_homepage === 'yes' ) {
+        // Εδώ μπορείτε να εμφανίσετε τα δεδομένα της κατηγορίας όπως τον τίτλο και την περιγραφή.
+        echo '<h2>' . esc_html( $category->name ) . '</h2>';
+        echo '<p>' . esc_html( $category->description ) . '</p>';
+        // Επιπλέον κώδικας για την εμφάνιση των εικόνων και των συνδέσμων που θέλετε.
+    }
+}
+*/
+?>
     <section class="hm_categories"><!-- home categories start -->
 
     <div class="generic-titles"><!-- generic title start -->
@@ -201,40 +172,10 @@
 
 
 
-    <?php /*
-    <div class="homegifts"><!-- home gifts start -->
-        <figure>
-            <a href="">
-            <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/4.jpg" />
-            </a>
-        </figure>
-        <div class="giftscontent"><!-- gifts content start -->
-            <h4>
-                Special gifts for her
-            </h4>
-            <p>
-                Κοσμήματα που θα κάνουν κάθε περίσταση ξεχωστή.
-            </p>
-            <span>
-                <a href="" class="buttonstyle">
-                    Αγόρασε τώρα &raquo;
-                </a>
-            </span>
-        </div><!-- gifts content end -->
-    </div><!-- home gifts end -->
 
- */ ?>
 
 <?php /*
-<section class="smart_search"><!-- smart search start -->
-  Βρες το ΙΔΑΝΙΚΟ ΚΟΣΜΗΜΑ για σένα
 
-  <p>
-  Για εσάς ή για ένα προσωπικό δώρο ανάμεσα σε μια μεγάλη συλλογή σε χρυσά και ασημένια κοσμήματα κατάλληλα για κάθε στιγμή και περίσταση 
-  </p>
-</section><!-- smart search end -->
-    
-<section class="our_suggestions"><!-- our suggestions start -->
 
 
 
