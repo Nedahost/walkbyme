@@ -58,24 +58,8 @@
     </div>
 */ 
 
-/* Λάβετε όλες τις κατηγορίες του WooCommerce
-$product_categories = get_terms( 'product_cat' );
-
-// Εμφανίστε μόνο τις κατηγορίες που έχετε επιλέξει με "Ναι"
-foreach ( $product_categories as $category ) {
-    $show_on_homepage = get_term_meta( $category->term_id, 'show_on_homepage', true );
-    
-    if ( $show_on_homepage === 'yes' ) {
-        // Εδώ μπορείτε να εμφανίσετε τα δεδομένα της κατηγορίας όπως τον τίτλο και την περιγραφή.
-        echo '<h2>' . esc_html( $category->name ) . '</h2>';
-        echo '<p>' . esc_html( $category->description ) . '</p>';
-        // Επιπλέον κώδικας για την εμφάνιση των εικόνων και των συνδέσμων που θέλετε.
-    }
-}
-*/
 ?>
-    <section class="hm_categories"><!-- home categories start -->
-
+<section class="hm_categories"><!-- home categories start -->
     <div class="generic-titles"><!-- generic title start -->
         <h2>
             ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
@@ -84,167 +68,52 @@ foreach ( $product_categories as $category ) {
             Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
         </p>
     </div><!-- generic title end -->
-    
-        <ul>
-            <li>
-                <figure>
-                    <a href="https://www.walkbyme.gr/product-category/daxtilidia/">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/ring.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="https://www.walkbyme.gr/product-category/daxtilidia/">
-                        Δαχτυλίδια
-                    </a>
-                </h3>
-                <p>
-                Ανακαλύψτε την εκλεπτυσμένη συλλογή μας με δαχτυλίδια, φτιαγμένα από ασήμι, χρυσό και ορείχαλκο. Αυτά τα χειροποίητα κοσμήματα διαθέτουν εντυπωσιακά σχέδια, με πολύτιμους λίθους και ποικίλα χρώματα, που τα καθιστούν ιδανικά για κάθε στιγμή της καθημερινής σας ζωής.
-                </p>
-                <span class="more">
-                    <a href="https://www.walkbyme.gr/product-category/daxtilidia/">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-            <li>
-                <figure>
-                    <a href="https://www.walkbyme.gr/product-category/vraxiolia/">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/bracelets.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="https://www.walkbyme.gr/product-category/vraxiolia/">
-                        Βραχιόλια
-                    </a>
-                </h3>
-                <p>
-                Ανακαλύψτε την εντυπωσιακή συλλογή μας από χειροποίητα βραχιόλια με κομψά σχέδια, πολύτιμους λίθους και επιλογές εναλλακτικών αλυσίδων. Προσθέστε μια ξεχωριστή πινελιά κομψότητας στη συλλογή κοσμημάτων σας και εντυπωσιάστε σε κάθε περίσταση.
-                </p>
-                <span class="more">
-                    <a href="https://www.walkbyme.gr/product-category/vraxiolia/">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-            <li>
-                <figure>
-                    <a href="https://www.walkbyme.gr/product-category/skoularikia/">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/earrings.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="https://www.walkbyme.gr/product-category/skoularikia/">
-                        Σκουλαρίκια
-                    </a>
-                </h3>
-                <p>
-                    Χειροποίητα σκουλαρίκια: Μοναδικότητα και κομψότητα σε κάθε εμφάνιση με λεπτομερή προσοχή στην τέχνη και ποικιλία υλικών. Ανακαλύψτε τα μοναδικά σχέδια που ταιριάζουν στο προσωπικό σας στιλ και δώστε στο στυλ σας μια ξεχωριστή πινελιά.
-                </p>
-                <span class="more">
-                    <a href="https://www.walkbyme.gr/product-category/skoularikia/">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
-            <li>
-                <figure>
-                    <a href="https://www.walkbyme.gr/product-category/kolie/">
-                    <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/necklace.jpg" />
-                    </a>
-                </figure>
-                <h3>
-                    <a href="https://www.walkbyme.gr/product-category/kolie/">
-                        Κολιέ
-                    </a>
-                </h3>
-                <p>
-                Μοναδικά χειροποίητα κολιέ δημιουργούνται με αγάπη και δεξιοτεχνία από εξειδικευμένους τεχνίτες. Χρησιμοποιώντας διάφορα υλικά όπως ασήμι, χρυσό και πέτρες, προσφέρουν μοναδικό στυλ και κομψότητα. Αυτά τα κοσμήματα προσθέτουν μια ξεχωριστή πινελιά στην εμφάνισή σας.
-                </p>
-                <span class="more">
-                    <a href="https://www.walkbyme.gr/product-category/kolie/">
-                        Ανακαλύψτε τα &raquo;
-                    </a>
-                </span>
-            </li>
+    <ul>
+<?php
+// Λάβετε όλες τις κατηγορίες του WooCommerce
+$product_categories = get_terms('product_cat',  array(
+    'orderby' => 'meta_value_num',
+    'meta_key' => 'category_priority',
+    'order' => 'ASC',
+));
+
+foreach ($product_categories as $category) {
+    $show_on_homepage = get_term_meta($category->term_id, 'show_on_homepage', true);
+
+    if ($show_on_homepage === 'yes') { 
+        $category_url = get_term_link($category);
+        ?>
+        <li>
+            <?php 
+            $category_image = get_term_meta($category->term_id, 'category_image', true);
+            if (!empty($category_image)) { 
+            ?>
+            <figure>
+                <a href="<?php echo  esc_url($category_url); ?>">
+                    <?php echo '<img src="' . esc_url($category_image) . '" alt="' . esc_attr($category->name) . '">'; ?>
+                </a>
+            </figure>
+            <?php } ?>
+            <h3>
+                <a href="<?php echo  esc_url($category_url); ?>">
+                    <?php echo esc_html($category->name); ?> 
+                </a>
+            </h3>
+            <p>
+                <?php echo  esc_html($category->description); ?>
+            </p>
+            <span class="more">
+                <a href="<?php echo  esc_url($category_url); ?>">
+                    Ανακαλύψτε τα &raquo;
+                </a>
+            </span>
+        </li>
+        <?php 
+    }
+}
+
+?>
         </ul>
     </section><!-- home categories end -->
 </div> <!-- wrapper end -->
-
-
-
-
-
-<?php /*
-
-
-
-
-<div class="outercarousel"><!-- outer carousel start -->
-
-
-<h3>Οι Προτάσεις μας</h3>
-
-        <div class="carousel"><!-- carousel start -->
-            <?php
-                $meta_query  = WC()->query->get_meta_query();
-                $tax_query   = WC()->query->get_tax_query();
-                $tax_query[] = array(
-                    'taxonomy' => 'product_visibility',
-                    'field'    => 'name',
-                    'terms'    => 'featured',
-                    'operator' => 'IN',
-                );
-
-                $args = array(
-                    'post_type'           => 'product',
-                    'post_status'         => 'publish',
-                    'posts_per_page'      => 12,
-                    'meta_query'          => $meta_query,
-                    'tax_query'           => $tax_query,
-                );
-                $wc_query = new WP_Query( $args );
-                if ($wc_query->have_posts()) : ?>
-            <ul>
-            <?php while ($wc_query->have_posts()) : $wc_query->the_post();  ?>
-                <li>
-                    <figure>
-                        <a href="<?php the_permalink(); ?>">
-                            <?php
-                            $attr = array(
-                                    // 'itemprop' => 'image'
-                            );
-                            $thumb = get_the_post_thumbnail($loop->ID, $attr);
-                            echo $thumb;
-                            ?>
-                        </a> 
-                    </figure>
-                    <h3>
-                        <a href="<?php the_permalink(); ?>">
-                            <?php the_title(); ?>
-                        </a>
-                    </h3>
-                    <div class="homeprice"><!-- home price start -->
-                        <?php 
-                         global $post, $product;
-                        echo $product->get_regular_price() .' &euro;'; 
-                        $product->get_sale_price();
-                        $product->get_price();
-                        ?>
-                    </div><!-- home price end -->
-                </li>
-            <?php endwhile;
-            wp_reset_postdata(); ?>
-            </ul>
-            <?php endif; ?>
-        </div><!-- carousel end -->
-    
-</div><!-- outer carousel end -->
-
-</section><!-- our suggestions end -->
-
-
-*/
-?>
-
-
 <?php get_footer();
