@@ -9,8 +9,6 @@
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->
-        
-
     </div><!-- outer slider end -->
     <div class="outercarousel"><!-- outer carousel start -->
         <div class="generic-titles"><!-- generic title start -->
@@ -23,8 +21,6 @@
         </div><!-- carousel end -->
     </div><!-- outer carousel end -->
 </div><!-- wrapper end -->
-
-
 <section>
     <div class="felxbox">
         <div class="outerimagelarge">
@@ -52,23 +48,16 @@
 
 <div class="wrapper"><!-- wrapper start -->
 
-<?php /*
-    <div id="greekdesigners">
-        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/greek.png" /> 
-    </div>
-*/ 
-
-?>
-<section class="hm_categories"><!-- home categories start -->
-    <div class="generic-titles"><!-- generic title start -->
-        <h2>
-            ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
-        </h2>
-        <p>
-            Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
-        </p>
-    </div><!-- generic title end -->
-    <ul>
+    <section class="hm_categories"><!-- home categories start -->
+        <div class="generic-titles"><!-- generic title start -->
+            <h2>
+                ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ
+            </h2>
+            <p>
+                Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.
+            </p>
+        </div><!-- generic title end -->
+        <ul>
 <?php
 // Λάβετε όλες τις κατηγορίες του WooCommerce
 $product_categories = get_terms('product_cat',  array(
