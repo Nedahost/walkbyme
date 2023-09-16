@@ -461,3 +461,37 @@ function save_custom_category_image_field($term_id) {
 }
 add_action('edited_product_cat', 'save_custom_category_image_field', 10, 2);
 add_action('create_product_cat', 'save_custom_category_image_field', 10, 2);
+
+
+
+
+function custom_sitemap() {
+    if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate') {
+        // Create a custom sitemap for WooCommerce products
+        header('Content-Type: text/xml; charset=utf-8');
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => -1,
+        );
+
+        $products = new WP_Query($args);
+        while ($products->have_posts()) {
+            $products->the_post();
+            $product_url = get_permalink();
+            echo '<url>';
+            echo '<loc>' . esc_url($product_url) . '</loc>';
+            echo '<lastmod>' . get_the_modified_date('c') . '</lastmod>'; // Include the last modification date if desired.
+            echo '</url>';
+        }
+
+        wp_reset_postdata();  
+
+        echo '</urlset>';
+        die();
+    }
+}
+
+add_action('init', 'custom_sitemap');
