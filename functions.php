@@ -487,7 +487,7 @@ function custom_sitemap() {
             echo '</url>';
         }
 
-        wp_reset_postdata();  
+        wp_reset_postdata();
 
         echo '</urlset>';
         die();
