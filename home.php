@@ -4,8 +4,8 @@
 <div class="outerslider"><!-- outer slider start -->
         <div class="sliderimages"><!-- slider images start -->
             <figure><!-- figure start -->
-                <a href="">
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/slider2a.jpg" />
+                <a href="#" >
+                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/slider2a.jpg" alt="sliderimage" />
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->

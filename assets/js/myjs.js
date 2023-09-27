@@ -2,7 +2,7 @@ jQuery(document).on("ready", function() {
         
         
         jQuery(".carousel").slick({
-        dots: true,
+        dots: false,
         arrows:true,
         autoplay:false,
         infinite: false,

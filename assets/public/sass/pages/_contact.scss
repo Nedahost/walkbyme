@@ -57,3 +57,64 @@
             }
         }
     }
+
+
+ /* Στυλ για τη φόρμα επικοινωνίας σε κινητές συσκευές */
+.contactform {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    
+    li {
+        margin-bottom: 20px;
+    }
+    
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    textarea {
+        height: 150px;
+    }
+    
+    .button_send {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        
+        &:hover {
+            background-color: #0056b3;
+        }
+    }
+}
+
+/* Στυλ για σφάλματα επικοινωνίας */
+.error_mess {
+    color: #ff0000;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Στυλ για επιτυχία επικοινωνίας */
+.thanks {
+    color: #009900;
+    font-weight: bold;
+    margin-top: 10px;
+}
