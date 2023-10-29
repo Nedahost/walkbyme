@@ -345,90 +345,15 @@ function display_featured_products() {
 }
 
 
-function add_custom_category_field() {
-    ?>
-    <div class="form-field">
-        <label for="show_on_homepage"><?php _e( 'Εμφάνιση στην αρχική σελίδα', 'walkbyme' ); ?></label>
-        <select name="show_on_homepage" id="show_on_homepage">
-            <option value="yes"><?php _e( 'Ναι', 'walkbyme' ); ?></option>
-            <option value="no"><?php _e( 'Όχι', 'walkbyme' ); ?></option>
-        </select>
-    </div>
-
-
-    <div class="form-field">
-        <label for="category_priority">Προτεραιότητα Κατηγορίας:</label>
-        <input type="number" name="category_priority" id="category_priority" class="regular-text">
-        <p class="description">Εισάγετε έναν αριθμό για την προτεραιότητα της κατηγορίας (μεγαλύτερος αριθμός έχει υψηλότερη προτεραιότητα).</p>
-    </div>
-
-    <?php
-}
-add_action( 'product_cat_add_form_fields', 'add_custom_category_field', 10, 2 );
-
-// Αποθηκεύστε την τιμή του προσαρμοσμένου πεδίου για κάθε κατηγορία
-function save_custom_category_field( $term_id ) {
-    if ( isset( $_POST['show_on_homepage'] ) ) {
-        update_term_meta( $term_id, 'show_on_homepage', sanitize_text_field( $_POST['show_on_homepage'] ) );
-    }
-
-    if (isset($_POST['category_priority'])) {
-        $category_priority = intval($_POST['category_priority']);
-        update_term_meta($term_id, 'category_priority', $category_priority);
-    }
-}
-add_action( 'edited_product_cat', 'save_custom_category_field', 10, 2 );
-add_action( 'create_product_cat', 'save_custom_category_field', 10, 2 );
-
-
-// Εμφανίστε το πεδίο στον πίνακα ελέγχου των κατηγοριών product_cat
-function display_category_custom_fields( $term ) {
-    $show_on_homepage = get_term_meta( $term->term_id, 'show_on_homepage', true );
-    $category_priority = get_term_meta( $term->term_id, 'category_priority', true );
-    ?>
-    <tr class="form-field">
-        <th scope="row" valign="top"><label for="show_on_homepage"><?php _e( 'Εμφάνιση στην αρχική σελίδα', 'walkbyme' ); ?></label></th>
-        <td>
-            <select name="show_on_homepage" id="show_on_homepage">
-                <option value="yes" <?php selected( $show_on_homepage, 'yes' ); ?>><?php _e( 'Ναι', 'walkbyme' ); ?></option>
-                <option value="no" <?php selected( $show_on_homepage, 'no' ); ?>><?php _e( 'Όχι', 'walkbyme' ); ?></option>
-            </select>
-        </td>
-    </tr>
-
-    <tr class="form-field">
-        <th scope="row" valign="top"><label for="category_priority"><?php _e( 'Προτεραιότητα Κατηγορίας', 'walkbyme' ); ?></label></th>
-        <td>
-            <input type="number" name="category_priority" id="category_priority" value="<?php echo esc_attr( $category_priority ); ?>" class="regular-text">
-            <p class="description"><?php _e( 'Εισάγετε έναν αριθμό για την προτεραιότητα της κατηγορίας (μεγαλύτερος αριθμός έχει υψηλότερη προτεραιότητα).', 'walkbyme' ); ?></p>
-        </td>
-    </tr>
-
-    <?php
-}
-add_action( 'product_cat_edit_form_fields', 'display_category_custom_fields', 10, 2 );
-
-
-
-
-
-// Προσθέστε το πεδίο μεταφόρτωσης εικόνας στις κατηγορίες προϊόντων
-function custom_category_image_field($term) {
+// Προσαρμοσμένη συνάρτηση για προσθήκη πεδίων κατηγορίας
+function add_custom_category_field($term) {
+    $show_on_homepage = get_term_meta($term->term_id, 'show_on_homepage', true);
+    $category_priority = get_term_meta($term->term_id, 'category_priority', true);
     $category_image = get_term_meta($term->term_id, 'category_image', true);
     ?>
-    <tr class="form-field">
-        <th scope="row" valign="top">
-            <label for="category_image">Εικόνα Κατηγορίας</label>
-        </th>
-        <td>
-            <input type="text" name="category_image" id="category_image" class="meta-image" value="<?php echo esc_attr($category_image); ?>">
-            <br>
-            <button class="button image-upload">Επιλογή Εικόνας</button>
-        </td>
-    </tr>
+
     <script>
         jQuery(function ($) {
-            // Κώδικας για το πεδίο μεταφόρτωσης εικόνας
             $(document).on('click', '.image-upload', function (e) {
                 e.preventDefault();
                 var button = $(this),
@@ -446,21 +371,56 @@ function custom_category_image_field($term) {
                         $('#category_image').val(attachment.url);
                     }).open();
             });
+
+            // Μετακίνηση πεδίων προς το τέλος της φόρμας
+            $('#show_on_homepage').closest('.form-field').insertAfter('form#edit-tag-form .form-field.term-description:last');
+            $('#category_priority').closest('.form-field').insertAfter('form#edit-tag-form .form-field.term-description:last');
+            $('#category_image').closest('.form-field').insertAfter('form#edit-tag-form .form-field.term-description:last');
         });
     </script>
+
+    <div class="form-field">
+        <label for="show_on_homepage"><?php _e('Εμφάνιση στην αρχική σελίδα', 'walkbyme'); ?></label>
+        <select name="show_on_homepage" id="show_on_homepage">
+            <option value="yes" <?php selected($show_on_homepage, 'yes'); ?>><?php _e('Ναι', 'walkbyme'); ?></option>
+            <option value="no" <?php selected($show_on_homepage, 'no'); ?>><?php _e('Όχι', 'walkbyme'); ?></option>
+        </select>
+    </div>
+
+    <div class="form-field">
+        <label for="category_priority">Προτεραιότητα Κατηγορίας:</label>
+        <input type="number" name="category_priority" id="category_priority" value="<?php echo esc_attr($category_priority); ?>" class="regular-text">
+        <p class="description">Εισάγετε έναν αριθμό για την προτεραιότητα της κατηγορίας (μεγαλύτερος αριθμός έχει υψηλότερη προτεραιότητα).</p>
+    </div>
+
+    <div class="form-field">
+        <label for="category_image">Εικόνα Κατηγορίας</label>
+        <input type="text" name="category_image" id="category_image" class="meta-image" value="<?php echo esc_attr($category_image); ?>">
+        <br>
+        <button class="button image-upload">Επιλογή Εικόνας</button>
+    </div>
     <?php
 }
-add_action('product_cat_edit_form_fields', 'custom_category_image_field', 10, 2);
-add_action('product_cat_add_form_fields', 'custom_category_image_field', 10, 2);
+add_action('product_cat_edit_form_fields', 'add_custom_category_field', 999, 1);
+add_action('product_cat_add_form_fields', 'add_custom_category_field', 999, 1);
 
-// Αποθηκεύστε τη μεταδεδομένη εικόνας της κατηγορίας
-function save_custom_category_image_field($term_id) {
+// Προσαρμοσμένη συνάρτηση για αποθήκευση προσαρμοσμένων πεδίων κατηγορίας
+function save_custom_category_field($term_id) {
+    if (isset($_POST['show_on_homepage'])) {
+        update_term_meta($term_id, 'show_on_homepage', sanitize_text_field($_POST['show_on_homepage']));
+    }
+
+    if (isset($_POST['category_priority'])) {
+        update_term_meta($term_id, 'category_priority', intval($_POST['category_priority']));
+    }
+
     if (isset($_POST['category_image'])) {
         update_term_meta($term_id, 'category_image', sanitize_text_field($_POST['category_image']));
     }
 }
-add_action('edited_product_cat', 'save_custom_category_image_field', 10, 2);
-add_action('create_product_cat', 'save_custom_category_image_field', 10, 2);
+add_action('edited_product_cat', 'save_custom_category_field', 20, 1);
+add_action('create_product_cat', 'save_custom_category_field', 20, 1);
+
 
 
 
@@ -525,4 +485,32 @@ add_action('init', 'custom_sitemap');
 
 
 
+// Προσθέστε προσαρμοσμένα πεδία στην απαρίθμηση "product_cat"
+function custom_taxonomy_fields() {
+    ?>
+    <div class="form-field">
+        <label for="custom_field_one">Προσαρμοσμένο Πεδίο 1</label>
+        <input type="text" name="custom_field_one" id="custom_field_one">
+    </div>
+    <div class="form-field">
+        <label for="custom_field_two">Προσαρμοσμένο Πεδίο 2</label>
+        <input type="text" name="custom_field_two" id="custom_field_two">
+    </div>
+    <?php
+}
+add_action('product_cat_add_form_fields', 'custom_taxonomy_fields', 10, 2);
+
+// Αποθηκεύστε τιμές προσαρμοσμένων πεδίων για την απαρίθμηση "product_cat"
+function save_taxonomy_custom_fields($term_id) {
+    if (isset($_POST['custom_field_one'])) {
+        $custom_field_one = sanitize_text_field($_POST['custom_field_one']);
+        add_term_meta($term_id, 'custom_field_one', $custom_field_one, true);
+    }
+    if (isset($_POST['custom_field_two'])) {
+        $custom_field_two = sanitize_text_field($_POST['custom_field_two']);
+        add_term_meta($term_id, 'custom_field_two', $custom_field_two, true);
+    }
+}
+add_action('edited_product_cat', 'save_taxonomy_custom_fields', 10, 2);
+add_action('create_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 

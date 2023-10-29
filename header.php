@@ -2,6 +2,7 @@
     <html <?php language_attributes(); ?> class="no-js no-svg">
     <head>
         <meta charset="<?php bloginfo( 'charset' ); ?>">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="profile" href="http://gmpg.org/xfn/11">
         <meta name="format-detection" content="telephone=no">

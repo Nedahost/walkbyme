@@ -18,39 +18,15 @@
                 <div class="pageinfo"><!-- page info start -->
                 <h1 class="page-title">
                 <i> <?php woocommerce_page_title(); ?></i>
-                <?php /*
-                 global $wp_query;
-// get the query object
-$cat_obj = $wp_query->get_queried_object();
-
-
-if($cat_obj)    {
-    $category_name = $cat_obj->name;
-    $category_desc = $cat_obj->description;
-    $category_ID  = $cat_obj->term_id;
-}
-
-
-$term = get_term( $category_ID, 'product_cat' ); 
-echo '('. $term->count . ')'; 
-*/ ?>
+               
             </h1>
             
-                <?php
-                
-                $args = array( 'taxonomy' => 'product_cat' );
-                $terms = wp_get_post_terms($post->ID, 'product_cat', $args);
-
-                $count = count($terms);
-                if ($count > 0) {
-                
-                    foreach ($terms as $term) {
-                        echo $term->description;
-                
-                    }
+            <?php
+                $category_description = category_description();
+                if(!empty($category_description)) {
+                    echo '<p>' . $category_description . '</p>';
                 }
-                
-                ?> 
+            ?>
                 </div><!-- page info end -->
             </div>
         </div><!-- row end -->
