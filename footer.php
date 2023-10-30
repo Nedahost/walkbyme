@@ -67,8 +67,30 @@
                         <div>
                             <ul>
                                 <li>121 37 Περιστέρι, Ελλάδα </li>
-                                <li>6975686473</li>
+                                <li>+30 697 5686 473</li>
                                 <li>info@walkbyme.gr</li>
+                                <li>
+                                    <ul>
+                                        <li>
+                                            <a href="https://www.facebook.com/profile.php?id=100088213807890" target="_blank" rel="noopener noreferrer">
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/facebook.png" alt="" />
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.instagram.com/walkby_me/" target="_blank" rel="noopener noreferrer">
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/instagram.png" alt="" />
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.tiktok.com/@walkbyme_jewellery?lang=el-GR" target="_blank" rel="noopener noreferrer">
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/tiktok.png" alt="" />
+                                            </a>
+                                        </li>
+                                        <li>
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/pinterest.png" alt="" />
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>

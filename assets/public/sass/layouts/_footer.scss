@@ -17,6 +17,7 @@
             position: relative;
             overflow: hidden;
             padding: 20px;
+            
             h4{
                 font-size: 16px;
                 font-weight: bold;
@@ -67,6 +68,16 @@ footer{
                                 &:hover{
                                     color: #9a715b;  
                                     text-decoration: underline; 
+                                }
+                            }
+                            ul{
+                                display: grid;
+                                grid-column-gap: 8px;
+                                grid-template-columns: repeat(4,1fr);
+                                width: 45%;
+                                margin-top: 15px;
+                                @include a.breakpoint-down(mlarge){
+                                    grid-template-columns: repeat(2, 1fr);
                                 }
                             }
                         }
