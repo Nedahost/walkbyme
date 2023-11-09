@@ -72,22 +72,22 @@
                                 <li>
                                     <ul>
                                         <li>
-                                            <a href="https://www.facebook.com/profile.php?id=100088213807890" target="_blank" rel="noopener noreferrer">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/facebook.png" alt="" />
+                                            <a href="https://www.facebook.com/profile.php?id=100088213807890" target="_blank" rel="noopener noreferrer" title="Σύνδεσμος προς το προφίλ στο Facebook">
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/facebook.png" alt="Facebook account" />
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="https://www.instagram.com/walkby_me/" target="_blank" rel="noopener noreferrer">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/instagram.png" alt="" />
+                                            <a href="https://www.instagram.com/walkby_me/" target="_blank" rel="noopener noreferrer" title="Σύνδεσμος προς το προφίλ στο Instagram">
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/instagram.png" alt="Instagram account" />
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="https://www.tiktok.com/@walkbyme_jewellery?lang=el-GR" target="_blank" rel="noopener noreferrer">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/tiktok.png" alt="" />
+                                            <a href="https://www.tiktok.com/@walkbyme_jewellery?lang=el-GR" target="_blank" rel="noopener noreferrer" title="Σύνδεσμος προς το προφίλ στο TikTok">
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/tiktok.png" alt="TikTok account" />
                                             </a>
                                         </li>
                                         <li>
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/pinterest.png" alt="" />
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/pinterest.png" alt="Pinterest account" />
                                         </li>
                                     </ul>
                                 </li>

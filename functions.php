@@ -5,16 +5,8 @@ require_once (get_template_directory() . '/inc/details-product.php');
 // style load css
 
 function walkbyme_load_css() {
-    wp_register_style('mystyle', get_template_directory_uri() . '/assets/public/css/mystyle.css', array(), false, 'all');
-    wp_enqueue_style('mystyle');
-    wp_register_style( 'load-fa', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
-    wp_enqueue_style('load-fa');
-//    wp_register_style('responsive', get_template_directory_uri() . '/assets/public/css/responsive.css', array(), false, 'all');
-//    wp_enqueue_style('responsive');
-   // wp_register_style('fatNav', get_template_directory_uri() . '/assets/public/css/jquery.fatNav.css', array(), false, 'all');
-    //wp_enqueue_style('fatNav');
-    //wp_enqueue_style('responsive', get_template_directory_uri() . '/assets/public/css/responsive.css', '', '', 'all');
-    //wp_enqueue_style('style' , get_stylesheet_uri(), '', '', 'all');    
+    wp_enqueue_style('mystyle', get_template_directory_uri() . '/assets/public/css/mystyle.css');
+    wp_enqueue_style('load-fa', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 }
 
 add_action( 'wp_enqueue_scripts', 'walkbyme_load_css' );
@@ -23,17 +15,22 @@ add_action( 'wp_enqueue_scripts', 'walkbyme_load_css' );
 //  Javascripts load js
 
 function load_js(){
-    
-    wp_register_script('JQuery' , 'https://code.jquery.com/jquery-2.2.0.min.js', null, null, true);
-    wp_enqueue_script('JQuery');
-    wp_register_script('slick' , '//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js?ver=1.5', null, null, true);
-    wp_enqueue_script('slick');
-    wp_register_script('myjs' , get_template_directory_uri() . '/assets/js/myjs.js' , 'jquery', false, true);
-    wp_enqueue_script('myjs');
-    
+    wp_enqueue_script('JQuery', 'https://code.jquery.com/jquery-2.2.0.min.js', array(), null, true);
+    wp_enqueue_script('slick', '//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js?ver=1.5', array(), null, true);
+    wp_enqueue_script('myjs', get_template_directory_uri() . '/assets/js/myjs.js', array('jquery'), false, true);
+
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('wp_print_styles', 'print_emoji_styles');
 }
 
 add_action( 'wp_enqueue_scripts', 'load_js' );
+
+function remove_wp_emoji_styles() {
+    wp_style_add_data( 'wp-emoji-styles', 'html5', 'text/css' );
+    wp_dequeue_style( 'wp-emoji-styles' );
+    wp_dequeue_style( 'wp-emoji-styles-inline' );
+}
+add_action( 'wp_print_styles', 'remove_wp_emoji_styles' );
 
 
 // add a favicon to your site
@@ -45,9 +42,9 @@ add_action('admin_head', 'favicon');
 
 
 add_action('after_setup_theme', 'walkbyme_setup');
+
 function walkbyme_setup(){
-    
-    
+    // Post Thumbnails Support
     add_theme_support('post-thumbnails');
     
     // Menu 
@@ -67,60 +64,27 @@ function walkbyme_setup(){
     add_theme_support( 'custom-header', $args );
     
     
-    $footersidebar1 = array(
-	'name'          => 'Footer first',
-	'description'   => 'Είναι η περιοχή που εμφανίζεται αριστερά στις κατηγορίες',
-	'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
-	'after_widget'  => '</div>',
-	'before_title'  => '<h3 class="widgettitle">',
-	'after_title'   => '</h3>' );
+    // Footer Sidebars
+    $footersidebars = array(
+        'Footer first',
+        'Footer second',
+        'Footer three',
+        'Footer four',
+        'Footer five'
+    );
 
+    foreach ($footersidebars as $index => $footersidebar) {
+        $args = array(
+            'name' => $footersidebar,
+            'description' => 'This is the area displayed on the left in categories',
+            'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
+            'after_widget' => '</div>',
+            'before_title' => '<h3 class="widgettitle">',
+            'after_title' => '</h3>'
+        );
 
-        register_sidebar($footersidebar1);
-        
-        $footersidebar2 = array(
-	'name'          => 'Footer second',
-	'description'   => 'Είναι η περιοχή που εμφανίζεται αριστερά στις κατηγορίες',
-	'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
-	'after_widget'  => '</div>',
-	'before_title'  => '<h3 class="widgettitle">',
-	'after_title'   => '</h3>' );
-
-
-        register_sidebar($footersidebar2);
-        
-        $footersidebar3 = array(
-	'name'          => 'Footer three',
-	'description'   => 'Είναι η περιοχή που εμφανίζεται αριστερά στις κατηγορίες',
-	'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
-	'after_widget'  => '</div>',
-	'before_title'  => '<h3 class="widgettitle">',
-	'after_title'   => '</h3>' );
-
-
-        register_sidebar($footersidebar3);
-        
-        $footersidebar4 = array(
-	'name'          => 'Footer four',
-	'description'   => 'Είναι η περιοχή που εμφανίζεται αριστερά στις κατηγορίες',
-	'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
-	'after_widget'  => '</div>',
-	'before_title'  => '<h3 class="widgettitle">',
-	'after_title'   => '</h3>' );
-
-
-        register_sidebar($footersidebar4);
-        
-        $footersidebar5 = array(
-	'name'          => 'Footer five',
-	'description'   => 'Είναι η περιοχή που εμφανίζεται αριστερά στις κατηγορίες',
-	'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
-	'after_widget'  => '</div>',
-	'before_title'  => '<h3 class="widgettitle">',
-	'after_title'   => '</h3>' );
-
-
-        register_sidebar($footersidebar5);
+        register_sidebar($args);
+    }
     
     
     $newsletter = array(
@@ -155,9 +119,11 @@ function walkbyme_woocommerce_support() {
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	//add_theme_support( 'wc-product-gallery-slider' );
 }
-add_action( 'after_setup_theme', 'walkbyme_woocommerce_support' );
 
 
+
+
+add_filter( 'wp_title', 'walkbyme_wp_title', 10, 2 );
 
 function walkbyme_wp_title( $title, $sep ) {
 	global $paged, $page;
@@ -179,7 +145,7 @@ function walkbyme_wp_title( $title, $sep ) {
 
 	return $title;
 }
-add_filter( 'wp_title', 'walkbyme_wp_title', 10, 2 );
+
 
 
 add_action( 'woocommerce_after_shop_loop_item', 'remove_add_to_cart_buttons', 1 );
