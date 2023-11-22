@@ -211,8 +211,10 @@ $visitor_email = $user->user_email;
             $product_id = $cart_item['product_id'];
             $product_price = $cart_item['data']->get_price();
             $product_quantity = $cart_item['quantity'];
+
+            // Προσθήκη στον πίνακα cartData
             echo "cartData.push({";
-            echo "  'productName': '" . $product_name . "',";
+            echo "  'productName': '" . esc_js($product_name) . "',"; // Ελέγχουμε ότι ο τίτλος δεν περιέχει ειδικούς χαρακτήρες
             echo "  'productId': '" . $product_id . "',";
             echo "  'productPrice': '" . $product_price . "',";
             echo "  'productQuantity': '" . $product_quantity . "'";
