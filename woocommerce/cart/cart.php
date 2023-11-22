@@ -204,7 +204,6 @@ $visitor_email = $user->user_email;
 <script>
     var cartData = [];
     <?php
-   
         $cart = WC()->cart;
         $cart_items = $cart->get_cart();
         foreach ( $cart_items as $cart_item_key => $cart_item ) {
@@ -219,17 +218,15 @@ $visitor_email = $user->user_email;
             echo "  'productQuantity': '" . $product_quantity . "'";
             echo "});";
         }
-    
     ?>
 
-	// Συλλογή δεδομένων επισκέπτη
+    // Συλλογή δεδομένων επισκέπτη
     var visitorData = {
         'visitorName': '<?php echo esc_js($visitor_name); ?>',
         'visitorEmail': '<?php echo esc_js($visitor_email); ?>'
     };
 
-
-    // Προσθήκη δεδομένων στο dataLayer
+    // Προσθήκη δεδομένων προϊόντος στο dataLayer
     dataLayer.push({
         'event': 'add_to_cart',
         'ecommerce': {
@@ -241,7 +238,7 @@ $visitor_email = $user->user_email;
         'visitor': visitorData
     });
 
-	dataLayer.push({'event': 'add_to_cart'});
+    dataLayer.push({'event': 'add_to_cart'});
 </script>
 
 
