@@ -477,3 +477,30 @@ function save_taxonomy_custom_fields($term_id) {
 add_action('edited_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 add_action('create_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 
+
+function calculate_dynamic_discount_percentage($regular_price, $sale_price)
+{
+    if ($regular_price > 0 && $sale_price > 0) {
+        return round((($regular_price - $sale_price) / $regular_price) * 100, 2);
+    } else {
+        return 0;
+    }
+}
+
+function display_dynamic_discount_percentage($product)
+{
+    if ('simple' == $product->product_type) {
+        $regular_price = $product->regular_price;
+        $sales_price = $product->sale_price;
+    } elseif ('variable' == $product->product_type) {
+        $available_variations = $product->get_available_variations();
+        $variation_id = $available_variations[0]['variation_id'];
+        $variable_product = new WC_Product_Variation($variation_id);
+        $regular_price = $variable_product->regular_price;
+        $sales_price = $variable_product->sale_price;
+    }
+
+    $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
+
+    echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
+}

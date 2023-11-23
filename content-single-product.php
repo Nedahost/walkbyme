@@ -71,63 +71,70 @@ if ( post_password_required() ) {
             </div><!-- text sales end -->
         </div><!-- important details end -->
         <div class="singleprice"><!-- single price start -->
-            <?php
-            if('simple' == $product->product_type){ 
-            $single_regular_price = $product->regular_price;
-            $single_sales_price = $product->sale_price;
-            ?>
-            <div class="single_salesprice"><!-- sales price start -->
-                <ul>
-                    <?php if(!empty($single_sales_price)){ ?>
-                    <li class="first-value">
-                        <?php echo $single_regular_price .' &euro;'; ?>
-                    </li>
-                    <li>
-                        <b>
-                            <?php echo $single_sales_price .' &euro;'; ?>
-                        </b>
-                    </li>
-                    <?php } else { ?>
-                    <li>
-                        <?php echo $single_regular_price .' &euro;'; ?>
-                    </li>
-                    <?php } ?>
-                </ul>
-            </div><!-- sales price end -->
-            <?php 
-            }elseif('variable' == $product->product_type){
-                #Step 1: Get product varations
-                $available_variations = $product->get_available_variations();
+    <?php
+    if ('simple' == $product->product_type) {
+        display_simple_product_price($product->regular_price, $product->sale_price); display_dynamic_discount_percentage($product);
+    } elseif ('variable' == $product->product_type) {
+        display_variable_product_price($product);  display_dynamic_discount_percentage($product);
+    }
+    ?>
+</div><!-- single price end -->
 
-                #Step 2: Get product variation id
-                $variation_id=$available_variations[0]['variation_id']; // Getting the variable id of just the 1st product. You can loop $available_variations to get info about each variation.
+<?php
+function display_simple_product_price($regular_price, $sales_price)
+{
+    ?>
+    <div class="single_salesprice"><!-- sales price start -->
+        
+            <?php if (!empty($sales_price)) : ?>
+                <div class="variablesalesprice"><!-- variable sales price start -->
+                    <span style="text-decoration: line-through; opacity: .6; margin-right: .3em;">
+                        <?php echo $regular_price . ' &euro;'; ?>
+                    </span>
+                    <span style="font-size: 14pt;">
+                        <b><?php echo $sales_price . ' &euro;'; ?></b>
+                    </span>
+                </div><!-- variable sales price end -->
+            <?php else : ?>
+                <div class="singlevariableprice"><!-- single variable price start -->
+                    <span style="font-size: 1.125rem;"><?php echo $regular_price . ' &euro;'; ?></span>
+                </div><!-- single variable price end -->
+            <?php endif; ?>
+        
+    </div><!-- sales price end -->
+    <?php
+}
 
-                #Step 3: Create the variable product object
-                $variable_product1= new WC_Product_Variation( $variation_id );
+function display_variable_product_price($product)
+{
+    $available_variations = $product->get_available_variations();
+    $variation_id = $available_variations[0]['variation_id'];
+    $variable_product = new WC_Product_Variation($variation_id);
+    $regular_price = $variable_product->regular_price;
+    $sales_price = $variable_product->sale_price;
 
-                $regular_price = $variable_product1 ->regular_price; 
-                $sales_price = $variable_product1 ->sale_price;
-                if(!empty($sales_price)){ ?>
-            <div class="variablesalesprice"><!-- variable sales price start -->
-                <span style="text-decoration: line-through; opacity: .6; margin-right: .3em;">
-                    <?php echo $regular_price .' &euro;'; ?>
-                </span>
-                <span style="font-size: 14pt;">
-                    <b>
-                        <?php echo $sales_price .' &euro;'; ?>
-                    </b>
-                </span>
-            </div><!-- variable sales price end -->
-            <?php    } else { ?>
-            <div class="singlevariableprice"><!-- single variable price start -->
-                <span style="font-size: 1.125rem;">
-                    <?php echo $regular_price .' &euro;'; ?>
-                </span>
-            </div><!-- single variable price end -->
-            <?php }
-            }
-            ?>
-        </div><!-- single price end -->
+    if (!empty($sales_price)) :
+        ?>
+        <div class="variablesalesprice"><!-- variable sales price start -->
+            <span style="text-decoration: line-through; opacity: .6; margin-right: .3em;">
+                <?php echo $regular_price . ' &euro;'; ?>
+            </span>
+            <span style="font-size: 14pt;">
+                <b><?php echo $sales_price . ' &euro;'; ?></b>
+            </span>
+        </div><!-- variable sales price end -->
+    <?php else : ?>
+        <div class="singlevariableprice"><!-- single variable price start -->
+            <span style="font-size: 1.125rem;"><?php echo $regular_price . ' &euro;'; ?></span>
+        </div><!-- single variable price end -->
+    <?php
+    
+    endif;
+}
+?>
+
+
+
         <div class="productContent"><!-- product content start -->
             <?php the_content(); ?>
         </div><!-- product content end -->
