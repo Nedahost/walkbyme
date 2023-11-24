@@ -478,6 +478,7 @@ add_action('edited_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 add_action('create_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 
 
+
 function calculate_dynamic_discount_percentage($regular_price, $sale_price)
 {
     if ($regular_price > 0 && $sale_price > 0) {
@@ -502,5 +503,13 @@ function display_dynamic_discount_percentage($product)
 
     $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
 
-    echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
+    // Έλεγχος αν το ποσοστό έκπτωσης είναι διάφορο από 0 και δεν είναι κενό
+    if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
+        echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
+    }
+    
 }
+
+
+
+
