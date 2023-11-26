@@ -478,7 +478,6 @@ add_action('edited_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 add_action('create_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 
 
-
 function calculate_dynamic_discount_percentage($regular_price, $sale_price)
 {
     if ($regular_price > 0 && $sale_price > 0) {
@@ -491,25 +490,20 @@ function calculate_dynamic_discount_percentage($regular_price, $sale_price)
 function display_dynamic_discount_percentage($product)
 {
     if ('simple' == $product->product_type) {
-        $regular_price = $product->regular_price;
-        $sales_price = $product->sale_price;
+        $regular_price = $product->get_regular_price();
+        $sales_price = $product->get_sale_price();
     } elseif ('variable' == $product->product_type) {
-        $available_variations = $product->get_available_variations();
-        $variation_id = $available_variations[0]['variation_id'];
+        $variations = $product->get_available_variations();
+        $variation = reset($variations);
+        $variation_id = $variation['variation_id'];
         $variable_product = new WC_Product_Variation($variation_id);
-        $regular_price = $variable_product->regular_price;
-        $sales_price = $variable_product->sale_price;
+        $regular_price = $variable_product->get_regular_price();
+        $sales_price = $variable_product->get_sale_price();
     }
 
     $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
 
-    // Έλεγχος αν το ποσοστό έκπτωσης είναι διάφορο από 0 και δεν είναι κενό
-    if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
-        echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
-    }
-    
+    echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
 }
 
-
-
-
+add_filter('woocommerce_product_is_on_sale', '__return_false');

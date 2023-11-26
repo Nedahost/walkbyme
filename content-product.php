@@ -36,6 +36,12 @@
                     <?php printf('%s&euro;', $product->regular_price); ?>
                 </span>
             <?php endif; ?>
+            
+            <?php
+            // Εμφανίστε το ποσοστό έκπτωσης
+            $dynamic_discount_percentage = calculate_dynamic_discount_percentage($product->get_regular_price(), $sales);
+            echo '<div class="discount-percentage-badge">' . $dynamic_discount_percentage . '%</div>';
+            ?>
         </div><!-- product price end -->
 
     <?php elseif ($product->is_type('variable')) :
@@ -68,6 +74,12 @@
                 <span class="lowred">
                     <?php printf('%s&euro;', $sales_price); ?>
                 </span>
+                
+                <?php
+                // Εμφανίστε το ποσοστό έκπτωσης
+                $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
+                echo '<div class="discount-percentage-badge">' . $dynamic_discount_percentage . '% OFF</div>';
+                ?>
             </div><!-- product price end -->
         <?php else : ?>
             <div class="product-price"><!-- product price start -->
