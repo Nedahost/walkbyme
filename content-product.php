@@ -40,7 +40,9 @@
             <?php
             // Εμφανίστε το ποσοστό έκπτωσης
             $dynamic_discount_percentage = calculate_dynamic_discount_percentage($product->get_regular_price(), $sales);
-            echo '<div class="discount-percentage-badge">' . $dynamic_discount_percentage . '%</div>';
+            if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
+                echo '<div class="discount-percentage-badge">' . $dynamic_discount_percentage . '%</div>';
+            }
             ?>
         </div><!-- product price end -->
 

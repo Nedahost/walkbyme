@@ -7,7 +7,6 @@
         <meta name="format-detection" content="telephone=no">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <meta name="facebook-domain-verification" content="hywzavqq5x79jm858z7t71fq8gur2m" />
-        <link rel="canonical" href="https://www.walkbyme.gr/">
         <title><?php wp_title( '|', true, 'right' ); ?></title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto+Flex:wght@200&display=swap" rel="stylesheet">
         <?php wp_head(); ?>

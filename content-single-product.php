@@ -45,23 +45,7 @@ if ( post_password_required() ) {
                     echo '<b>Ref.:</b> '. $sku ;
                 } ?>
             </div><!-- sky end -->
-            <?php /*
-            <div class="stockproduct"><!-- stock start -->
-                <b>Διαθεσιμότητα:</b>
-                <?php 
-                if('instock' == $product->get_stock_status()){ ?>
-                Σε απόθεμα
-                <?php 
-                    } elseif ('outofstock' == $product->get_stock_status()) { ?>
-                Εξαντλημένο
-                <?php 
-                    } else { ?>
-                Διαθέσιμο κατόπιν παραγγελίας
-                <?php                  
-                    }
-                ?>
-            </div><!-- stock end -->
-             */ ?>
+            
             <div class="textsales" style="
     font-size: 18px;
     color: #e02929;
@@ -146,9 +130,7 @@ function display_variable_product_price($product)
         <?php do_action( 'woocommerce_product_additional_information', $product ); ?>
         
         <?php echo woocommerce_template_single_add_to_cart(); ?>
-        
-
-        
+                
        
         </section><!-- right details product end -->
     
@@ -163,11 +145,3 @@ function display_variable_product_price($product)
 <?php  echo woocommerce_output_related_products(); ?>
 
 <?php do_action( 'woocommerce_after_single_product' ); 
-
-/*
-$brands = $product->get_attribute( 'brands' );
-if(!empty($brands)) { ?>
-<div class="product-brands"><!-- product brands start -->
-    <?php echo $brands; ?>
-</div><!-- product brands end -->
-<?php } */

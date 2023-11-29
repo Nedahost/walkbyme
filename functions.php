@@ -41,6 +41,45 @@ add_action('wp_head', 'favicon');
 add_action('admin_head', 'favicon');
 
 
+
+function custom_add_canonical_tag() {
+    $canonical_url = home_url();
+
+    if (is_category() || is_tax('product_cat')) {
+        // Αν είστε σε σελίδα κατηγορίας προϊόντος
+        $category = get_queried_object();
+        $canonical_url = get_term_link($category);
+    } elseif (is_singular('product')) {
+        global $post;
+        $canonical_url = get_permalink($post->ID);
+
+        // Προσθήκη του επιλεγμένου μεγέθους στο canonical URL
+        if (isset($_GET['attribute_pa_size'])) {
+            $size_parameter = sanitize_text_field($_GET['attribute_pa_size']);
+            $canonical_url = add_query_arg('attribute_pa_size', $size_parameter, $canonical_url);
+        }
+    }
+    elseif (is_page()) {
+        $page_id = get_queried_object_id();
+        $canonical_url = get_permalink($page_id);
+    }
+
+    echo '<link rel="canonical" href="' . esc_url($canonical_url) . '" />' . "\n";
+}
+
+// Προσθήκη του κώδικα στο <head>
+add_action('wp_head', 'custom_add_canonical_tag', 5);
+
+
+remove_filter('wp_robots', 'wp_robots_max_image_preview_large');
+
+function custom_meta_robots() {
+    echo '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />' . "\n";
+}
+add_action('wp_head', 'custom_meta_robots' , 1);
+
+
+
 add_action('after_setup_theme', 'walkbyme_setup');
 
 function walkbyme_setup(){
@@ -492,6 +531,13 @@ function display_dynamic_discount_percentage($product)
     if ('simple' == $product->product_type) {
         $regular_price = $product->get_regular_price();
         $sales_price = $product->get_sale_price();
+
+        $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
+
+        // Ελέγξτε εάν το ποσοστό είναι διάφορο του μηδενός πριν το εμφανίσετε
+        if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
+            echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
+        }
     } elseif ('variable' == $product->product_type) {
         $variations = $product->get_available_variations();
         $variation = reset($variations);
@@ -499,11 +545,15 @@ function display_dynamic_discount_percentage($product)
         $variable_product = new WC_Product_Variation($variation_id);
         $regular_price = $variable_product->get_regular_price();
         $sales_price = $variable_product->get_sale_price();
+
+        $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
+
+        // Ελέγξτε εάν το ποσοστό είναι διάφορο του μηδενός πριν το εμφανίσετε
+        if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
+            echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
+        }
     }
-
-    $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
-
-    echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
 }
+
 
 add_filter('woocommerce_product_is_on_sale', '__return_false');
