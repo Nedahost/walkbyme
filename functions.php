@@ -557,3 +557,6 @@ function display_dynamic_discount_percentage($product)
 
 
 add_filter('woocommerce_product_is_on_sale', '__return_false');
+
+
+
