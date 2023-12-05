@@ -560,3 +560,277 @@ add_filter('woocommerce_product_is_on_sale', '__return_false');
 
 
 
+// Πεδία για άρθρα meta tags
+add_action('add_meta_boxes', 'custom_meta_boxes');
+add_action('save_post', 'save_custom_meta');
+
+function custom_meta_boxes() {
+    add_meta_box('meta-title', 'Custom Meta Title', 'meta_title_callback', array('post', 'page'), 'normal', 'high');
+    add_meta_box('meta-description', 'Custom Meta Description', 'meta_description_callback', array('post', 'page'), 'normal', 'high');
+    add_meta_box('meta-keywords', 'Meta Keywords', 'meta_keywords_callback', array('post', 'page'), 'normal', 'high');
+    add_meta_box('og-title', 'Open Graph Title', 'og_title_callback', array('post', 'page'), 'normal', 'high');
+    add_meta_box('og-description', 'Open Graph Description', 'og_description_callback', array('post', 'page'), 'normal', 'high');
+    add_meta_box('og-image', 'Open Graph Image URL', 'og_image_callback', array('post', 'page'), 'normal', 'high');
+    add_meta_box('og-url', 'Open Graph URL', 'og_url_callback', array('post', 'page'), 'normal', 'high');
+}
+
+function meta_title_callback($post) {
+    $meta_title = get_post_meta($post->ID, '_meta_title', true);
+    echo '<input type="text" name="meta_title" value="' . esc_attr($meta_title) . '" />';
+}
+
+function meta_description_callback($post) {
+    $meta_description = get_post_meta($post->ID, '_meta_description', true);
+    echo '<textarea name="meta_description">' . esc_textarea($meta_description) . '</textarea>';
+}
+
+function meta_keywords_callback($post) {
+    $meta_keywords = get_post_meta($post->ID, '_meta_keywords', true);
+    echo '<input type="text" name="meta_keywords" value="' . esc_attr($meta_keywords) . '" />';
+}
+
+
+function og_title_callback($post) {
+    $og_title = get_post_meta($post->ID, '_og_title', true);
+    echo '<input type="text" name="og_title" value="' . esc_attr($og_title) . '" />';
+}
+
+function og_description_callback($post) {
+    $og_description = get_post_meta($post->ID, '_og_description', true);
+    echo '<textarea name="og_description">' . esc_textarea($og_description) . '</textarea>';
+}
+
+function og_image_callback($post) {
+    $og_image = get_post_meta($post->ID, '_og_image', true);
+    echo '<input type="text" name="og_image" value="' . esc_url($og_image) . '" />';
+}
+
+function og_url_callback($post) {
+    $og_url = get_post_meta($post->ID, '_og_url', true);
+    echo '<input type="text" name="og_url" value="' . esc_url($og_url) . '" />';
+}
+
+function save_custom_meta($post) {
+    $meta_title = isset($_POST['meta_title']) ? sanitize_text_field($_POST['meta_title']) : '';
+    $meta_description = isset($_POST['meta_description']) ? sanitize_textarea_field($_POST['meta_description']) : '';
+    $meta_keywords = isset($_POST['meta_keywords']) ? sanitize_text_field($_POST['meta_keywords']) : '';
+    
+    $meta_keywords = isset($_POST['og_title']) ? sanitize_text_field($_POST['og_title']) : '';
+    $meta_keywords = isset($_POST['og_description']) ? sanitize_text_field($_POST['og_description']) : '';
+    $meta_keywords = isset($_POST['og_image']) ? sanitize_text_field($_POST['og_image']) : '';
+    $meta_keywords = isset($_POST['og_url']) ? sanitize_text_field($_POST['og_url']) : '';
+
+    update_post_meta($post, '_meta_title', $meta_title);
+    update_post_meta($post, '_meta_description', $meta_description);
+    update_post_meta($post, '_meta_keywords', $meta_keywords);
+
+    update_post_meta($post_id, '_og_title', $og_title);
+    update_post_meta($post_id, '_og_description', $og_description);
+    update_post_meta($post_id, '_og_image', $og_image);
+    update_post_meta($post_id, '_og_url', $og_url);
+}
+
+// Πεδία για κατηγορίες άρθρων
+add_action('edit_category_form_fields', 'category_custom_meta_fields');
+add_action('edited_category', 'save_category_custom_meta');
+
+function category_custom_meta_fields($term) {
+    $meta_title = get_term_meta($term->term_id, '_category_meta_title', true);
+    $meta_description = get_term_meta($term->term_id, '_category_meta_description', true);
+    ?>
+    <tr class="form-field">
+        <th scope="row"><label for="meta_title">Custom Meta Title</label></th>
+        <td><input type="text" name="meta_title" id="meta_title" value="<?php echo esc_attr($meta_title); ?>" /></td>
+    </tr>
+    <tr class="form-field">
+        <th scope="row"><label for="meta_description">Custom Meta Description</label></th>
+        <td><textarea name="meta_description" id="meta_description"><?php echo esc_textarea($meta_description); ?></textarea></td>
+    </tr>
+    <?php
+}
+
+function save_category_custom_meta($term_id) {
+    $meta_title = isset($_POST['meta_title']) ? sanitize_text_field($_POST['meta_title']) : '';
+    $meta_description = isset($_POST['meta_description']) ? sanitize_textarea_field($_POST['meta_description']) : '';
+
+    update_term_meta($term_id, '_category_meta_title', $meta_title);
+    update_term_meta($term_id, '_category_meta_description', $meta_description);
+}
+
+// Πεδία για κατηγορίες προϊόντων WooCommerce
+add_action('product_cat_add_form_fields', 'product_category_custom_meta_fields');
+add_action('product_cat_edit_form_fields', 'product_category_custom_meta_fields');
+add_action('edited_term', 'save_product_category_custom_meta');
+add_action('create_term', 'save_product_category_custom_meta');
+
+function product_category_custom_meta_fields($term) {
+    $meta_title = get_term_meta($term->term_id, '_product_category_meta_title', true);
+    $meta_description = get_term_meta($term->term_id, '_product_category_meta_description', true);
+    ?>
+    <tr class="form-field">
+        <th scope="row"><label for="meta_title">Custom Meta Title</label></th>
+        <td><input type="text" name="meta_title" id="meta_title" value="<?php echo esc_attr($meta_title); ?>" /></td>
+    </tr>
+    <tr class="form-field">
+        <th scope="row"><label for="meta_description">Custom Meta Description</label></th>
+        <td><textarea name="meta_description" id="meta_description"><?php echo esc_textarea($meta_description); ?></textarea></td>
+    </tr>
+    <?php
+}
+
+function save_product_category_custom_meta($term_id) {
+    $meta_title = isset($_POST['meta_title']) ? sanitize_text_field($_POST['meta_title']) : '';
+    $meta_description = isset($_POST['meta_description']) ? sanitize_textarea_field($_POST['meta_description']) : '';
+
+    update_term_meta($term_id, '_product_category_meta_title', $meta_title);
+    update_term_meta($term_id, '_product_category_meta_description', $meta_description);
+}
+
+// Πεδία για προϊόντα WooCommerce
+add_action('woocommerce_product_options_general_product_data', 'product_custom_meta_fields');
+add_action('woocommerce_process_product_meta', 'save_product_custom_meta');
+
+function product_custom_meta_fields() {
+    global $post;
+    $meta_title = get_post_meta($post->ID, '_product_meta_title', true);
+    $meta_description = get_post_meta($post->ID, '_product_meta_description', true);
+    $meta_keywords = get_post_meta($post->ID, '_product_meta_keywords', true);
+
+    $og_title= get_post_meta($post->ID, '_product_og_title', true);
+    $og_description= get_post_meta($post->ID, '_product_og_description', true);
+    $og_image= get_post_meta($post->ID, '_product_og_keywords', true);
+    ?>
+    <div class="options_group">
+        <p class="form-field">
+            <label for="meta_title">Custom Meta Title</label>
+            <input type="text" class="short" name="meta_title" id="meta_title" value="<?php echo esc_attr($meta_title); ?>" />
+        </p>
+        <p class="form-field">
+            <label for="meta_description">Custom Meta Description</label>
+            <textarea name="meta_description" id="meta_description"><?php echo esc_textarea($meta_description); ?></textarea>
+        </p>
+        <p class="form-field">
+            <label for="meta_keywords">Meta Keywords</label>
+            <input type="text" class="short" name="meta_keywords" id="meta_keywords" value="<?php echo esc_attr($meta_keywords); ?>" />
+        </p>
+    </div>
+
+    <div class="options_group">
+        <p class="form-field">
+            <label for="og_title">OG Title</label>
+            <input type="text" class="short" name="og_title" id="og_title" value="<?php echo esc_attr($og_title); ?>" />
+        </p>
+        <p class="form-field">
+            <label for="og_description">OG Description</label>
+            <textarea name="og_description" id="og_description"><?php echo esc_textarea($og_description); ?></textarea>
+        </p>
+        <p class="form-field">
+            <label for="og_image">OG Image</label>
+            <input type="text" class="short" name="og_image" id="og_image" value="<?php echo esc_attr($og_image); ?>" />
+        </p>
+    </div>
+
+    <?php
+}
+
+function save_product_custom_meta($post_id) {
+    $meta_title = isset($_POST['meta_title']) ? sanitize_text_field($_POST['meta_title']) : '';
+    $meta_description = isset($_POST['meta_description']) ? sanitize_textarea_field($_POST['meta_description']) : '';
+    $meta_keywords = isset($_POST['meta_keywords']) ? sanitize_text_field($_POST['meta_keywords']) : '';
+
+    $og_title = isset($_POST['og_title']) ? sanitize_text_field($_POST['og_title']) : '';
+    $og_description = isset($_POST['og_description']) ? sanitize_textarea_field($_POST['og_description']) : '';
+    $og_image = isset($_POST['og_image']) ? sanitize_text_field($_POST['og_image']) : '';
+
+    update_post_meta($post_id, '_product_meta_title', $meta_title);
+    update_post_meta($post_id, '_product_meta_description', $meta_description);
+    update_post_meta($post_id, '_product_meta_keywords', $meta_keywords);
+
+    update_post_meta($post_id, '_product_og_title', $og_title);
+    update_post_meta($post_id, '_product_og_description', $og_description);
+    update_post_meta($post_id, '_product_og_keywords', $og_image);
+}
+
+
+
+add_action('wp_head', 'display_custom_meta_tags');
+
+function display_custom_meta_tags() {
+    if (is_home() || is_front_page()) {
+        // Αν είναι η αρχική σελίδα
+        $og_title = get_bloginfo('name');
+        $og_description = get_bloginfo('description');
+        $og_image = get_stylesheet_directory_uri() . '/assets/images/fallslide.webp';
+
+        // Εμφάνιση Open Graph meta tags
+        echo '<meta property="og:title" content="' . esc_attr($og_title) . '" />';
+        echo '<meta property="og:description" content="' . esc_attr($og_description) . '" />';
+        echo '<meta property="og:image" content="' . esc_url($og_image) . '" />';
+        echo '<meta property="og:url" content="' . esc_url(home_url('/')) . '" />';
+        echo '<meta property="og:type" content="website" />';
+        echo '<meta property="og:site_name" content="Walkbyme.gr" />';
+        echo '<meta property="og:image:alt" content="walkbyme" />';
+    } else {
+        // Αν δεν είναι η αρχική σελίδα
+        if (is_single() || is_page()) {
+            $meta_title = get_post_meta(get_the_ID(), '_meta_title', true);
+            $meta_description = get_post_meta(get_the_ID(), '_meta_description', true);
+            $meta_keywords = get_post_meta(get_the_ID(), '_meta_keywords', true);
+
+            $og_title = get_post_meta(get_the_ID(), '_og_title', true);
+            $og_description = get_post_meta(get_the_ID(), '_og_description', true);
+            $og_image = get_post_meta(get_the_ID(), '_og_image', true);
+            $og_url = get_post_meta(get_the_ID(), '_og_url', true);
+        } elseif (is_category()) {
+            $term_id = get_queried_object_id();
+            $og_title = get_term_meta($term_id, '_category_meta_title', true);
+            $og_description = get_term_meta($term_id, '_category_meta_description', true);
+            $og_image = ''; // Μπορείτε να προσθέσετε μια προκαθορισμένη εικόνα για τις κατηγορίες, αν θέλετε.
+        } elseif (is_product_category()) {
+            $term_id = get_queried_object_id();
+            $og_title = get_term_meta($term_id, '_product_category_meta_title', true);
+            $og_description = get_term_meta($term_id, '_product_category_meta_description', true);
+            $og_image = ''; // Προσθέστε μια προκαθορισμένη εικόνα για τις κατηγορίες προϊόντων.
+        } if (is_product()) {
+            $post_id = get_the_ID();
+            $og_title = get_post_meta($post_id, '_product_og_title', true);
+            $og_description = get_post_meta($post_id, '_product_meta_description', true);
+
+            // Πάρτε το URL της featured image
+            $image_id = get_post_thumbnail_id($post_id);
+            $image_url = wp_get_attachment_image_src($image_id, 'full');
+            $og_image = $image_url[0];
+        }
+
+        // Εμφάνιση "απλών" meta tags
+        if (!empty($meta_title)) {
+            echo '<meta name="title" content="' . esc_attr($meta_title) . '" />';
+        }
+
+        if (!empty($meta_description)) {
+            echo '<meta name="description" content="' . esc_attr($meta_description) . '" />';
+        }
+
+        if (!empty($meta_keywords)) {
+            echo '<meta name="keywords" content="' . esc_attr($meta_keywords) . '" />';
+        }
+
+        // Εμφάνιση Open Graph meta tags
+        if (!empty($og_title)) {
+            echo '<meta property="og:title" content="' . esc_attr($og_title) . '" />';
+        }
+
+        if (!empty($og_description)) {
+            echo '<meta property="og:description" content="' . esc_attr($og_description) . '" />';
+        }
+
+        if (!empty($og_image)) {
+            echo '<meta property="og:image" content="' . esc_url($og_image) . '" />';
+        }
+
+        // Έλεγχος και ορισμός og:url
+        $current_url = get_permalink(get_the_ID());
+        $og_url = !empty($og_url) ? $og_url : $current_url;
+        echo '<meta property="og:url" content="' . esc_url($og_url) . '" />';
+    }
+}
