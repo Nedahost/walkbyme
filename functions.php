@@ -49,15 +49,10 @@ function custom_add_canonical_tag() {
         // Αν είστε σε σελίδα κατηγορίας προϊόντος
         $category = get_queried_object();
         $canonical_url = get_term_link($category);
-    } elseif (is_singular('product')) {
+    } elseif (is_singular('product') || isset($_GET['attribute_pa_size'])) {
         global $post;
         $canonical_url = get_permalink($post->ID);
 
-        // Προσθήκη του επιλεγμένου μεγέθους στο canonical URL
-        if (isset($_GET['attribute_pa_size'])) {
-            $size_parameter = sanitize_text_field($_GET['attribute_pa_size']);
-            $canonical_url = add_query_arg('attribute_pa_size', $size_parameter, $canonical_url);
-        }
     }
     elseif (is_page()) {
         $page_id = get_queried_object_id();
@@ -758,6 +753,14 @@ add_action('wp_head', 'display_custom_meta_tags');
 function display_custom_meta_tags() {
     if (is_home() || is_front_page()) {
         // Αν είναι η αρχική σελίδα
+
+        $meta_title = get_bloginfo('name');
+        $meta_description = 'Το πάθος μας για χειροποίητα κοσμήματα από ασήμι 925 και χρυσό! Η κατασκευή χειροποίητων ασημένιων και χρυσών κοσμημάτων είναι το πάθος μας.';
+        
+
+        echo '<meta name="title" content="' . esc_attr($meta_title) . '" />';
+        echo '<meta name="description" content="' . esc_attr($meta_description) . '" />';
+
         $og_title = get_bloginfo('name');
         $og_description = get_bloginfo('description');
         $og_image = get_stylesheet_directory_uri() . '/assets/images/fallslide.webp';
