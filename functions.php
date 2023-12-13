@@ -750,90 +750,61 @@ function save_product_custom_meta($post_id) {
 
 add_action('wp_head', 'display_custom_meta_tags');
 
+add_action('wp_head', 'display_custom_meta_tags');
+
 function display_custom_meta_tags() {
+    // Βασικές μεταβλητές
+    $site_name = get_bloginfo('name');
+    $site_description = get_bloginfo('description');
+    $default_og_image = get_stylesheet_directory_uri() . '/assets/images/walk_fb_logo.jpg';
+
+    // Αν είναι η αρχική σελίδα
     if (is_home() || is_front_page()) {
-        // Αν είναι η αρχική σελίδα
-
-        $meta_title = get_bloginfo('name');
+        $meta_title = $site_name;
         $meta_description = 'Το πάθος μας για χειροποίητα κοσμήματα από ασήμι 925 και χρυσό! Η κατασκευή χειροποίητων ασημένιων και χρυσών κοσμημάτων είναι το πάθος μας.';
-        
 
+        // Εμφάνιση "απλών" meta tags
         echo '<meta name="title" content="' . esc_attr($meta_title) . '" />';
         echo '<meta name="description" content="' . esc_attr($meta_description) . '" />';
 
-        $og_title = get_bloginfo('name');
-        $og_description = get_bloginfo('description');
-        $og_image = get_stylesheet_directory_uri() . '/assets/images/fallslide.webp';
-
         // Εμφάνιση Open Graph meta tags
-        echo '<meta property="og:title" content="' . esc_attr($og_title) . '" />';
-        echo '<meta property="og:description" content="' . esc_attr($og_description) . '" />';
-        echo '<meta property="og:image" content="' . esc_url($og_image) . '" />';
+        echo '<meta property="og:title" content="' . esc_attr($site_name) . '" />';
+        echo '<meta property="og:description" content="' . esc_attr($site_description) . '" />';
+        echo '<meta property="og:image" content="' . esc_url($default_og_image) . '" />';
         echo '<meta property="og:url" content="' . esc_url(home_url('/')) . '" />';
         echo '<meta property="og:type" content="website" />';
-        echo '<meta property="og:site_name" content="Walkbyme.gr" />';
+        echo '<meta property="og:site_name" content="' . esc_attr($site_name) . '" />';
         echo '<meta property="og:image:alt" content="walkbyme" />';
     } else {
-        // Αν δεν είναι η αρχική σελίδα
-        if (is_single() || is_page()) {
-            $meta_title = get_post_meta(get_the_ID(), '_meta_title', true);
-            $meta_description = get_post_meta(get_the_ID(), '_meta_description', true);
-            $meta_keywords = get_post_meta(get_the_ID(), '_meta_keywords', true);
-
-            $og_title = get_post_meta(get_the_ID(), '_og_title', true);
-            $og_description = get_post_meta(get_the_ID(), '_og_description', true);
-            $og_image = get_post_meta(get_the_ID(), '_og_image', true);
-            $og_url = get_post_meta(get_the_ID(), '_og_url', true);
-        } elseif (is_category()) {
-            $term_id = get_queried_object_id();
-            $og_title = get_term_meta($term_id, '_category_meta_title', true);
-            $og_description = get_term_meta($term_id, '_category_meta_description', true);
-            $og_image = ''; // Μπορείτε να προσθέσετε μια προκαθορισμένη εικόνα για τις κατηγορίες, αν θέλετε.
-        } elseif (is_product_category()) {
-            $term_id = get_queried_object_id();
-            $og_title = get_term_meta($term_id, '_product_category_meta_title', true);
-            $og_description = get_term_meta($term_id, '_product_category_meta_description', true);
-            $og_image = ''; // Προσθέστε μια προκαθορισμένη εικόνα για τις κατηγορίες προϊόντων.
-        } if (is_product()) {
-            $post_id = get_the_ID();
-            $og_title = get_post_meta($post_id, '_product_og_title', true);
-            $og_description = get_post_meta($post_id, '_product_meta_description', true);
-
-            // Πάρτε το URL της featured image
-            $image_id = get_post_thumbnail_id($post_id);
-            $image_url = wp_get_attachment_image_src($image_id, 'full');
-            $og_image = $image_url[0];
-        }
+        // Άλλες σελίδες
 
         // Εμφάνιση "απλών" meta tags
-        if (!empty($meta_title)) {
+        if ($meta_title = get_post_meta(get_the_ID(), '_meta_title', true)) {
             echo '<meta name="title" content="' . esc_attr($meta_title) . '" />';
         }
 
-        if (!empty($meta_description)) {
+        if ($meta_description = get_post_meta(get_the_ID(), '_meta_description', true)) {
             echo '<meta name="description" content="' . esc_attr($meta_description) . '" />';
         }
 
-        if (!empty($meta_keywords)) {
-            echo '<meta name="keywords" content="' . esc_attr($meta_keywords) . '" />';
-        }
-
         // Εμφάνιση Open Graph meta tags
-        if (!empty($og_title)) {
+        if ($og_title = get_post_meta(get_the_ID(), '_og_title', true)) {
             echo '<meta property="og:title" content="' . esc_attr($og_title) . '" />';
         }
 
-        if (!empty($og_description)) {
+        if ($og_description = get_post_meta(get_the_ID(), '_og_description', true)) {
             echo '<meta property="og:description" content="' . esc_attr($og_description) . '" />';
         }
 
-        if (!empty($og_image)) {
+        if ($og_image = get_post_meta(get_the_ID(), '_og_image', true)) {
             echo '<meta property="og:image" content="' . esc_url($og_image) . '" />';
+        } else {
+            echo '<meta property="og:image" content="' . esc_url($default_og_image) . '" />';
         }
 
         // Έλεγχος και ορισμός og:url
         $current_url = get_permalink(get_the_ID());
-        $og_url = !empty($og_url) ? $og_url : $current_url;
+        $og_url = get_post_meta(get_the_ID(), '_og_url', true) ?: $current_url;
         echo '<meta property="og:url" content="' . esc_url($og_url) . '" />';
     }
 }

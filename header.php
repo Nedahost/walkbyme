@@ -7,18 +7,29 @@
         <meta name="format-detection" content="telephone=no">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <meta name="facebook-domain-verification" content="hywzavqq5x79jm858z7t71fq8gur2m" />
+        <meta name="p:domain_verify" content="47d2a4d6f4ed2663e7cbd09e076d1c6e"/>
         <title><?php wp_title( '|', true, 'right' ); ?></title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto+Flex:wght@200&display=swap" rel="stylesheet">
         <?php wp_head(); ?> 
+         <!-- Google Tag Manager -->
+         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-5QBSL8G');</script>
     </head>
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5QBSL8G"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <header>
             <div class="wrapper"><!-- wrapper start -->
                 <div class="shopdetails"><!-- shop details start -->
                     <ul>
                             <?php if (is_user_logged_in() ) { ?>
                             <li class="headeraccount">
-                                <a href="<?php echo get_permalink( wc_get_page_id( 'myaccount' ) ); ?> " title="My account" />
+                                <a href="<?php echo get_permalink( wc_get_page_id( 'myaccount' ) ); ?> " title="My account" >
                                 <span> Ο Λογαριασμός μου </span>
                                 </a>
                             </li>
