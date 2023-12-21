@@ -426,59 +426,84 @@ function custom_sitemap() {
     if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate') {
         // Create a custom sitemap for WooCommerce products
         header('Content-Type: text/xml; charset=utf-8');
-        echo '<?xml version="1.0" encoding="UTF-8"?>';
-        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+        
+        // Set the file path for the XML file
+        $file_path = ABSPATH . 'custom-sitemap.xml';
 
+        // Open the file for writing
+        $file = fopen($file_path, 'w');
 
-        echo '<url>';
-        echo '<loc>https://www.walkbyme.gr/</loc>';
-        echo '<changefreq>daily</changefreq>';
-        echo '<priority>1.0</priority>';
-        echo '</url>';
+        // Check if the file was opened successfully
+        if ($file !== false) {
+            // Start buffering the output
+            ob_start();
 
-        // Ανάκτηση όλων των κατηγοριών
-        $categories = get_categories(array(
-            'taxonomy' => 'product_cat',
-            'hide_empty' => false,
-        ));
+            echo '<?xml version="1.0" encoding="UTF-8"?>';
+            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
-        // Προσθήκη κατηγοριών στον χάρτη ιστοσελίδας
-        foreach ($categories as $category) {
-            $category_url = get_term_link($category);
             echo '<url>';
-            echo '<loc>' . esc_url($category_url) . '</loc>';
-            echo '<changefreq>weekly</changefreq>';
-            echo '<priority>0.80</priority>'; // Προσαρμόστε την προτεραιότητα (αν χρειάζεται)
+            echo '<loc>https://www.walkbyme.gr/</loc>';
+            echo '<changefreq>daily</changefreq>';
+            echo '<priority>1.0</priority>';
             echo '</url>';
+
+            // Ανάκτηση όλων των κατηγοριών
+            $categories = get_categories(array(
+                'taxonomy' => 'product_cat',
+                'hide_empty' => false,
+            ));
+
+            // Προσθήκη κατηγοριών στον χάρτη ιστοσελίδας
+            foreach ($categories as $category) {
+                $category_url = get_term_link($category);
+                echo '<url>';
+                echo '<loc>' . esc_url($category_url) . '</loc>';
+                echo '<changefreq>weekly</changefreq>';
+                echo '<priority>0.80</priority>'; // Προσαρμόστε την προτεραιότητα (αν χρειάζεται)
+                echo '</url>';
+            }
+
+            $args = array(
+                'post_type' => 'product',
+                'posts_per_page' => -1,
+            );
+
+            $products = new WP_Query($args);
+            while ($products->have_posts()) {
+                $products->the_post();
+                $product_url = get_permalink();
+                echo '<url>';
+                echo '<loc>' . esc_url($product_url) . '</loc>';
+                echo '<lastmod>' . get_the_modified_date('c') . '</lastmod>'; // Include the last modification date if desired.
+                echo '<priority>0.80</priority>';
+                echo '</url>';
+            }
+
+            wp_reset_postdata();
+
+            echo '</urlset>';
+
+            // End buffering and write the contents to the file
+            $xml_content = ob_get_clean();
+            fwrite($file, $xml_content);
+
+            // Close the file
+            fclose($file);
+
+            // Output the XML to the browser
+            echo $xml_content;
+
+            // Terminate script execution
+            die();
         }
-
-        $args = array(
-            'post_type' => 'product',
-            'posts_per_page' => -1,
-        );
-
-        $products = new WP_Query($args);
-        while ($products->have_posts()) {
-            $products->the_post();
-            $product_url = get_permalink();
-            echo '<url>';
-            echo '<loc>' . esc_url($product_url) . '</loc>';
-            echo '<lastmod>' . get_the_modified_date('c') . '</lastmod>'; // Include the last modification date if desired.
-            echo '<priority>0.80</priority>';
-            echo '</url>';
-        }
-
-        wp_reset_postdata();
-
-        echo '</urlset>';
-        die();
     }
 }
 
 add_action('init', 'custom_sitemap');
+
 
 
 
