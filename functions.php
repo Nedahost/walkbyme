@@ -42,6 +42,7 @@ add_action('admin_head', 'favicon');
 
 
 
+
 function custom_add_canonical_tag() {
     $canonical_url = home_url();
 
