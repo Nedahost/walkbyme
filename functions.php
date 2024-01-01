@@ -421,6 +421,15 @@ add_action('create_product_cat', 'save_custom_category_field', 20, 1);
 
 
 
+// function update_custom_sitemap($post_id, $post, $update) {
+//     // Ελέγχουμε αν το αποθηκευμένο έγγραφο είναι ένα προϊόν του WooCommerce
+//     if (get_post_type($post_id) === 'product') {
+//         // Καλούμε τη συνάρτηση custom_sitemap για να ενημερώσουμε τον χάρτη ιστοσελίδας
+//         custom_sitemap();
+//     }
+// }
+
+// add_action('save_post', 'update_custom_sitemap', 10, 3);
 
 
 function custom_sitemap() {
@@ -478,7 +487,7 @@ function custom_sitemap() {
                 $product_url = get_permalink();
                 echo '<url>';
                 echo '<loc>' . esc_url($product_url) . '</loc>';
-                echo '<lastmod>' . get_the_modified_date('c') . '</lastmod>'; // Include the last modification date if desired.
+                echo '<lastmod>' . get_the_modified_date('c', get_post_time('Z', true)) . '</lastmod>'; // Include the last modification date if desired.
                 echo '<priority>0.80</priority>';
                 echo '</url>';
             }
@@ -490,6 +499,9 @@ function custom_sitemap() {
             // End buffering and write the contents to the file
             $xml_content = ob_get_clean();
             fwrite($file, $xml_content);
+
+            // Ανανέωση των δικαιωμάτων του αρχείου
+            chmod($file_path, 0644);
 
             // Close the file
             fclose($file);
@@ -505,6 +517,15 @@ function custom_sitemap() {
 
 add_action('init', 'custom_sitemap');
 
+add_action('save_post', 'update_custom_sitemap');
+
+function update_custom_sitemap($post_id) {
+    // Ελέγχουμε αν το αποθηκευμένο έγγραφο είναι ένα προϊόν του WooCommerce
+    if (get_post_type($post_id) === 'product') {
+        // Καλούμε τη συνάρτηση custom_sitemap για να ενημερώσουμε τον χάρτη ιστοσελίδας
+        custom_sitemap();
+    }
+}
 
 
 
@@ -719,7 +740,7 @@ function product_custom_meta_fields() {
 
     $og_title= get_post_meta($post->ID, '_product_og_title', true);
     $og_description= get_post_meta($post->ID, '_product_og_description', true);
-    $og_image= get_post_meta($post->ID, '_product_og_keywords', true);
+    $og_image= get_post_meta($post->ID, '_product_og_image', true);
     ?>
     <div class="options_group">
         <p class="form-field">
@@ -769,7 +790,7 @@ function save_product_custom_meta($post_id) {
 
     update_post_meta($post_id, '_product_og_title', $og_title);
     update_post_meta($post_id, '_product_og_description', $og_description);
-    update_post_meta($post_id, '_product_og_keywords', $og_image);
+    update_post_meta($post_id, '_product_og_image', $og_image);
 }
 
 
@@ -822,8 +843,22 @@ function display_custom_meta_tags() {
             echo '<meta property="og:description" content="' . esc_attr($og_description) . '" />';
         }
 
-        if ($og_image = get_post_meta(get_the_ID(), '_og_image', true)) {
+
+        // Εμφάνιση Open Graph meta tags
+        if ($og_title = get_post_meta(get_the_ID(), '_product_og_title', true)) {
+            echo '<meta property="og:title" content="' . esc_attr($og_title) . '" />';
+        }
+
+        if ($og_description = get_post_meta(get_the_ID(), '_product_og_description', true)) {
+            echo '<meta property="og:description" content="' . esc_attr($og_description) . '" />';
+        }
+
+        $og_image = get_post_meta(get_the_ID(), '_og_image', true);
+        $og_image_product= get_post_meta(get_the_ID(), '_product_og_image', true);
+        if ( $og_image !='') {
             echo '<meta property="og:image" content="' . esc_url($og_image) . '" />';
+        } elseif ($og_image_product !=''){
+            echo '<meta property="og:image" content="' . esc_url($og_image_product) . '" />';
         } else {
             echo '<meta property="og:image" content="' . esc_url($default_og_image) . '" />';
         }
@@ -833,4 +868,35 @@ function display_custom_meta_tags() {
         $og_url = get_post_meta(get_the_ID(), '_og_url', true) ?: $current_url;
         echo '<meta property="og:url" content="' . esc_url($og_url) . '" />';
     }
+}
+
+
+
+function woocommerce_fbq_purchase_event($order_id) {
+  // Get the order data
+  $order = wc_get_order($order_id);
+
+  // Set the event data
+  $eventData = [
+    'value' => $order->total,
+    'currency' => $order->currency,
+  ];
+
+  // Add the product data
+  $products = [];
+
+  foreach ($order->get_items() as $item_id => $item) {
+    $product = $item->get_product();
+
+    $products[] = [
+      'product_id' => $product->get_id(),
+      'quantity' => $item->get_quantity(),
+    ];
+  }
+
+  $eventData['content_ids'] = wp_list_pluck($products, 'product_id');
+  $eventData['contents'] = $products;
+
+  // Track the event
+  fbq('track', 'Purchase', $eventData);
 }
