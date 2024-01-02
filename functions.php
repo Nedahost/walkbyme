@@ -487,7 +487,7 @@ function custom_sitemap() {
                 $product_url = get_permalink();
                 echo '<url>';
                 echo '<loc>' . esc_url($product_url) . '</loc>';
-                echo '<lastmod>' . get_the_modified_date('c', get_post_time('Z', true)) . '</lastmod>'; // Include the last modification date if desired.
+                echo '<lastmod>' . gmdate('c', strtotime(get_the_modified_date('Y-m-d H:i:s'))) . '</lastmod>'; // Include the last modification date if desired.
                 echo '<priority>0.80</priority>';
                 echo '</url>';
             }
