@@ -44,13 +44,18 @@ add_action('admin_head', 'favicon');
 
 
 function custom_add_canonical_tag() {
-    $canonical_url = home_url();
-
+    if(is_home()){
+        $canonical_url = home_url();
+        echo '<link rel="canonical" href="' . esc_url($canonical_url) . '" />' . "\n";
+    }
     if (is_category() || is_tax('product_cat')) {
         // Αν είστε σε σελίδα κατηγορίας προϊόντος
         $category = get_queried_object();
         $canonical_url = get_term_link($category);
-    } elseif (is_singular('product') || isset($_GET['attribute_pa_size'])) {
+        echo '<link rel="canonical" href="' . esc_url($canonical_url) . '" />' . "\n";
+    } 
+    
+    elseif (is_singular('product') || isset($_GET['attribute_pa_size'])) {
         global $post;
         $canonical_url = get_permalink($post->ID);
 
@@ -60,7 +65,7 @@ function custom_add_canonical_tag() {
         $canonical_url = get_permalink($page_id);
     }
 
-    echo '<link rel="canonical" href="' . esc_url($canonical_url) . '" />' . "\n";
+    
 }
 
 // Προσθήκη του κώδικα στο <head>
@@ -606,7 +611,9 @@ add_filter('woocommerce_product_is_on_sale', '__return_false');
 add_action('add_meta_boxes', 'custom_meta_boxes');
 add_action('save_post', 'save_custom_meta');
 
-function custom_meta_boxes() {
+function custom_meta_boxes($post) {
+ 
+      
     add_meta_box('meta-title', 'Custom Meta Title', 'meta_title_callback', array('post', 'page'), 'normal', 'high');
     add_meta_box('meta-description', 'Custom Meta Description', 'meta_description_callback', array('post', 'page'), 'normal', 'high');
     add_meta_box('meta-keywords', 'Meta Keywords', 'meta_keywords_callback', array('post', 'page'), 'normal', 'high');
@@ -614,17 +621,27 @@ function custom_meta_boxes() {
     add_meta_box('og-description', 'Open Graph Description', 'og_description_callback', array('post', 'page'), 'normal', 'high');
     add_meta_box('og-image', 'Open Graph Image URL', 'og_image_callback', array('post', 'page'), 'normal', 'high');
     add_meta_box('og-url', 'Open Graph URL', 'og_url_callback', array('post', 'page'), 'normal', 'high');
+
+   
+    
 }
+
+
+
 
 function meta_title_callback($post) {
     $meta_title = get_post_meta($post->ID, '_meta_title', true);
-    echo '<input type="text" name="meta_title" value="' . esc_attr($meta_title) . '" />';
+    echo '<input type="text" name="meta_title" id="meta_title" value="' . esc_attr($meta_title) . '" />';
+    
 }
 
 function meta_description_callback($post) {
     $meta_description = get_post_meta($post->ID, '_meta_description', true);
     echo '<textarea name="meta_description">' . esc_textarea($meta_description) . '</textarea>';
+  
 }
+
+
 
 function meta_keywords_callback($post) {
     $meta_keywords = get_post_meta($post->ID, '_meta_keywords', true);
@@ -652,25 +669,29 @@ function og_url_callback($post) {
     echo '<input type="text" name="og_url" value="' . esc_url($og_url) . '" />';
 }
 
-function save_custom_meta($post) {
+function save_custom_meta($post_id) {
+    global $post;
     $meta_title = isset($_POST['meta_title']) ? sanitize_text_field($_POST['meta_title']) : '';
     $meta_description = isset($_POST['meta_description']) ? sanitize_textarea_field($_POST['meta_description']) : '';
     $meta_keywords = isset($_POST['meta_keywords']) ? sanitize_text_field($_POST['meta_keywords']) : '';
     
-    $meta_keywords = isset($_POST['og_title']) ? sanitize_text_field($_POST['og_title']) : '';
-    $meta_keywords = isset($_POST['og_description']) ? sanitize_text_field($_POST['og_description']) : '';
-    $meta_keywords = isset($_POST['og_image']) ? sanitize_text_field($_POST['og_image']) : '';
-    $meta_keywords = isset($_POST['og_url']) ? sanitize_text_field($_POST['og_url']) : '';
+    $og_title = isset($_POST['og_title']) ? sanitize_text_field($_POST['og_title']) : '';
+    $og_description = isset($_POST['og_description']) ? sanitize_text_field($_POST['og_description']) : '';
+    $og_image = isset($_POST['og_image']) ? sanitize_text_field($_POST['og_image']) : '';
+    $og_url = isset($_POST['og_url']) ? sanitize_text_field($_POST['og_url']) : '';
 
-    update_post_meta($post, '_meta_title', $meta_title);
-    update_post_meta($post, '_meta_description', $meta_description);
-    update_post_meta($post, '_meta_keywords', $meta_keywords);
+    update_post_meta($post_id, '_meta_title', $meta_title);
+    update_post_meta($post_id, '_meta_description', $meta_description);
+    update_post_meta($post_id, '_meta_keywords', $meta_keywords);
 
     update_post_meta($post_id, '_og_title', $og_title);
     update_post_meta($post_id, '_og_description', $og_description);
     update_post_meta($post_id, '_og_image', $og_image);
     update_post_meta($post_id, '_og_url', $og_url);
+
+
 }
+
 
 // Πεδία για κατηγορίες άρθρων
 add_action('edit_category_form_fields', 'category_custom_meta_fields');
@@ -741,16 +762,59 @@ function product_custom_meta_fields() {
     $og_title= get_post_meta($post->ID, '_product_og_title', true);
     $og_description= get_post_meta($post->ID, '_product_og_description', true);
     $og_image= get_post_meta($post->ID, '_product_og_image', true);
+
+    // Retrieve the character count from the post meta
+    $char_count_title = get_post_meta($post->ID, '_product_title_char_count', true);
+    if (empty($char_count_title)) {
+        $char_count_title = 0;
+    }
+    
+    $char_count_description = get_post_meta($post->ID, '_product_description_char_count', true);
+    if (empty($char_count_description)) {
+        $char_count_description = 0;
+    }
+
     ?>
     <div class="options_group">
         <p class="form-field">
             <label for="meta_title">Custom Meta Title</label>
             <input type="text" class="short" name="meta_title" id="meta_title" value="<?php echo esc_attr($meta_title); ?>" />
+            <br /><span id="char-count-title"><?php echo esc_html($char_count_title); ?>/70</span>
         </p>
         <p class="form-field">
             <label for="meta_description">Custom Meta Description</label>
             <textarea name="meta_description" id="meta_description"><?php echo esc_textarea($meta_description); ?></textarea>
+            <br /><br /><br /><span id="char-count-description"><?php echo esc_html($char_count_description); ?>/160</span>
         </p>
+        <script>
+        jQuery(document).ready(function($){
+            var maxCharsTitle = 70;
+            var maxCharsDescription = 160;
+            var titleField = $('#meta_title');
+            var descriptionField = $('#meta_description');
+            var charCountTitleSpan = $('#char-count-title');
+            var charCountDescriptionSpan = $('#char-count-description');
+
+            // Set the initial character count
+            charCountTitleSpan.text(<?php echo esc_html($char_count_title); ?> + '/' + maxCharsTitle);
+            charCountDescriptionSpan.text(<?php echo esc_html($char_count_description); ?> + '/' + maxCharsDescription);
+
+            titleField.on('input', function(){
+                var currentChars = titleField.val().length;
+                charCountTitleSpan.text(currentChars + '/' + maxCharsTitle);
+            });
+
+            descriptionField.on('input', function(){
+                var currentChars = descriptionField.val().length;
+                charCountDescriptionSpan.text(currentChars + '/' + maxCharsDescription);
+
+                if (currentChars > maxCharsDescription) {
+                    descriptionField.val(descriptionField.val().substring(0, maxCharsDescription));
+                    charCountDescriptionSpan.text(maxCharsDescription + '/' + maxCharsDescription);
+                }
+            });
+        });
+    </script>
         <p class="form-field">
             <label for="meta_keywords">Meta Keywords</label>
             <input type="text" class="short" name="meta_keywords" id="meta_keywords" value="<?php echo esc_attr($meta_keywords); ?>" />
@@ -791,11 +855,17 @@ function save_product_custom_meta($post_id) {
     update_post_meta($post_id, '_product_og_title', $og_title);
     update_post_meta($post_id, '_product_og_description', $og_description);
     update_post_meta($post_id, '_product_og_image', $og_image);
+
+    // Save the character count for title to post meta
+    update_post_meta($post_id, '_product_title_char_count', mb_strlen($meta_title, 'UTF-8'));
+
+    // Save the character count for description to post meta
+    update_post_meta($post_id, '_product_description_char_count', mb_strlen($meta_description, 'UTF-8'));
 }
 
 
 
-add_action('wp_head', 'display_custom_meta_tags');
+
 
 add_action('wp_head', 'display_custom_meta_tags');
 
