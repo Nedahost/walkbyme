@@ -634,36 +634,6 @@ function save_category_custom_meta($term_id) {
     update_term_meta($term_id, '_category_meta_description', $meta_description);
 }
 
-// Πεδία για κατηγορίες προϊόντων WooCommerce
-add_action('product_cat_add_form_fields', 'product_category_custom_meta_fields');
-add_action('product_cat_edit_form_fields', 'product_category_custom_meta_fields');
-add_action('edited_term', 'save_product_category_custom_meta');
-add_action('create_term', 'save_product_category_custom_meta');
-
-function product_category_custom_meta_fields($term) {
-    $meta_title = get_term_meta($term->term_id, '_product_category_meta_title', true);
-    $meta_description = get_term_meta($term->term_id, '_product_category_meta_description', true);
-    ?>
-    <tr class="form-field">
-        <th scope="row"><label for="meta_title">Custom Meta Title</label></th>
-        <td><input type="text" name="meta_title" id="meta_title" value="<?php echo esc_attr($meta_title); ?>" /></td>
-    </tr>
-    <tr class="form-field">
-        <th scope="row"><label for="meta_description">Custom Meta Description</label></th>
-        <td><textarea name="meta_description" id="meta_description"><?php echo esc_textarea($meta_description); ?></textarea></td>
-    </tr>
-    <?php
-}
-
-function save_product_category_custom_meta($term_id) {
-    $meta_title = isset($_POST['meta_title']) ? sanitize_text_field($_POST['meta_title']) : '';
-    $meta_description = isset($_POST['meta_description']) ? sanitize_textarea_field($_POST['meta_description']) : '';
-
-    update_term_meta($term_id, '_product_category_meta_title', $meta_title);
-    update_term_meta($term_id, '_product_category_meta_description', $meta_description);
-}
-
-
 
 function woocommerce_fbq_purchase_event($order_id) {
   // Get the order data
