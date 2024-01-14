@@ -663,3 +663,199 @@ function woocommerce_fbq_purchase_event($order_id) {
   // Track the event
   fbq('track', 'Purchase', $eventData);
 }
+
+
+add_action('wp_footer', 'add_product_json_ld');
+function add_product_json_ld() {
+    if (is_product()) {
+        global $product;
+
+        $name_product= $product->get_name();
+        $description_product = $product->get_description(); 
+        $url_image = wp_get_attachment_image_src($product->get_image_id())[0];
+        $price =  $product->get_price();
+        $sku_product = $product->get_sku();
+        $availability=  $product->is_in_stock() ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock';
+        $size_product = $product->get_attribute('size');
+        $url_products = get_permalink($product->get_id());
+
+        $product_data = [
+            '@context' => 'http://schema.org',
+            '@type' => 'Product',
+            'name' => $name_product,
+            'description' => $description_product,
+            'image' => [
+                '@type' => 'ImageObject',
+                'url' => $url_image
+            ],
+            'sku' => $sku_product,
+            'size' => $size_product ,
+            "offers" => [
+                "@type" => "Offer",
+                "url" => $url_products,
+                "priceCurrency" => "EUR",
+                "price" => $price, 
+                "availability" => $availability,
+                "seller" => [
+                    "@type" => "Organization",
+                    "name" => "Executive Objects",
+                ],
+            ]
+        ];
+
+        echo '<script type="application/ld+json">' . json_encode($product_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
+    }
+}
+
+add_action('wp_head', 'add_homepage_schema');
+function add_homepage_schema() {
+    if (is_home()) {
+
+        $name = get_bloginfo('name');
+        $home_description = 'Το πάθος μας για χειροποίητα κοσμήματα από ασήμι 925 και χρυσό! Η κατασκευή χειροποίητων ασημένιων και χρυσών κοσμημάτων είναι το πάθος μας.';
+        $url_home =  get_home_url();
+
+
+        $homepage_data = [
+            '@context' => 'http://schema.org',
+            '@type' => 'WebPage',
+            'name' => $name,
+            'description' => $home_description,
+            'url' => $url_home,
+        ];
+
+        echo '<script type="application/ld+json">' . json_encode($homepage_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
+    }
+}
+
+
+
+add_action('wp_head', 'add_organization_schema_markup');
+
+function add_organization_schema_markup() {
+    $name = get_bloginfo('name');
+    $url_home =  get_home_url();
+    $logo_page = 'https://www.walkbyme.gr/wp-content/uploads/2024/01/logo_walkbyme.png';
+
+
+
+    $organization_data = array(
+        '@context' => 'http://schema.org',
+        '@type' => 'Organization',
+        'name' => $name,
+        'url' => $url_home,
+        'logo' => $logo_page,
+        'address' => array(
+            '@type' => 'PostalAddress',
+            'streetAddress' => 'Ελασσώνος 16',
+            'addressLocality' => 'Περιστέρι',
+            'addressRegion' => 'Περιστέρι',
+            'postalCode' => '121 37',
+            'addressCountry' => 'Ελλάδα', // Χρησιμοποιήστε μόνο το όνομα της χώρας
+        ),
+        'telephone' => '+30-697-5686473',
+        'email' => 'info@walkbyme.gr',
+    );
+
+    echo '<script type="application/ld+json">' . json_encode($organization_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
+}
+
+
+
+function add_breadcrumbs_schema_markup() {
+    $breadcrumbs_data = array(
+        '@context' => 'http://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => array(),
+    );
+
+    // Add Home breadcrumb
+    $breadcrumbs_data['itemListElement'][] = array(
+        '@type' => 'ListItem',
+        'position' => 1,
+        'item' => array(
+            '@id' => get_home_url(),
+            'name' => 'Home',
+        ),
+    );
+
+    $product_cat = null; // Προσθέστε αυτή τη γραμμή εδώ
+
+    // Check if it's a product category page
+    if (is_product_category() ) {
+        $product_cat = get_queried_object();
+        $ancestors = get_ancestors($product_cat->term_id, 'product_cat');
+        $ancestors = array_reverse($ancestors);
+
+        // Add category breadcrumbs
+        foreach ($ancestors as $ancestor_id) {
+            $ancestor = get_term($ancestor_id, 'product_cat');
+            $link = get_term_link($ancestor);
+
+            $breadcrumbs_data['itemListElement'][] = array(
+                '@type' => 'ListItem',
+                'position' => count($breadcrumbs_data['itemListElement']) + 1,
+                'item' => array(
+                    '@id' => $link,
+                    'name' => $ancestor->name,
+                ),
+            );
+        }
+    }
+    
+     // Add current category breadcrumb
+     if ($product_cat ) { // Ελέγξτε αν υπάρχει προϊόν κατηγορίας πριν προσθέσετε το breadcrumb
+        $permlink = get_term_link($product_cat);
+        $title = $product_cat->name;
+        $breadcrumbs_data['itemListElement'][] = array(
+            '@type' => 'ListItem',
+            'position' => count($breadcrumbs_data['itemListElement']) + 1,
+            'item' => array(
+                '@id' => $permlink,
+                'name' => $title,
+            ),
+        );
+    }
+
+    if(is_product()){
+
+    global $product;
+
+    // Get product categories
+    $product_id = method_exists($product, 'get_id') ? $product->get_id() : $product->id;
+    $product_cats = get_the_terms($product_id, 'product_cat');
+
+    // Add product category breadcrumbs
+    if ($product_cats && !is_wp_error($product_cats)) {
+        foreach ($product_cats as $count => $cat) {
+            $breadcrumbs_data['itemListElement'][] = array(
+                '@type' => 'ListItem',
+                'position' => count($breadcrumbs_data['itemListElement']) + 1,
+                'name' => $cat->name,
+                'item' => get_term_link($cat),
+            );
+        }
+    }
+
+    // Add current page breadcrumb
+    $permlink = get_permalink();
+    $title = get_the_title();
+    $breadcrumbs_data['itemListElement'][] = array(
+        '@type' => 'ListItem',
+        'position' => count($breadcrumbs_data['itemListElement']) + 1,
+        'item' => array(
+            '@id' => $permlink,
+            'name' => $title,
+        ),
+    );
+
+}
+
+
+
+
+    echo '<script type="application/ld+json">' . json_encode($breadcrumbs_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
+}
+
+add_action('wp_head', 'add_breadcrumbs_schema_markup');
+
