@@ -737,24 +737,42 @@ function add_organization_schema_markup() {
     $url_home =  get_home_url();
     $logo_page = 'https://www.walkbyme.gr/wp-content/uploads/2024/01/logo_walkbyme.png';
 
-
+    
 
     $organization_data = array(
         '@context' => 'http://schema.org',
         '@type' => 'Organization',
         'name' => $name,
         'url' => $url_home,
-        'logo' => $logo_page,
+        'logo' => array(
+            '@type' => 'ImageObject',
+            'inLanguage' => 'el',
+            'url' => 'https://www.walkbyme.gr/wp-content/uploads/2024/01/walkbyme_schema_logo.jpg',
+            'contentUrl' => 'https://www.walkbyme.gr/wp-content/uploads/2024/01/walkbyme_schema_logo.jpg',
+            'width' => 300,
+            'height' => 50,
+            'caption' => 'Walk by me'
+        ),
+        'image' => array(
+            '@type' => 'ImageObject',
+            'inLanguage' => 'el',
+            'url' => 'https://www.walkbyme.gr/wp-content/uploads/2024/01/walkbyme_schema_logo.jpg',
+            'contentUrl' => 'https://www.walkbyme.gr/wp-content/uploads/2024/01/walkbyme_schema_logo.jpg',
+            'width' => 300,
+            'height' => 50,
+            'caption' => 'Walk by me'
+        ),
         'address' => array(
             '@type' => 'PostalAddress',
             'streetAddress' => 'Ελασσώνος 16',
             'addressLocality' => 'Περιστέρι',
             'addressRegion' => 'Περιστέρι',
             'postalCode' => '121 37',
-            'addressCountry' => 'Ελλάδα', // Χρησιμοποιήστε μόνο το όνομα της χώρας
+            'addressCountry' => 'Ελλάδα', 
         ),
         'telephone' => '+30-697-5686473',
         'email' => 'info@walkbyme.gr',
+        'inLanguage' => 'el'
     );
 
     echo '<script type="application/ld+json">' . json_encode($organization_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
