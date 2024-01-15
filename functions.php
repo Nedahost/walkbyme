@@ -771,8 +771,7 @@ function add_organization_schema_markup() {
             'addressCountry' => 'Ελλάδα', 
         ),
         'telephone' => '+30-697-5686473',
-        'email' => 'info@walkbyme.gr',
-        'inLanguage' => 'el'
+        'email' => 'info@walkbyme.gr'
     );
 
     echo '<script type="application/ld+json">' . json_encode($organization_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
