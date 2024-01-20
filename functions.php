@@ -678,6 +678,9 @@ function add_product_json_ld() {
         $availability=  $product->is_in_stock() ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock';
         $size_product = $product->get_attribute('size');
         $url_products = get_permalink($product->get_id());
+        $valid_until = date('c', strtotime('+1 week')); 
+        $average_rating = $product->get_average_rating();
+        $merchant_return_policy_url = 'https://www.walkbyme.gr/%cf%8c%cf%81%ce%bf%ce%b9-%cf%87%cf%81%ce%ae%cf%83%ce%b7%cf%82/';
 
         $product_data = [
             '@context' => 'http://schema.org',
@@ -700,6 +703,13 @@ function add_product_json_ld() {
                     "@type" => "Organization",
                     "name" => "Executive Objects",
                 ],
+                "priceValidUntil" => $valid_until,
+                "hasMerchantReturnPolicy" => $merchant_return_policy_url,
+            ],
+            "aggregateRating" => [
+                "@type" => "AggregateRating",
+                "ratingValue" => $average_rating,
+                "reviewCount" => $product->get_review_count()
             ]
         ];
 
