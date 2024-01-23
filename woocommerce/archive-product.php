@@ -32,7 +32,13 @@ get_header( 'shop' );
 
 ?> 
 
+<?php 
+// Add title for search results
+if ( is_search() ) {
+    echo '<h1 class="page-title">Αποτελέσματα Αναζήτησης: ' . get_search_query() . '</h1>';
+}
 
+?>
 
     <div class="contentproducts"><!-- content products start -->
     

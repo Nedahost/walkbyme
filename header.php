@@ -80,10 +80,6 @@
                         <span class="close" onclick="closeSearchModal()">&times;</span>
                         <!-- Περιεχόμενο του μοντάλ -->
                         <h2>Αναζήτηση</h2>
-                        <form class="search-form">
-                            <input type="text" placeholder="Εισάγετε κείμενο αναζήτησης">
-                            <button type="submit">Αναζήτηση</button>
-                        </form>
                         <?php get_product_search_form(); ?>
                         </div>
                     </div>
