@@ -110,6 +110,7 @@
             </div>
         </div><!-- wrapper end -->
     </div><!-- power by end -->
+    
         <?php wp_footer(); ?>
     </body>    
 </html>

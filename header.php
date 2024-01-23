@@ -67,8 +67,26 @@
 
                                <?php echo WC()->cart->get_cart_total() . ' (' . WC()->cart->get_cart_contents_count() .')' ; ?></a>
                         </li>
+                        <li>
+                            <div class="search">
+                                <button class="search-icon" onclick="openSearchModal()"><i class="fa fa-search"></i></button>
+                            </div>
+                        </li>
                         </ul>
                 </div><!-- shop details end -->
+                    <!-- Μοντάλ Αναζήτησης -->
+                    <div id="searchModal" class="modal">
+                        <div class="modal-content">
+                        <span class="close" onclick="closeSearchModal()">&times;</span>
+                        <!-- Περιεχόμενο του μοντάλ -->
+                        <h2>Αναζήτηση</h2>
+                        <form class="search-form">
+                            <input type="text" placeholder="Εισάγετε κείμενο αναζήτησης">
+                            <button type="submit">Αναζήτηση</button>
+                        </form>
+                        <?php get_product_search_form(); ?>
+                        </div>
+                    </div>
                 <div id="logo"><!-- logo start -->
                     <?php
                     $header_image = get_header_image();

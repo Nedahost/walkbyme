@@ -44,4 +44,25 @@ jQuery(document).on("ready", function() {
 
 
 
+function openSearchModal() {
+  document.getElementById("searchModal").style.display = "block";
+}
+
+function closeSearchModal() {
+  document.getElementById("searchModal").style.display = "none";
+}
+
+// Κλείσιμο μοντάλ αν πατηθεί εκτός περιοχής του μοντάλ
+window.onclick = function(event) {
+  var modal = document.getElementById("searchModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Προσθήκη event listener για το φορτωμένο της σελίδας
+document.addEventListener("DOMContentLoaded", function() {
+  // Κρύψτε το μοντάλ κατά το φορτωμένο της σελίδας
+  document.getElementById("searchModal").style.display = "none";
+});
 
