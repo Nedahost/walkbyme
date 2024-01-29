@@ -719,7 +719,7 @@ function add_product_json_ld() {
             ]);
         }
 
-        // Προσθήκη λεπτομερειών αποστολής
+
         $shipping_details = [
             "@type" => "OfferShippingDetails",
             "shippingRate" => [
@@ -729,9 +729,15 @@ function add_product_json_ld() {
             ],
             "deliveryTime" => [
                 "@type" => "ShippingDeliveryTime",
-                "handlingTime" => "1 με 2 μέρες", // Χρόνος επεξεργασίας παραγγελίας
-                "transitTime" => "2 έως 7 μέρες",// Χρόνος μεταφοράς
+                "handlingTime" => "P1D", // Χρόνος επεξεργασίας παραγγελίας: 1 ημέρα
+                "transitTime" => "P7D", // Χρόνος μεταφοράς: 7 ημέρες
             ],
+            "shippingDestination" => [
+                "@type" => "DefinedRegion",
+                "addressCountry" => "GR",
+                // Εάν χρειαστεί, προσθέστε περισσότερες πληροφορίες για τον προορισμό σας
+            ],
+            "transitTimeLabel" => "Standard Shipping",
         ];
 
         $product_data = [
@@ -757,15 +763,15 @@ function add_product_json_ld() {
                 ],
                 "priceValidUntil" => $valid_until,
                 "eligibleRegion"  => "GR",
-                "url" => $merchant_return_policy_url,
+                "hasMerchantReturnPolicy" => $merchant_return_policy_url,
                 "shippingDetails" => $shipping_details,
             ],
             
-            "aggregateRating" => $product->get_review_count() > 0 ? [
+            "aggregateRating" => ($product->get_review_count() > 0 && $average_rating > 0) ? [
                 "@type" => "AggregateRating",
                 "ratingValue" => $average_rating,
                 "reviewCount" => $product->get_review_count()
-            ] : null,
+            ] : null,            
         ];
 
         echo '<script type="application/ld+json">' . json_encode($product_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
