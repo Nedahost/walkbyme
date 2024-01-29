@@ -48,7 +48,7 @@
                 $thumb_url = wp_get_attachment_image_src($post_thumbnail_id,  true);
                 $images = $thumb_url[0];
                 ?>
-                <img src="<?php echo $images;  ?>" alt="" />
+                <img src="<?php echo $images;  ?>" alt="walk by me products" />
             </figure>
         
             <div class="content hmcontent"><!-- conent start -->

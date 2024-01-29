@@ -690,16 +690,59 @@ function add_product_json_ld() {
         $valid_until = date('c', strtotime('+1 week')); 
         $average_rating = $product->get_average_rating();
         $merchant_return_policy_url = 'https://www.walkbyme.gr/%cf%8c%cf%81%ce%bf%ce%b9-%cf%87%cf%81%ce%ae%cf%83%ce%b7%cf%82/';
+        $return_policy_category = "https://www.walkbyme.gr/%cf%8c%cf%81%ce%bf%ce%b9-%cf%87%cf%81%ce%ae%cf%83%ce%b7%cf%82/";
+
+     
+        // Προεπιλεγμένη βαθμολογία στο 0, αν δεν υπάρχουν κριτικές
+        $default_rating = 0;
+
+        // Προεπιλεγμένος αριθμός κριτικών στο 0, αν δεν υπάρχουν κριτικές
+        $default_review_count = 0;
+
+        // Προεπιλεγμένο όνομα συγγραφέα κριτικής
+        $default_author_name = "Walk by me";
+
+        // Προεπιλεγμένο αντικείμενο "review" (αν είναι προαιρετικό)
+        $reviews = [];
+
+        if ($product->get_review_count() > 0) {
+            $reviews = array_fill(0, $product->get_review_count(), [
+                "@type" => "Review",
+                "reviewRating" => [
+                    "@type" => "Rating",
+                    "ratingValue" => $average_rating,
+                ],
+                "author" => [
+                    "@type" => "Person",
+                    "name" => $default_author_name,
+                ],
+            ]);
+        }
+
+        // Προσθήκη λεπτομερειών αποστολής
+        $shipping_details = [
+            "@type" => "OfferShippingDetails",
+            "shippingRate" => [
+                "@type" => "MonetaryAmount",
+                "currency" => "EUR",
+                "value" => "3.00", // Κόστος μεταφορικών
+            ],
+            "deliveryTime" => [
+                "@type" => "ShippingDeliveryTime",
+                "handlingTime" => "1 με 2 μέρες", // Χρόνος επεξεργασίας παραγγελίας
+                "transitTime" => "2 έως 7 μέρες",// Χρόνος μεταφοράς
+            ],
+        ];
 
         $product_data = [
             '@context' => 'http://schema.org',
             '@type' => 'Product',
             'name' => $name_product,
             'description' => $description_product,
-            'image' => [
+            'image' => $url_image ? [
                 '@type' => 'ImageObject',
                 'url' => $url_image
-            ],
+            ] : null,
             'sku' => $sku_product,
             'size' => $size_product ,
             "offers" => [
@@ -713,13 +756,16 @@ function add_product_json_ld() {
                     "name" => "Executive Objects",
                 ],
                 "priceValidUntil" => $valid_until,
-                "hasMerchantReturnPolicy" => $merchant_return_policy_url,
+                "eligibleRegion"  => "GR",
+                "url" => $merchant_return_policy_url,
+                "shippingDetails" => $shipping_details,
             ],
-            "aggregateRating" => [
+            
+            "aggregateRating" => $product->get_review_count() > 0 ? [
                 "@type" => "AggregateRating",
                 "ratingValue" => $average_rating,
                 "reviewCount" => $product->get_review_count()
-            ]
+            ] : null,
         ];
 
         echo '<script type="application/ld+json">' . json_encode($product_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';

@@ -6,8 +6,8 @@
         <link rel="profile" href="http://gmpg.org/xfn/11">
         <meta name="format-detection" content="telephone=no">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <meta name="facebook-domain-verification" content="hywzavqq5x79jm858z7t71fq8gur2m" />
-        <meta name="p:domain_verify" content="47d2a4d6f4ed2663e7cbd09e076d1c6e"/>
+        <meta name="facebook-domain-verification" content="hywzavqq5x79jm858z7t71fq8gur2m">
+        <meta name="p:domain_verify" content="47d2a4d6f4ed2663e7cbd09e076d1c6e">
         <title><?php wp_title( '|', true, 'right' ); ?></title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto+Flex:wght@200&display=swap" rel="stylesheet">
         <?php wp_head(); ?> 
@@ -31,16 +31,16 @@
         fbq('init', '891327725921929');
         fbq('track', 'PageView');
         </script>
-        <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=891327725921929&ev=PageView&noscript=1"
-        /></noscript>
+        
         <!-- End Meta Pixel Code -->
     </head>
     <body>
+    
         <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5QBSL8G"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- End Google Tag Manager (noscript) -->
+        <noscript><img height="1" width="1" style="display:none" alt="facebook" src="https://www.facebook.com/tr?id=891327725921929&ev=PageView&noscript=1"/></noscript>
         <header>
             <div class="wrapper"><!-- wrapper start -->
                 <div class="shopdetails"><!-- shop details start -->

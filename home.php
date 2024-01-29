@@ -5,7 +5,7 @@
         <div class="sliderimages"><!-- slider images start -->
             <figure><!-- figure start -->
                 <a href="#" >
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/fallslide.webp" widht="100%" height="auto" alt="sliderimage" />
+                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/fallslide.webp"  style="width: 100%; height: auto;"  alt="sliderimage" />
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->
@@ -25,7 +25,7 @@
     <div class="felxbox">
         <div class="outerimagelarge">
             <div class="imagewrapper">
-            <picture style="display: none;"></picture>
+            
             </div>
             <div class="imagecontent">
                 <header class="sectionheader"><!-- section header start -->
