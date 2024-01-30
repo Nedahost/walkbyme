@@ -729,8 +729,18 @@ function add_product_json_ld() {
             ],
             "deliveryTime" => [
                 "@type" => "ShippingDeliveryTime",
-                "handlingTime" => "P1D", // Χρόνος επεξεργασίας παραγγελίας: 1 ημέρα
-                "transitTime" => "P7D", // Χρόνος μεταφοράς: 7 ημέρες
+                "handlingTime"=> [
+                    "@type" => "QuantitativeValue",
+                    "minValue"=> 0,
+                    "maxValue"=> 1,
+                    "unitCode"=> "DAY"
+                ],
+                  "transitTime"=> [
+                    "@type"=> "QuantitativeValue",
+                    "minValue"=> 1,
+                    "maxValue"=> 5,
+                    "unitCode"=> "DAY"
+                  ],      
             ],
             "shippingDestination" => [
                 "@type" => "DefinedRegion",
@@ -763,15 +773,25 @@ function add_product_json_ld() {
                 ],
                 "priceValidUntil" => $valid_until,
                 "eligibleRegion"  => "GR",
-                "hasMerchantReturnPolicy" => $merchant_return_policy_url,
+                "hasMerchantReturnPolicy" => [
+                    "@type" => "MerchantReturnPolicy",
+                    "applicableCountry"=> "GR",
+                    "returnPolicyCategory" => "https://schema.org/MerchantReturnFiniteReturnWindow",
+                    "merchantReturnDays"=> 14,
+                    "returnMethod"=> "https://schema.org/ReturnByMail",
+                    "returnFees"=> "https://schema.org/FreeReturn",
+                    "url" => $merchant_return_policy_url,
+                    "description" => "Το προϊόν πρέπει να βρίσκεται σε άριστη κατάσταση, να μην έχει χρησιμοποιηθεί, και η συσκευασία του να είναι άθικτη (κλειστή). Τα έξοδα επιστροφής θα βαρύνουν τον πελάτη."
+                ], 
                 "shippingDetails" => $shipping_details,
             ],
-            
+
             "aggregateRating" => ($product->get_review_count() > 0 && $average_rating > 0) ? [
                 "@type" => "AggregateRating",
                 "ratingValue" => $average_rating,
                 "reviewCount" => $product->get_review_count()
             ] : null,            
+            "review" => $reviews,
         ];
 
         echo '<script type="application/ld+json">' . json_encode($product_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
