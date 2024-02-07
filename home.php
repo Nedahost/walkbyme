@@ -79,7 +79,7 @@ foreach ($product_categories as $category) {
             ?>
             <figure>
                 <a href="<?php echo  esc_url($category_url); ?>">
-                    <?php echo '<img src="' . esc_url($category_image) . '" alt="' . esc_attr($category->name) . '">'; ?>
+                    <?php echo '<img src="' . esc_url($category_image) . '" alt="' . esc_attr($category->name) . '" style="width:100%; height:100%;" >'; ?>
                 </a>
             </figure>
             <?php } ?>
