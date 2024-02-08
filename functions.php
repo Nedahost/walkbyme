@@ -543,6 +543,101 @@ function update_custom_sitemap($post_id) {
 
 
 
+
+//XML FEED for Article and Categories
+
+function custom_sitemap_articles() {
+    if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate') {
+        // Create a custom sitemap for WordPress articles and categories
+        header('Content-Type: text/xml; charset=utf-8');
+        
+        // Set the file path for the XML file
+        $file_path = ABSPATH . 'custom-sitemap-articles.xml';
+
+        // Open the file for writing
+        $file = fopen($file_path, 'w');
+
+        // Check if the file was opened successfully
+        if ($file !== false) {
+            // Start buffering the output
+            ob_start();
+
+            echo '<?xml version="1.0" encoding="UTF-8"?>';
+            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+
+            
+
+            // Ανάκτηση όλων των κατηγοριών
+            $categories = get_categories(array(
+                'taxonomy' => 'category',
+                'hide_empty' => false,
+            ));
+
+            // Προσθήκη κατηγοριών στον χάρτη ιστοσελίδας
+            foreach ($categories as $category) {
+                $category_url = get_term_link($category);
+                echo '<url>';
+                echo '<loc>' . esc_url($category_url) . '</loc>';
+                echo '<changefreq>weekly</changefreq>';
+                echo '<priority>0.80</priority>'; // Προσαρμόστε την προτεραιότητα (αν χρειάζεται)
+                echo '</url>';
+            }
+
+            // Ανάκτηση όλων των άρθρων
+            $args = array(
+                'post_type' => 'post',
+                'posts_per_page' => -1,
+            );
+
+            $articles = new WP_Query($args);
+            while ($articles->have_posts()) {
+                $articles->the_post();
+                $article_url = get_permalink();
+                echo '<url>';
+                echo '<loc>' . esc_url($article_url) . '</loc>';
+                echo '<lastmod>' . gmdate('c', strtotime(get_the_modified_date('Y-m-d H:i:s'))) . '</lastmod>'; // Include the last modification date if desired.
+                echo '<priority>0.80</priority>';
+                echo '</url>';
+            }
+
+            wp_reset_postdata();
+
+            echo '</urlset>';
+
+            // End buffering and write the contents to the file
+            $xml_content = ob_get_clean();
+            fwrite($file, $xml_content);
+
+            // Ανανέωση των δικαιωμάτων του αρχείου
+            chmod($file_path, 0644);
+
+            // Close the file
+            fclose($file);
+
+            // Output the XML to the browser
+            echo $xml_content;
+
+            // Terminate script execution
+            die();
+        }
+    }
+}
+
+add_action('init', 'custom_sitemap_articles');
+
+add_action('save_post', 'update_custom_sitemap_articles');
+
+function update_custom_sitemap_articles($post_id) {
+    if (get_post_type($post_id) === 'post' || get_post_type($post_id) === 'category') {
+        custom_sitemap_articles();
+    }
+}
+
+
+
 // Προσθέστε προσαρμοσμένα πεδία στην απαρίθμηση "product_cat"
 function custom_taxonomy_fields() {
     ?>
