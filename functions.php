@@ -206,6 +206,8 @@ add_filter('get_product_search_form', 'customize_product_search_form');
 
 
 
+
+
 add_action( 'woocommerce_after_shop_loop_item', 'remove_add_to_cart_buttons', 1 );
 function remove_add_to_cart_buttons() {
     remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' );
@@ -547,12 +549,12 @@ function update_custom_sitemap($post_id) {
 //XML FEED for Article and Categories
 
 function custom_sitemap_articles() {
-    if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate') {
+    if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate-articles') {
         // Create a custom sitemap for WordPress articles and categories
         header('Content-Type: text/xml; charset=utf-8');
         
         // Set the file path for the XML file
-        $file_path = ABSPATH . 'custom-sitemap-articles.xml';
+        $file_path = ABSPATH . '/custom-sitemap-articles.xml';
 
         // Open the file for writing
         $file = fopen($file_path, 'w');
@@ -568,25 +570,23 @@ function custom_sitemap_articles() {
             xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
-            
-
-            // Ανάκτηση όλων των κατηγοριών
+            // Retrieve all categories
             $categories = get_categories(array(
                 'taxonomy' => 'category',
                 'hide_empty' => false,
             ));
 
-            // Προσθήκη κατηγοριών στον χάρτη ιστοσελίδας
+            // Add categories to the sitemap
             foreach ($categories as $category) {
                 $category_url = get_term_link($category);
                 echo '<url>';
                 echo '<loc>' . esc_url($category_url) . '</loc>';
                 echo '<changefreq>weekly</changefreq>';
-                echo '<priority>0.80</priority>'; // Προσαρμόστε την προτεραιότητα (αν χρειάζεται)
+                echo '<priority>0.80</priority>'; // Adjust priority if needed
                 echo '</url>';
             }
 
-            // Ανάκτηση όλων των άρθρων
+            // Retrieve all articles
             $args = array(
                 'post_type' => 'post',
                 'posts_per_page' => -1,
@@ -611,7 +611,7 @@ function custom_sitemap_articles() {
             $xml_content = ob_get_clean();
             fwrite($file, $xml_content);
 
-            // Ανανέωση των δικαιωμάτων του αρχείου
+            // Set file permissions
             chmod($file_path, 0644);
 
             // Close the file
@@ -631,10 +631,12 @@ add_action('init', 'custom_sitemap_articles');
 add_action('save_post', 'update_custom_sitemap_articles');
 
 function update_custom_sitemap_articles($post_id) {
-    if (get_post_type($post_id) === 'post' || get_post_type($post_id) === 'category') {
+    $post_type = get_post_type($post_id);
+    if (in_array($post_type, array('post', 'category'))) {
         custom_sitemap_articles();
     }
 }
+
 
 
 
