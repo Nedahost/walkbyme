@@ -124,7 +124,13 @@
         
         .productContent{
             line-height: 22px;
-            font-weight: 300;
+            ul{
+                margin-left: 20px;
+                list-style: circle;
+                li{
+                    padding-bottom: 10px;
+                }
+            }
         }
         
         form.cart{
