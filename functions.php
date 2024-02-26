@@ -789,6 +789,7 @@ function add_product_json_ld() {
         $merchant_return_policy_url = 'https://www.walkbyme.gr/%cf%8c%cf%81%ce%bf%ce%b9-%cf%87%cf%81%ce%ae%cf%83%ce%b7%cf%82/';
         $return_policy_category = "https://www.walkbyme.gr/%cf%8c%cf%81%ce%bf%ce%b9-%cf%87%cf%81%ce%ae%cf%83%ce%b7%cf%82/";
 
+        
      
         // Προεπιλεγμένη βαθμολογία στο 0, αν δεν υπάρχουν κριτικές
         $default_rating = 0;
