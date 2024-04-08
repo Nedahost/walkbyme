@@ -1065,3 +1065,8 @@ function add_breadcrumbs_schema_markup() {
 
 add_action('wp_head', 'add_breadcrumbs_schema_markup');
 
+
+
+
+
+
