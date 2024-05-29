@@ -113,7 +113,7 @@
             </div>
         </div><!-- wrapper end -->
     </div><!-- power by end -->
-    
+    <script src="<?php echo get_template_directory_uri(); ?>/assets/js/filters.js"></script>
         <?php wp_footer(); ?>
     </body>    
 </html> 

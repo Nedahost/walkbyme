@@ -208,3 +208,30 @@
             }
         }
     }
+
+
+    .product-filters {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      
+      .filter-group {
+        margin-right: 20px;
+        margin-bottom: 10px;
+      } 
+      
+      .filter-group h4 {
+        margin-bottom: 5px;
+      }
+      
+      .filter-group ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .filter-group li {
+        display: inline-block;
+        margin-right: 10px;
+      }

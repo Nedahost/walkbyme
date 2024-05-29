@@ -1070,3 +1070,252 @@ add_action('wp_head', 'add_breadcrumbs_schema_markup');
 
 
 
+add_action('woocommerce_before_shop_loop', 'custom_product_filters', 20);
+
+function custom_product_filters() {
+    if (!is_product_taxonomy('product_cat')) {
+        return;
+    }
+
+    $attribute_taxonomies = wc_get_attribute_taxonomies();
+    $current_category = get_queried_object();
+
+    if (!empty($attribute_taxonomies) && !empty($current_category)) {
+        $category_attributes = array();
+
+        foreach ($attribute_taxonomies as $tax) {
+            $taxonomy = wc_attribute_taxonomy_name($tax->attribute_name);
+            $terms = get_terms(array('taxonomy' => $taxonomy, 'hide_empty' => true));
+
+            if (!empty($terms)) {
+                $related_terms = array();
+
+                $selected_filters = array();
+                foreach ($attribute_taxonomies as $selected_tax) {
+                    $selected_taxonomy = wc_attribute_taxonomy_name($selected_tax->attribute_name);
+                    if (isset($_GET[$selected_taxonomy])) {
+                        $selected_filters[$selected_taxonomy] = sanitize_text_field($_GET[$selected_taxonomy]);
+                    }
+                }
+
+                foreach ($terms as $term) {
+                    $query_args = array(
+                        'category' => array($current_category->slug),
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => $taxonomy,
+                                'field' => 'slug',
+                                'terms' => $term->slug,
+                            ),
+                        ),
+                        'limit' => 1,
+                    );
+
+                    foreach ($selected_filters as $selected_taxonomy => $selected_term) {
+                        if ($selected_taxonomy !== $taxonomy) {
+                            $query_args['tax_query'][] = array(
+                                'taxonomy' => $selected_taxonomy,
+                                'field' => 'slug',
+                                'terms' => $selected_term,
+                            );
+                        }
+                    }
+
+                    $products = wc_get_products($query_args);
+
+                    if (!empty($products)) {
+                        $related_terms[] = $term;
+                    }
+                }
+
+                if (!empty($related_terms)) {
+                    $category_attributes[$taxonomy] = array(
+                        'label' => $tax->attribute_label,
+                        'terms' => $related_terms,
+                    );
+                }
+            }
+        }
+
+        if (!empty($category_attributes)) {
+            echo '<div class="product-filters">';
+            echo '<span>Φίλτρα:</span>';
+
+            foreach ($category_attributes as $taxonomy => $data) {
+                $selected_term = isset($_GET[$taxonomy]) ? sanitize_text_field($_GET[$taxonomy]) : '';
+
+                echo '<div class="filter-group">';
+                echo '<select name="' . esc_attr($taxonomy) . '-filter" class="filter-select" data-taxonomy="' . esc_attr($taxonomy) . '">';
+                echo '<option value="">' . esc_html($data['label']) . '</option>';
+
+                foreach ($data['terms'] as $term) {
+                    $filter_url = add_query_arg($taxonomy, $term->slug, get_pagenum_link());
+                    $selected = $selected_term === $term->slug ? 'selected' : '';
+                    echo '<option value="' . esc_attr($term->slug) . '" ' . $selected . '>' . esc_html($term->name) . '</option>';
+                }
+
+                echo '</select>';
+
+                if ($selected_term) {
+                    echo '<a class="clear-filter" href="#" data-taxonomy="' . esc_attr($taxonomy) . '"></a>';
+                }
+
+                echo '</div>';
+            }
+
+            echo '</div>';
+            ?>
+            <style>
+            .product-filters {
+                margin-bottom: 20px;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .product-filters span {
+                margin-right: 10px;
+                font-weight: bold;
+            }
+            .filter-group {
+                display: flex;
+                align-items: center;
+                margin-right: 20px;
+                margin-bottom: 10px;
+                position: relative;
+            }
+            .filter-group select {
+                padding: 8px 30px 8px 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background: #fff;
+                font-size: 14px;
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                outline: none;
+                cursor: pointer;
+                box-shadow: none;
+                width: auto;
+                min-width: 150px;
+            }
+            .filter-group select:focus {
+                border-color: #999;
+            }
+            .filter-group .clear-filter {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 12px;
+                height: 12px;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>') no-repeat center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .filter-group .clear-filter:hover {
+                background-color: #ddd;
+            }
+           
+            .filter-group::after {
+                content: "";
+                width: 12px;
+                height: 12px;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>') no-repeat center;
+                position:absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                transition: all 0.3s ease;
+            }
+            .filter-group.selected::after {
+                display: none;
+            }
+            .filter-group .clear-filter {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 12px;
+                height: 12px;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>') no-repeat center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: none;
+            }
+            .filter-group.selected .clear-filter {
+                display: block;
+            }
+        </style>
+        <script>
+            jQuery(function($) {
+    // Toggle selected class on filter change
+    $('.filter-select').on('change', function() {
+        if ($(this).val() !== '') {
+            $(this).parent('.filter-group').addClass('selected');
+        } else {
+            $(this).parent('.filter-group').removeClass('selected');
+        }
+        updateFilters();
+    });
+
+    // Clear individual filter
+    $('.clear-filter').on('click', function(e) {
+        e.preventDefault();
+        var taxonomy = $(this).data('taxonomy');
+        $('.filter-select[data-taxonomy="' + taxonomy + '"]').val('').trigger('change');
+        updateFilters();
+    });
+
+    // Initialize selected class on page load
+    $('.filter-select').each(function() {
+        if ($(this).val() !== '') {
+            $(this).parent('.filter-group').addClass('selected');
+        }
+    });
+
+    // Update filters
+    function updateFilters() {
+        var filters = {};
+        $('.filter-select').each(function() {
+            var taxonomy = $(this).data('taxonomy');
+            var term = $(this).val();
+            if (term !== '') {
+                filters[taxonomy] = term;
+            }
+        });
+        var url = new URL(window.location.href);
+        url.search = new URLSearchParams(filters).toString();
+        window.location.href = url.href;
+    }
+});
+        </script>
+            <?php
+        }
+    }
+}
+
+add_filter('woocommerce_product_query', 'filter_products_by_attributes');
+
+function filter_products_by_attributes($query) {
+    if (!is_admin() && $query->is_main_query() && is_product_taxonomy('product_cat')) {
+        $attribute_taxonomies = wc_get_attribute_taxonomies();
+        $tax_query = $query->get('tax_query') ? $query->get('tax_query') : array();
+
+        foreach ($attribute_taxonomies as $tax) {
+            $taxonomy = wc_attribute_taxonomy_name($tax->attribute_name);
+            if (isset($_GET[$taxonomy])) {
+                $tax_query[] = array(
+                    'taxonomy' => $taxonomy,
+                    'field' => 'slug',
+                    'terms' => sanitize_text_field($_GET[$taxonomy])
+                );
+            }
+        }
+
+        if (!empty($tax_query)) {
+            $query->set('tax_query', $tax_query);
+        }
+    }
+}
+
