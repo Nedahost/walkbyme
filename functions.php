@@ -1073,14 +1073,14 @@ add_action('wp_head', 'add_breadcrumbs_schema_markup');
 add_action('woocommerce_before_shop_loop', 'custom_product_filters', 20);
 
 function custom_product_filters() {
-    if (!is_product_taxonomy('product_cat')) {
+    if (!is_shop() && !is_product_taxonomy()) {
         return;
     }
 
     $attribute_taxonomies = wc_get_attribute_taxonomies();
-    $current_category = get_queried_object();
+    $current_category = is_shop() ? '' : get_queried_object()->slug;
 
-    if (!empty($attribute_taxonomies) && !empty($current_category)) {
+    if (!empty($attribute_taxonomies)) {
         $category_attributes = array();
 
         foreach ($attribute_taxonomies as $tax) {
@@ -1100,7 +1100,6 @@ function custom_product_filters() {
 
                 foreach ($terms as $term) {
                     $query_args = array(
-                        'category' => array($current_category->slug),
                         'tax_query' => array(
                             array(
                                 'taxonomy' => $taxonomy,
@@ -1110,6 +1109,14 @@ function custom_product_filters() {
                         ),
                         'limit' => 1,
                     );
+
+                    if (!empty($current_category)) {
+                        $query_args['tax_query'][] = array(
+                            'taxonomy' => 'product_cat',
+                            'field' => 'slug',
+                            'terms' => $current_category,
+                        );
+                    }
 
                     foreach ($selected_filters as $selected_taxonomy => $selected_term) {
                         if ($selected_taxonomy !== $taxonomy) {
@@ -1298,7 +1305,7 @@ function custom_product_filters() {
 add_filter('woocommerce_product_query', 'filter_products_by_attributes');
 
 function filter_products_by_attributes($query) {
-    if (!is_admin() && $query->is_main_query() && is_product_taxonomy('product_cat')) {
+    if (!is_admin() && $query->is_main_query() && (is_shop() || is_product_taxonomy())) {
         $attribute_taxonomies = wc_get_attribute_taxonomies();
         $tax_query = $query->get('tax_query') ? $query->get('tax_query') : array();
 
