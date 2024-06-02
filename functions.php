@@ -1070,6 +1070,49 @@ add_action('wp_head', 'add_breadcrumbs_schema_markup');
 
 
 
+// Προσθήκη Ρυθμίσεων στο WooCommerce
+add_filter('woocommerce_get_sections_products', 'add_custom_filter_settings_section');
+
+function add_custom_filter_settings_section($sections) {
+    $sections['custom_filters'] = __('Custom Filters', 'woocommerce');
+    return $sections;
+}
+
+add_filter('woocommerce_get_settings_products', 'add_custom_filter_settings', 10, 2);
+
+function add_custom_filter_settings($settings, $current_section) {
+    if ($current_section == 'custom_filters') {
+        $attribute_taxonomies = wc_get_attribute_taxonomies();
+        $options = array();
+        
+        foreach ($attribute_taxonomies as $tax) {
+            $taxonomy = wc_attribute_taxonomy_name($tax->attribute_name);
+            $options[$taxonomy] = $tax->attribute_label;
+        }
+        
+        $settings_custom_filters = array();
+        $settings_custom_filters[] = array('title' => __('Custom Filters', 'woocommerce'), 'type' => 'title', 'desc' => '', 'id' => 'custom_filters_options');
+        
+        $settings_custom_filters[] = array(
+            'title'    => __('Select Filters', 'woocommerce'),
+            'desc'     => __('Select which filters to display on the shop page.', 'woocommerce'),
+            'id'       => 'custom_filters_attributes',
+            'default'  => '',
+            'type'     => 'multiselect',
+            'class'    => 'wc-enhanced-select',
+            'options'  => $options,
+            'autoload' => false,
+        );
+        
+        $settings_custom_filters[] = array('type' => 'sectionend', 'id' => 'custom_filters_options');
+        
+        return $settings_custom_filters;
+    } else {
+        return $settings;
+    }
+}
+
+// Προσαρμογή της Λειτουργίας Φίλτρων
 add_action('woocommerce_before_shop_loop', 'custom_product_filters', 20);
 
 function custom_product_filters() {
@@ -1079,12 +1122,16 @@ function custom_product_filters() {
 
     $attribute_taxonomies = wc_get_attribute_taxonomies();
     $current_category = is_shop() ? '' : get_queried_object()->slug;
+    $enabled_filters = get_option('custom_filters_attributes', array());
 
     if (!empty($attribute_taxonomies)) {
         $category_attributes = array();
 
         foreach ($attribute_taxonomies as $tax) {
             $taxonomy = wc_attribute_taxonomy_name($tax->attribute_name);
+            if (!in_array($taxonomy, $enabled_filters)) {
+                continue;
+            }
             $terms = get_terms(array('taxonomy' => $taxonomy, 'hide_empty' => true));
 
             if (!empty($terms)) {
@@ -1104,7 +1151,7 @@ function custom_product_filters() {
                             array(
                                 'taxonomy' => $taxonomy,
                                 'field' => 'slug',
-                                'terms' => $term->slug,
+                                'terms' => sanitize_text_field($term->slug),
                             ),
                         ),
                         'limit' => 1,
@@ -1114,7 +1161,7 @@ function custom_product_filters() {
                         $query_args['tax_query'][] = array(
                             'taxonomy' => 'product_cat',
                             'field' => 'slug',
-                            'terms' => $current_category,
+                            'terms' => sanitize_text_field($current_category),
                         );
                     }
 
@@ -1123,12 +1170,19 @@ function custom_product_filters() {
                             $query_args['tax_query'][] = array(
                                 'taxonomy' => $selected_taxonomy,
                                 'field' => 'slug',
-                                'terms' => $selected_term,
+                                'terms' => sanitize_text_field($selected_term),
                             );
                         }
                     }
 
-                    $products = wc_get_products($query_args);
+                    // Cache query results to improve performance
+                    $cache_key = 'filter_products_' . md5(json_encode($query_args));
+                    $products = wp_cache_get($cache_key, 'woocommerce');
+
+                    if ($products === false) {
+                        $products = wc_get_products($query_args);
+                        wp_cache_set($cache_key, $products, 'woocommerce', 3600); // Cache for 1 hour
+                    }
 
                     if (!empty($products)) {
                         $related_terms[] = $term;
@@ -1208,21 +1262,6 @@ function custom_product_filters() {
             .filter-group select:focus {
                 border-color: #999;
             }
-            .filter-group .clear-filter {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 12px;
-                height: 12px;
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>') no-repeat center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-            .filter-group .clear-filter:hover {
-                background-color: #ddd;
-            }
-           
             .filter-group::after {
                 content: "";
                 width: 12px;
@@ -1325,4 +1364,3 @@ function filter_products_by_attributes($query) {
         }
     }
 }
-

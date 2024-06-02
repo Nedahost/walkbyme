@@ -10,6 +10,7 @@
         <meta name="p:domain_verify" content="47d2a4d6f4ed2663e7cbd09e076d1c6e">
         <title><?php wp_title( '|', true, 'right' ); ?></title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto+Flex:wght@200&display=swap" rel="stylesheet">
+        <script type="text/javascript" async="" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=R2nrLY"></script>
         <?php wp_head(); ?> 
          <!-- Google Tag Manager -->
          <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
