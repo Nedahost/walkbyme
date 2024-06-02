@@ -1110,7 +1110,7 @@ function add_custom_filter_settings($settings, $current_section) {
     } else {
         return $settings;
     }
-}
+} 
 
 // Προσαρμογή της Λειτουργίας Φίλτρων
 add_action('woocommerce_before_shop_loop', 'custom_product_filters', 20);
