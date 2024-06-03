@@ -1201,29 +1201,29 @@ function custom_product_filters() {
         if (!empty($category_attributes)) {
             echo '<div class="product-filters">';
             echo '<span>Φίλτρα:</span>';
-
+        
             foreach ($category_attributes as $taxonomy => $data) {
                 $selected_term = isset($_GET[$taxonomy]) ? sanitize_text_field($_GET[$taxonomy]) : '';
-
+        
                 echo '<div class="filter-group">';
                 echo '<select name="' . esc_attr($taxonomy) . '-filter" class="filter-select" data-taxonomy="' . esc_attr($taxonomy) . '">';
                 echo '<option value="">' . esc_html($data['label']) . '</option>';
-
+        
                 foreach ($data['terms'] as $term) {
                     $filter_url = add_query_arg($taxonomy, $term->slug, get_pagenum_link());
                     $selected = $selected_term === $term->slug ? 'selected' : '';
                     echo '<option value="' . esc_attr($term->slug) . '" ' . $selected . '>' . esc_html($term->name) . '</option>';
                 }
-
+        
                 echo '</select>';
-
+        
                 if ($selected_term) {
                     echo '<a class="clear-filter" href="#" data-taxonomy="' . esc_attr($taxonomy) . '"></a>';
                 }
-
+        
                 echo '</div>';
             }
-
+        
             echo '</div>';
             ?>
             <style>
@@ -1292,50 +1292,93 @@ function custom_product_filters() {
             .filter-group.selected .clear-filter {
                 display: block;
             }
-        </style>
-        <script>
-            jQuery(function($) {
-    // Toggle selected class on filter change
-    $('.filter-select').on('change', function() {
-        if ($(this).val() !== '') {
-            $(this).parent('.filter-group').addClass('selected');
-        } else {
-            $(this).parent('.filter-group').removeClass('selected');
-        }
-        updateFilters();
-    });
-
-    // Clear individual filter
-    $('.clear-filter').on('click', function(e) {
-        e.preventDefault();
-        var taxonomy = $(this).data('taxonomy');
-        $('.filter-select[data-taxonomy="' + taxonomy + '"]').val('').trigger('change');
-        updateFilters();
-    });
-
-    // Initialize selected class on page load
-    $('.filter-select').each(function() {
-        if ($(this).val() !== '') {
-            $(this).parent('.filter-group').addClass('selected');
-        }
-    });
-
-    // Update filters
-    function updateFilters() {
-        var filters = {};
-        $('.filter-select').each(function() {
-            var taxonomy = $(this).data('taxonomy');
-            var term = $(this).val();
-            if (term !== '') {
-                filters[taxonomy] = term;
+        
+            /* Ενημερωμένα στυλ για κινητά */
+            @media (max-width: 767px) {
+                .product-filters {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .product-filters span {
+                    margin-bottom: 10px;
+                }
+                .filter-group {
+                    margin-right: 0;
+                    margin-bottom: 10px;
+                    position: relative;
+                    width: 100%;
+                }
+                .filter-group select {
+                    width: 100%;
+                }
+                .filter-group .clear-filter {
+                    right: 20px;
+                }
             }
-        });
-        var url = new URL(window.location.href);
-        url.search = new URLSearchParams(filters).toString();
-        window.location.href = url.href;
-    }
-});
-        </script>
+            </style>
+            <script>
+            jQuery(function($) {
+                // Toggle selected class on filter change
+                $('.filter-select').on('change', function() {
+                    if ($(this).val() !== '') {
+                        $(this).parent('.filter-group').addClass('selected');
+                    } else {
+                        $(this).parent('.filter-group').removeClass('selected');
+                    }
+                    updateFilters();
+                });
+        
+                // Clear individual filter
+                $('.clear-filter').on('click', function(e) {
+                    e.preventDefault();
+                    var taxonomy = $(this).data('taxonomy');
+                    $('.filter-select[data-taxonomy="' + taxonomy + '"]').val('').trigger('change');
+                    updateFilters();
+                });
+        
+                // Initialize selected class on page load
+                $('.filter-select').each(function() {
+                    if ($(this).val() !== '') {
+                        $(this).parent('.filter-group').addClass('selected');
+                    }
+                });
+        
+                // Update filters
+                function updateFilters() {
+                    var filters = {};
+                    $('.filter-select').each(function() {
+                        var taxonomy = $(this).data('taxonomy');
+                        var term = $(this).val();
+                        if (term !== '') {
+                            filters[taxonomy] = term;
+                        }
+                    });
+                    var url = new URL(window.location.href);
+                    url.search = new URLSearchParams(filters).toString();
+                    window.location.href = url.href;
+                }
+        
+                // Collapse filters for mobile
+                function setupCollapsibleFilters() {
+                    if ($(window).width() < 768) {
+                        if (!$('.filter-toggle').length) {
+                            $('<button class="filter-toggle">Φίλτρα</button>').insertBefore('.product-filters');
+                            $('.product-filters').hide();
+                        }
+                    } else {
+                        $('.filter-toggle').remove();
+                        $('.product-filters').show();
+                    }
+                }
+        
+                $(window).on('resize', setupCollapsibleFilters);
+                setupCollapsibleFilters();
+        
+                $(document).on('click', '.filter-toggle', function() {
+                    $('.product-filters').slideToggle();
+                });
+            });
+            </script>
             <?php
         }
     }

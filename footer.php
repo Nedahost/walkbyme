@@ -74,22 +74,22 @@
                                     <ul>
                                         <li>
                                             <a href="https://www.facebook.com/profile.php?id=100088213807890" target="_blank" rel="noopener noreferrer" title="Facebook">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/facebook.png" alt="Facebook account" style="width:100%; height:100%;" />
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/facebook.png" alt="Facebook account"  />
                                             </a>
                                         </li>
                                         <li>
                                             <a href="https://www.instagram.com/walkby_me/" target="_blank" rel="noopener noreferrer" title="Instagram">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/instagram.png" alt="Instagram account" style="width:100%; height:100%;" />
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/instagram.png" alt="Instagram account" />
                                             </a>
                                         </li>
                                         <li>
                                             <a href="https://www.tiktok.com/@walkbyme_jewellery?lang=el-GR" target="_blank" rel="noopener noreferrer" title="TikTok">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/tiktok.png" alt="TikTok account" style="width:100%; height:100%;" />
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/tiktok.png" alt="TikTok account"  />
                                             </a>
                                         </li>
                                         <li>
                                             <a href="https://gr.pinterest.com/walkbyme/" target="_blank" rel="noopener noreferrer" title="pinterest">
-                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/pinterest.png" alt="Pinterest account" style="width:100%; height:100%;" />
+                                                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/pinterest.png" alt="Pinterest account"  />
                                             </a>
                                         </li>
                                     </ul>
