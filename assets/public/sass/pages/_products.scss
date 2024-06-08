@@ -42,12 +42,24 @@
                    color: var(--clr-primary);
                }
             }
-            .listproductprice{
+            .listproductprice , .product-price{
                 font-weight: 300;
+                .product-standard-price {
+                    text-decoration: line-through; // Διαγραφή της κανονικής τιμής
+                }
+                .lowred {
+                    //color: red; // Προαιρετικό: αλλαγή χρώματος για τη μειωμένη τιμή
+                }
+                .lowcblack {
+                    color: black; // Προαιρετικό: αλλαγή χρώματος για τη μη μειωμένη τιμή
+                }
             }
         }
     }
 }
+
+
+
 .bgproducts {
     .productflex {
         display: grid;

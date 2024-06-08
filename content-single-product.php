@@ -43,11 +43,56 @@ if ( post_password_required() ) {
                         <b><u><?php echo get_post_meta($post->ID, '_date_field', true); ?></u></b>
                     </div>
                 </div>
-                
                 <div class="singleprice">
-                    <?php echo $product->get_price_html(); ?>
-                </div>
+                    <?php
+                    if ($product->is_type('variable')) {
+                        // Μεταβλητό προϊόν
+                        $variations = $product->get_available_variations();
+                        $min_price = $product->get_variation_price('min', true);
+                        $max_price = $product->get_variation_price('max', true);
+                        $min_regular_price = $product->get_variation_regular_price('min', true);
+                        $max_regular_price = $product->get_variation_regular_price('max', true);
 
+                        if ($min_price !== $max_price) {
+                            echo '<span class="lowcblack">' . wc_price($min_price) . ' - ' . wc_price($max_price) . '</span>';
+                        } else {
+                            if ($min_regular_price !== $min_price) {
+                                echo '<span class="price-container">';
+                                echo '<span class="product-standard-price">' . wc_price($min_regular_price) . '</span>';
+                                echo '<span class="lowred">' . wc_price($min_price) . '</span>';
+                                echo '</span>';
+
+                                // Εμφάνιση ποσοστού έκπτωσης
+                                $discount_percentage = calculate_discount_percentage($min_regular_price, $min_price);
+                                if ($discount_percentage > 0) {
+                                    echo '<span class="discount-percentage-badge">' . esc_html($discount_percentage) . '% OFF</span>';
+                                }
+                            } else {
+                                echo '<span class="lowcblack">' . wc_price($min_price) . '</span>';
+                            }
+                        }
+                    } else {
+                        // Απλό προϊόν
+                        $regular_price = $product->get_regular_price();
+                        $sale_price = $product->get_sale_price();
+
+                        if (!empty($sale_price) && !empty($regular_price) && $sale_price < $regular_price) {
+                            echo '<span class="price-container">';
+                            echo '<span class="product-standard-price">' . wc_price($regular_price) . '</span>';
+                            echo '<span class="lowred">' . wc_price($sale_price) . '</span>';
+                            echo '</span>';
+
+                            // Εμφάνιση ποσοστού έκπτωσης
+                            $discount_percentage = calculate_discount_percentage($regular_price, $sale_price);
+                            if ($discount_percentage > 0) {
+                                echo '<span class="discount-percentage-badge">' . esc_html($discount_percentage) . '% OFF</span>';
+                            }
+                        } else {
+                            echo '<span class="lowcblack">' . wc_price($regular_price) . '</span>';
+                        }
+                    }
+                    ?>
+                </div>
                 <div class="productContent">
                     <?php the_content(); ?>
                 </div>

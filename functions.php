@@ -161,6 +161,18 @@ function walkbyme_woocommerce_support() {
 }
 
 
+// Συνάρτηση για τον υπολογισμό του ποσοστού έκπτωσης
+if (!function_exists('calculate_discount_percentage')) {
+    function calculate_discount_percentage($regular_price, $sale_price) {
+        if (!empty($regular_price) && !empty($sale_price) && $sale_price < $regular_price) {
+            $discount_percentage = round((($regular_price - $sale_price) / $regular_price) * 100);
+            return $discount_percentage;
+        }
+        return 0;
+    }
+}
+
+
 
 
 add_filter( 'wp_title', 'walkbyme_wp_title', 10, 2 );
