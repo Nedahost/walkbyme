@@ -240,9 +240,11 @@ function woocommerce_custom_product_add_to_cart_text() {
 add_filter('woocommerce_dropdown_variation_attribute_options_args', 'customize_variation_dropdown', 10, 1);
 function customize_variation_dropdown($args)
 {
-    $args['class'] = 'my-custom-select';
+    $args['class'] = 'custom-select';
     return $args;
 }
+
+
 
 /**
  * Hide shipping rates when free shipping is available, but keep "Local pickup" 

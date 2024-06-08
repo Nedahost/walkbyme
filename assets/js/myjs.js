@@ -66,3 +66,9 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("searchModal").style.display = "none";
 });
 
+
+
+
+
+
+
