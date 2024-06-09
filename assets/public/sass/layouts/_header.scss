@@ -113,9 +113,9 @@ header {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     background-color: #333;
     color: #fff;
     position: absolute;
@@ -123,37 +123,61 @@ header {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
-    border-radius: 5px;
-  }
-  
-  .close {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+}
+
+.close {
     color: #fff;
     float: right;
     font-size: 1.5em;
     cursor: pointer;
-  }
-  
-  h2 {
+}
+
+h2 {
     text-align: center;
-  }
-  
-  .search-form {
-    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+.woocommerce-product-search {
+    display: flex; /* Τοποθέτηση των στοιχείων δίπλα-δίπλα */
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
     margin: 0 auto;
-  
-    input {
-      width: calc(100% - 10px);
-      padding: 5px;
-      margin-bottom: 10px;
+
+    input[type="text"] {
+        flex-grow: 1;
+        padding: 15px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 50px; /* Στρογγυλοποίηση για μοντέρνο look */
+        font-size: 16px; /* Μεγαλύτερη γραμματοσειρά */
+        transition: border-color 0.3s;
+
+        &:focus {
+            border-color: #777; /* Αλλαγή χρώματος ορίου κατά την εστίαση */
+            outline: none;
+        }
     }
-  
-    button {
-      width: 100%;
-      padding: 8px;
-      background-color: #555;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
+
+    input[type="submit"] {
+        padding: 15px 20px;
+        background-color: #555;
+        color: #fff;
+        border: none;
+        border-radius: 50px; /* Στρογγυλοποίηση για μοντέρνο look */
+        cursor: pointer;
+        font-size: 16px; /* Μεγαλύτερη γραμματοσειρά */
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #444; /* Αλλαγή χρώματος κουμπιού κατά το hover */
+        }
     }
-  }
+}
+
+
+

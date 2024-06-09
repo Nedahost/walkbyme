@@ -143,9 +143,9 @@ add_action( 'after_setup_theme', 'walkbyme_woocommerce_support' );
 
 function walkbyme_woocommerce_support() {
 	add_theme_support( 'woocommerce', array(
-		//'thumbnail_image_width' => 150,
+		'thumbnail_image_width' => 150,
 		'single_image_width' => 600,
-		'gallery_thumbnail_image_width' => 600,
+		//'gallery_thumbnail_image_width' => 600,
         'product_grid'          => array(
             'default_rows'    => 3,
             'min_rows'        => 2,
@@ -155,10 +155,12 @@ function walkbyme_woocommerce_support() {
             'max_columns'     => 5,
         ),
 	) );
-	//add_theme_support( 'wc-product-gallery-zoom' );
-	add_theme_support( 'wc-product-gallery-lightbox' );
-	//add_theme_support( 'wc-product-gallery-slider' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+	add_theme_support( 'wc-product-gallery-zoom' );
+	add_theme_support( 'wc-product-gallery-slider' );
 }
+
+
 
 
 // Συνάρτηση για τον υπολογισμό του ποσοστού έκπτωσης
@@ -199,20 +201,40 @@ function walkbyme_wp_title( $title, $sep ) {
 }
 
 
+//Αναζήτηση με τίτλο , περιγραφή , ετικέτες
 function customize_product_search_form($form) {
-    $form = '<form role="search" method="get" id="searchform" action="' . home_url('/') . '" class="woocommerce-product-search">
+    $form = '<form role="search" method="get" id="searchform" action="' . esc_url(home_url('/')) . '" class="woocommerce-product-search" aria-label="' . esc_attr__('Product Search', 'woocommerce') . '">
         <label class="screen-reader-text" for="s">' . __('Search for:', 'woocommerce') . '</label>
-        <input type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="' . __('Search products', 'woocommerce') . '" />
+        <input type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="' . __('Search products', 'woocommerce') . '" aria-label="' . esc_attr__('Search products', 'woocommerce') . '" autocomplete="off" />
         <input type="submit" id="searchsubmit" value="'. esc_attr__('Search', 'woocommerce') .'" />
         <input type="hidden" name="post_type" value="product" />
     </form>';
-
     return $form;
 }
 add_filter('get_product_search_form', 'customize_product_search_form');
 
 
+function extend_product_search($search, $query) {
+    global $wpdb;
 
+    if (!is_admin() && $query->is_main_query() && $query->is_search() && isset($_GET['post_type']) && $_GET['post_type'] === 'product') {
+        $search_terms = explode(' ', $query->get('s'));
+        $search_terms = array_map('esc_sql', $search_terms);
+        $search_terms = array_map('trim', $search_terms);
+
+        $tag_search = "SELECT {$wpdb->term_relationships}.object_id 
+                       FROM {$wpdb->term_relationships}
+                       INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
+                       INNER JOIN {$wpdb->terms} ON {$wpdb->term_taxonomy}.term_id = {$wpdb->terms}.term_id
+                       WHERE {$wpdb->term_taxonomy}.taxonomy = 'product_tag' 
+                       AND {$wpdb->terms}.name IN ('" . implode("','", $search_terms) . "')";
+
+        $search = " AND ({$wpdb->posts}.ID IN ({$tag_search}) OR {$wpdb->posts}.post_title LIKE '%" . implode("%' OR {$wpdb->posts}.post_title LIKE '%", $search_terms) . "%' OR {$wpdb->posts}.post_content LIKE '%" . implode("%' OR {$wpdb->posts}.post_content LIKE '%", $search_terms) . "%')";
+    }
+
+    return $search;
+}
+add_filter('posts_search', 'extend_product_search', 10, 2);
 
 
 
@@ -688,46 +710,7 @@ add_action('edited_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 add_action('create_product_cat', 'save_taxonomy_custom_fields', 10, 2);
 
 
-function calculate_dynamic_discount_percentage($regular_price, $sale_price)
-{
-    if ($regular_price > 0 && $sale_price > 0) {
-        return round((($regular_price - $sale_price) / $regular_price) * 100, 2);
-    } else {
-        return 0;
-    }
-}
 
-function display_dynamic_discount_percentage($product)
-{
-    if ('simple' == $product->product_type) {
-        $regular_price = $product->get_regular_price();
-        $sales_price = $product->get_sale_price();
-
-        $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
-
-        // Ελέγξτε εάν το ποσοστό είναι διάφορο του μηδενός πριν το εμφανίσετε
-        if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
-            echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
-        }
-    } elseif ('variable' == $product->product_type) {
-        $variations = $product->get_available_variations();
-        $variation = reset($variations);
-        $variation_id = $variation['variation_id'];
-        $variable_product = new WC_Product_Variation($variation_id);
-        $regular_price = $variable_product->get_regular_price();
-        $sales_price = $variable_product->get_sale_price();
-
-        $dynamic_discount_percentage = calculate_dynamic_discount_percentage($regular_price, $sales_price);
-
-        // Ελέγξτε εάν το ποσοστό είναι διάφορο του μηδενός πριν το εμφανίσετε
-        if ($dynamic_discount_percentage != 0 && $dynamic_discount_percentage != '') {
-            echo 'Ποσοστό Έκπτωσης: - ' . $dynamic_discount_percentage . '%';
-        }
-    }
-}
-
-
-add_filter('woocommerce_product_is_on_sale', '__return_false');
 
 
 
@@ -789,6 +772,8 @@ function woocommerce_fbq_purchase_event($order_id) {
 }
 
 
+
+//schema
 add_action('wp_footer', 'add_product_json_ld');
 function add_product_json_ld() {
     if (is_product()) {

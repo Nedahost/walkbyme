@@ -66,9 +66,9 @@
                         <h3>Walk By Me</h3>
                         <div>
                             <ul>
-                                <li><!-- Ελασσώνος 16 --></li>
+                                <li>Ελασσώνος 16 </li>
                                 <li>121 37 Περιστέρι, Ελλάδα </li>
-                                <li><!-- +30 697 5686 473 --></li>
+                                <li> +30 697 5686 473</li>
                                 <li>info@walkbyme.gr</li>
                                 <li>
                                     <ul>
@@ -108,7 +108,7 @@
             <div class="copyright">
                 <ul>
                     <li>&copy; 2023 - <?php echo date('Y');  ?> Walk By Me - all rights reserved.</li>
-                    <li> <!-- Product Photography by Angel Koulogiannis | <a href="https://www.nedahost.gr" title="Nedahost Κατασκευη ιστοσελιδων" target="_blank" > Design & Development by Nedahost </a> --></li>
+                    <li> Product Photography by Angel Koulogiannis | <a href="https://www.nedahost.gr" title="Nedahost Κατασκευη ιστοσελιδων" target="_blank" > Design & Development by Nedahost </a></li>
                 </ul>
             </div>
         </div><!-- wrapper end -->

@@ -104,14 +104,14 @@
                         </ul>
                 </div><!-- shop details end -->
                     <!-- Μοντάλ Αναζήτησης -->
-                    <div id="searchModal" class="modal">
-                        <div class="modal-content">
+                <div id="searchModal" class="modal">
+                    <div class="modal-content">
                         <span class="close" onclick="closeSearchModal()">&times;</span>
                         <!-- Περιεχόμενο του μοντάλ -->
                         <h2>Αναζήτηση</h2>
-                        <?php get_product_search_form(); ?>
-                        </div>
+                        <?php echo get_product_search_form(); ?>
                     </div>
+                </div>
                 <div id="logo"><!-- logo start -->
                     <?php
                     $header_image = get_header_image();

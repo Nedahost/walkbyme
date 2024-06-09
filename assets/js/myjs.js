@@ -45,30 +45,47 @@ jQuery(document).on("ready", function() {
 
 
 function openSearchModal() {
-  document.getElementById("searchModal").style.display = "block";
+  var modal = document.getElementById("searchModal");
+  modal.style.display = "block";
+  modal.querySelector('input[name="s"]').focus();
 }
 
 function closeSearchModal() {
   document.getElementById("searchModal").style.display = "none";
 }
 
-// Κλείσιμο μοντάλ αν πατηθεί εκτός περιοχής του μοντάλ
+// Κλείσιμο του modal αν πατηθεί εκτός περιοχής του modal
 window.onclick = function(event) {
   var modal = document.getElementById("searchModal");
   if (event.target == modal) {
-    modal.style.display = "none";
+      modal.style.display = "none";
   }
 }
 
 // Προσθήκη event listener για το φορτωμένο της σελίδας
 document.addEventListener("DOMContentLoaded", function() {
-  // Κρύψτε το μοντάλ κατά το φορτωμένο της σελίδας
+  // Κρύψτε το modal κατά το φορτωμένο της σελίδας
   document.getElementById("searchModal").style.display = "none";
+});
+
+// Κλείσιμο με το κουμπί Esc
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape") {
+      closeSearchModal();
+  }
 });
 
 
 
 
 
+//lightbox για τις εικόνες των προϊόντων
+jQuery(document).ready(function($) {
+  // Ενεργοποίηση lightbox με κλικ στην εικόνα του προϊόντος
+  $('.woocommerce-product-gallery__image').on('click', function(e) {
+      e.preventDefault();
+      $(this).closest('.woocommerce-product-gallery').find('.woocommerce-product-gallery__trigger').click();
+  });
+});
 
 
