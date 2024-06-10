@@ -205,6 +205,20 @@
     display: none;
     padding: 10px;
     background-color: #fff;
+    a{
+        color: hsl(40, 58%, 44%);
+        &:hover{
+            color: #9a715b;
+        }
+    }
+    ul{
+        list-style: circle;
+        margin-left: 18px;
+        li{
+            line-height: 24px;
+            
+        }
+    }
   }
   
   .accordion-content.active {
