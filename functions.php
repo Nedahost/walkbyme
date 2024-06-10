@@ -227,7 +227,7 @@ function extend_product_search($search, $query) {
                        INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
                        INNER JOIN {$wpdb->terms} ON {$wpdb->term_taxonomy}.term_id = {$wpdb->terms}.term_id
                        WHERE {$wpdb->term_taxonomy}.taxonomy = 'product_tag' 
-                       AND {$wpdb->terms}.name IN ('" . implode("','", $search_terms) . "')";
+                       AND ({$wpdb->terms}.name LIKE '%" . implode("%' OR {$wpdb->terms}.name LIKE '%", $search_terms) . "%')";
 
         $search = " AND ({$wpdb->posts}.ID IN ({$tag_search}) OR {$wpdb->posts}.post_title LIKE '%" . implode("%' OR {$wpdb->posts}.post_title LIKE '%", $search_terms) . "%' OR {$wpdb->posts}.post_content LIKE '%" . implode("%' OR {$wpdb->posts}.post_content LIKE '%", $search_terms) . "%')";
     }
