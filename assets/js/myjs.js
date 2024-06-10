@@ -89,3 +89,17 @@ jQuery(document).ready(function($) {
 });
 
 
+
+jQuery(document).ready(function($) {
+  $('.accordion-title').click(function() {
+      if ($(this).hasClass('active')) {
+          $(this).removeClass('active');
+          $(this).siblings('.accordion-content').slideUp(300);
+      } else {
+          $('.accordion-title').removeClass('active');
+          $('.accordion-content').slideUp(300);
+          $(this).addClass('active');
+          $(this).siblings('.accordion-content').slideDown(300);
+      }
+  });
+});

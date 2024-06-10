@@ -190,6 +190,43 @@
     }
 }
 
+.accordion-item {
+    margin-bottom: 10px;
+  }
+  
+  .accordion-title {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f1f1f1;
+    position: relative;
+  }
+  
+  .accordion-content {
+    display: none;
+    padding: 10px;
+    background-color: #fff;
+  }
+  
+  .accordion-content.active {
+    display: block;
+  }
+  
+  .accordion-title .accordion-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .accordion-title .accordion-icon::after {
+    content: "+";
+  }
+  
+  .accordion-title.active .accordion-icon::after {
+    content: "-";
+  }
+
+
 .related {
     padding: 90px 0 50px;
 

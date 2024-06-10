@@ -15,7 +15,7 @@ add_action( 'wp_enqueue_scripts', 'walkbyme_load_css' );
 //  Javascripts load js
 
 function load_js(){
-    // wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.2.js', array(), null, true);
+    wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.0.min.js', array(), null, true);
     wp_enqueue_script('slick', '//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js?ver=1.5', array(), null, true);
     wp_enqueue_script('myjs', get_template_directory_uri() . '/assets/js/myjs.js', array('jquery'), false, true);
 
@@ -235,7 +235,7 @@ function extend_product_search($search, $query) {
     return $search;
 }
 add_filter('posts_search', 'extend_product_search', 10, 2);
-
+ 
 
 
 
@@ -1071,6 +1071,51 @@ add_action('wp_head', 'add_breadcrumbs_schema_markup');
 
 
 
+// Add custom meta box
+function add_custom_meta_box() {
+    add_meta_box(
+        'jewelry_care_meta_box',       // ID του meta box
+        'Jewelry Care Tab Settings',   // Τίτλος του meta box
+        'display_custom_meta_box',     // Συνάρτηση για την εμφάνιση του περιεχομένου του meta box
+        'product',                     // Τύπος του post
+        'side',                        // Context (πλευρικό πλαίσιο)
+        'default'                      // Προτεραιότητα
+    );
+}
+add_action('add_meta_boxes', 'add_custom_meta_box');
 
+// Display custom meta box content
+function display_custom_meta_box($post) {
+    $value = get_post_meta($post->ID, '_hide_jewelry_care_tab', true);
+    wp_nonce_field('save_custom_meta_box_data', 'custom_meta_box_nonce');
+    ?>
+    <p>
+        <label for="hide_jewelry_care_tab"><?php _e('Hide Jewelry Care Tab', 'text-domain'); ?></label>
+        <input type="checkbox" id="hide_jewelry_care_tab" name="hide_jewelry_care_tab" value="yes" <?php checked($value, 'yes'); ?>>
+    </p>
+    <?php
+}
 
-
+// Save custom meta box data
+function save_custom_meta_box_data($post_id) {
+    if (!isset($_POST['custom_meta_box_nonce'])) {
+        return;
+    }
+    if (!wp_verify_nonce($_POST['custom_meta_box_nonce'], 'save_custom_meta_box_data')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (isset($_POST['post_type']) && 'product' === $_POST['post_type']) {
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+    }
+    if (!isset($_POST['hide_jewelry_care_tab'])) {
+        update_post_meta($post_id, '_hide_jewelry_care_tab', 'no');
+    } else {
+        update_post_meta($post_id, '_hide_jewelry_care_tab', 'yes');
+    }
+}
+add_action('save_post', 'save_custom_meta_box_data');
