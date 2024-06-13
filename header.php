@@ -45,14 +45,6 @@
         gtag('config', 'AW-16563030358');
         </script>
 
-        <!-- Event snippet for Προβολή σελίδας (2) conversion page -->
-        <script>
-        gtag('event', 'conversion', {
-            'send_to': 'AW-16563030358/33ORCKHMz7AZENaS79k9',
-            'value': 1.0,
-            'currency': 'EUR'
-        });
-        </script>
 
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){

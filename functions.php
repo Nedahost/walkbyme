@@ -143,7 +143,7 @@ add_action( 'after_setup_theme', 'walkbyme_woocommerce_support' );
 
 function walkbyme_woocommerce_support() {
 	add_theme_support( 'woocommerce', array(
-		'thumbnail_image_width' => 150,
+		//'thumbnail_image_width' => 150,
 		'single_image_width' => 600,
 		//'gallery_thumbnail_image_width' => 600,
         'product_grid'          => array(
