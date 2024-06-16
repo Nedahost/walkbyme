@@ -39,6 +39,13 @@ if ( post_password_required() ) {
                             }
                         ?>
                     </div>
+                    <?php 
+                    // Εμφάνιση διαθεσιμότητας
+                    $availability = get_post_meta(get_the_ID(), '_select', true);
+                    if (!empty($availability)) {
+                        echo '<div class="availability"><b>Διαθεσιμότητα:</b> ' . esc_html($availability) . '</div>';
+                    }
+                    ?>
                     <div class="textsales">
                         <b><u><?php echo get_post_meta($post->ID, '_date_field', true); ?></u></b>
                     </div>
