@@ -1149,7 +1149,7 @@ add_action('init', 'create_slider_post_type');
 function add_slider_meta_boxes() {
     add_meta_box(
         'slider_button_meta_box', // ID του meta box
-        'Slider Button', // Τίτλος του meta box
+        'Slider Details', // Τίτλος του meta box
         'render_slider_button_meta_box', // Συνάρτηση για το rendering του περιεχομένου
         'gallery', // Custom post type
         'normal', // Context
@@ -1162,6 +1162,7 @@ function render_slider_button_meta_box($post) {
     // Απόκτηση των τρεχουσών τιμών για τα πεδία
     $button_text = get_post_meta($post->ID, '_slider_button_text', true);
     $button_url = get_post_meta($post->ID, '_slider_button_url', true);
+    $slider_order = get_post_meta($post->ID, '_slider_order', true);
 
     // Απόδοση των πεδίων στο meta box
     ?>
@@ -1170,7 +1171,12 @@ function render_slider_button_meta_box($post) {
 
     <label for="slider_button_url" style="margin-top: 10px; display: block;">Button URL:</label>
     <input type="url" name="slider_button_url" id="slider_button_url" value="<?php echo esc_attr($button_url); ?>" style="width: 100%;" />
+
+    <label for="slider_order" style="margin-top: 10px; display: block;">Slider Order:</label>
+    <input type="number" name="slider_order" id="slider_order" value="<?php echo esc_attr($slider_order); ?>" style="width: 100%;" />
     <?php
+    // Προσθέτουμε nonce για ασφαλή αποθήκευση
+    wp_nonce_field(basename(__FILE__), 'slider_button_nonce');
 }
 
 function save_slider_meta_boxes($post_id) {
@@ -1191,5 +1197,10 @@ function save_slider_meta_boxes($post_id) {
     if (isset($_POST['slider_button_url'])) {
         update_post_meta($post_id, '_slider_button_url', esc_url($_POST['slider_button_url']));
     }
+
+    if (isset($_POST['slider_order'])) {
+        update_post_meta($post_id, '_slider_order', intval($_POST['slider_order']));
+    }
 }
 add_action('save_post', 'save_slider_meta_boxes');
+

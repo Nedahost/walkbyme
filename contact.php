@@ -18,8 +18,13 @@ get_header(); ?>
         </div><!-- wrapper end -->
     </div><!-- outer breadcrumb end -->
 <?php } ?>
-
+    
     <div class="wrapper"><!-- wrapper start -->
+
+    <div class="outermap">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3143.0170066380524!2d23.667057275843447!3d38.0233829978003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6f30cd7073f306cb%3A0x7fa600226ae1ea9f!2sWalk%20By%20Me!5e0!3m2!1sen!2sgr!4v1718629753217!5m2!1sen!2sgr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
     <?php
 if (isset($_POST['submitted'])) {
     $name = sanitize_text_field($_POST['contactName']);

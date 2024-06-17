@@ -1,3 +1,9 @@
+.outermap{
+    iframe{
+        width: 100%;
+    }
+}
+
 #outercontact{
         padding: 40px 0;
         h1{
@@ -8,6 +14,8 @@
             text-align: center;
         }
         
+        
+
         .contactform{
             .topContact ul { 
                 margin: 0px; 

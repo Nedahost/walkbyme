@@ -7,7 +7,10 @@
     <?php
     $args = array(
         'post_type' => 'gallery',
-        'posts_per_page' => -1
+        'posts_per_page' => -1,
+        'meta_key' => '_slider_order',
+        'orderby' => 'meta_value_num',
+        'order' => 'ASC'
     );
     $slider_query = new WP_Query($args);
     if ($slider_query->have_posts()) :

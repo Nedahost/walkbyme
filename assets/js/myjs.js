@@ -41,7 +41,7 @@ jQuery(document).on("ready", function() {
         });
 
         jQuery(".slideshow").slick({
-          dots: false,
+          dots: true,
           arrows:true,
           autoplay:false,
           infinite: false,
