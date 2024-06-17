@@ -5,7 +5,7 @@
         <div class="sliderimages"><!-- slider images start -->
             <figure><!-- figure start -->
                 <a href="#" >
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/fallslide.webp"  style="width: 100%; height: auto;"  alt="sliderimage" />
+                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/banner1.jpg"  style="width: 100%; height: auto;"  alt="sliderimage" />
                 </a>
             </figure><!-- figure end -->
         </div><!-- slider images end -->
