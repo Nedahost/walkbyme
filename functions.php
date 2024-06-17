@@ -1119,3 +1119,29 @@ function save_custom_meta_box_data($post_id) {
     }
 }
 add_action('save_post', 'save_custom_meta_box_data');
+
+
+
+function create_slider_post_type() {
+    register_post_type('gallery',
+        array(
+            'labels' => array(
+                'name' => __('Slider'),
+                'singular_name' => __('Slider')
+            ),
+            'public' => false,
+            'has_archive' => false,
+            'supports' => array('title','thumbnail', 'editor'),
+            'exclude_from_search' => true,
+            'publicly_queryable' => false,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'query_var' => true,
+            'capability_type' => 'post',
+            'hierarchical' => false,
+            'menu_position' => null,
+            'menu_icon' => 'dashicons-format-gallery'
+        )
+    );
+}
+add_action('init', 'create_slider_post_type');
