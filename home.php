@@ -2,6 +2,8 @@
 
 <div class="wrapper"><!-- wrapper start -->
 <div class="outerslider"><!-- outer slider start -->
+  
+        <div class="slideshow">
     <?php
     $args = array(
         'post_type' => 'gallery',
@@ -13,7 +15,9 @@
             $button_url = get_post_meta(get_the_ID(), '_slider_button_url', true);
             $button_text = get_post_meta(get_the_ID(), '_slider_button_text', true);
     ?>
-            <div class="sliderimages"><!-- slider images start -->
+            
+                
+                <div class="sliderimages">
                 <figure><!-- figure start -->
                     <?php the_post_thumbnail('full', ['style' => 'width: 100%; height: auto;']); ?>
                     <figcaption class="slider-caption">
@@ -26,12 +30,17 @@
                         <?php endif; ?>
                     </figcaption>
                 </figure><!-- figure end -->
-            </div><!-- slider images end -->
+                </div>
+                
+                
+            
     <?php
         endwhile;
         wp_reset_postdata();
     endif;
     ?>
+    </div>
+
 </div><!-- outer slider end -->
 
 
