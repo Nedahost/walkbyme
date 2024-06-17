@@ -2,14 +2,39 @@
 
 <div class="wrapper"><!-- wrapper start -->
 <div class="outerslider"><!-- outer slider start -->
-        <div class="sliderimages"><!-- slider images start -->
-            <figure><!-- figure start -->
-                <a href="#" >
-                <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/banner1.jpg"  style="width: 100%; height: auto;"  alt="sliderimage" />
-                </a>
-            </figure><!-- figure end -->
-        </div><!-- slider images end -->
-    </div><!-- outer slider end -->
+    <?php
+    $args = array(
+        'post_type' => 'gallery',
+        'posts_per_page' => -1
+    );
+    $slider_query = new WP_Query($args);
+    if ($slider_query->have_posts()) :
+        while ($slider_query->have_posts()) : $slider_query->the_post();
+            $button_url = get_post_meta(get_the_ID(), '_slider_button_url', true);
+            $button_text = get_post_meta(get_the_ID(), '_slider_button_text', true);
+    ?>
+            <div class="sliderimages"><!-- slider images start -->
+                <figure><!-- figure start -->
+                    <?php the_post_thumbnail('full', ['style' => 'width: 100%; height: auto;']); ?>
+                    <figcaption class="slider-caption">
+                        <h2><?php the_title(); ?></h2>
+                        <p><?php the_content(); ?></p>
+                        <?php if ($button_url && $button_text) : ?>
+                            <a href="<?php echo esc_url($button_url); ?>" class="cta-button">
+                                <?php echo esc_html($button_text); ?>
+                            </a>
+                        <?php endif; ?>
+                    </figcaption>
+                </figure><!-- figure end -->
+            </div><!-- slider images end -->
+    <?php
+        endwhile;
+        wp_reset_postdata();
+    endif;
+    ?>
+</div><!-- outer slider end -->
+
+
     <div class="outercarousel"><!-- outer carousel start -->
         <div class="generic-titles"><!-- generic title start -->
             <h2>

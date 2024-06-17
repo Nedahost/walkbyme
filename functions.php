@@ -1145,3 +1145,51 @@ function create_slider_post_type() {
     );
 }
 add_action('init', 'create_slider_post_type');
+
+function add_slider_meta_boxes() {
+    add_meta_box(
+        'slider_button_meta_box', // ID του meta box
+        'Slider Button', // Τίτλος του meta box
+        'render_slider_button_meta_box', // Συνάρτηση για το rendering του περιεχομένου
+        'gallery', // Custom post type
+        'normal', // Context
+        'default' // Priority
+    );
+}
+add_action('add_meta_boxes', 'add_slider_meta_boxes');
+
+function render_slider_button_meta_box($post) {
+    // Απόκτηση των τρεχουσών τιμών για τα πεδία
+    $button_text = get_post_meta($post->ID, '_slider_button_text', true);
+    $button_url = get_post_meta($post->ID, '_slider_button_url', true);
+
+    // Απόδοση των πεδίων στο meta box
+    ?>
+    <label for="slider_button_text">Button Text:</label>
+    <input type="text" name="slider_button_text" id="slider_button_text" value="<?php echo esc_attr($button_text); ?>" style="width: 100%;" />
+
+    <label for="slider_button_url" style="margin-top: 10px; display: block;">Button URL:</label>
+    <input type="url" name="slider_button_url" id="slider_button_url" value="<?php echo esc_attr($button_url); ?>" style="width: 100%;" />
+    <?php
+}
+
+function save_slider_meta_boxes($post_id) {
+    // Έλεγχος για nonce και autosave
+    if (!isset($_POST['slider_button_nonce']) || !wp_verify_nonce($_POST['slider_button_nonce'], basename(__FILE__))) {
+        return $post_id;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return $post_id;
+    }
+
+    // Αποθήκευση των τιμών για τα πεδία
+    if (isset($_POST['slider_button_text'])) {
+        update_post_meta($post_id, '_slider_button_text', sanitize_text_field($_POST['slider_button_text']));
+    }
+
+    if (isset($_POST['slider_button_url'])) {
+        update_post_meta($post_id, '_slider_button_url', esc_url($_POST['slider_button_url']));
+    }
+}
+add_action('save_post', 'save_slider_meta_boxes');
