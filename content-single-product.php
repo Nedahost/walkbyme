@@ -104,8 +104,6 @@ if ( post_password_required() ) {
                     <?php the_content(); ?>
                 </div>
                 <?php
-// Έλεγχος αν θα εμφανιστεί το συγκεκριμένο accordion "Φροντίδα Κοσμημάτων"
-$hide_jewelry_care_tab = get_post_meta($product->get_id(), '_hide_jewelry_care_tab', true);
 $accordion_items = get_option('nedahost_tabs_items', array());
 
 // Λήψη της κατηγορίας του τρέχοντος προϊόντος
@@ -134,11 +132,6 @@ if (!empty($accordion_items)) {
                     $show_accordion = true;
                     break;
                 }
-            }
-
-            // Αν το custom field είναι τσεκαρισμένο, παράλειψε το accordion "Φροντίδα Κοσμημάτων"
-            if ($hide_jewelry_care_tab === 'yes' && $item['question'] === 'Φροντίδα Κοσμημάτων') {
-                $show_accordion = false;
             }
 
             if ($show_accordion) {
