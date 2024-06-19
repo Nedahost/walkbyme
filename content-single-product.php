@@ -104,13 +104,16 @@ if ( post_password_required() ) {
                     <?php the_content(); ?>
                 </div>
                 <?php
-                    // Έλεγχος αν θα εμφανιστεί το συγκεκριμένο accordion "Φροντίδα Κοσμημάτων"
+// Έλεγχος αν θα εμφανιστεί το συγκεκριμένο accordion "Φροντίδα Κοσμημάτων"
 $hide_jewelry_care_tab = get_post_meta($product->get_id(), '_hide_jewelry_care_tab', true);
-
 $accordion_items = get_option('nedahost_tabs_items', array());
+
+// Λήψη της κατηγορίας του τρέχοντος προϊόντος
+$product_category = get_the_terms($product->get_id(), 'product_cat');
+
 if (!empty($accordion_items)) {
     echo '<div class="product-accordions">';
-    
+
     // Εμφάνιση χαρακτηριστικών προϊόντος στο πρώτο accordion
     echo '<div class="accordion-item">';
     echo '<h3 class="accordion-title">Χαρακτηριστικά <span class="accordion-icon"></span></h3>';
@@ -118,26 +121,38 @@ if (!empty($accordion_items)) {
     do_action('woocommerce_product_additional_information', $product);
     echo '</div>';
     echo '</div>';
-    
+
     // Εμφάνιση υπόλοιπων accordions
     foreach ($accordion_items as $item) {
         if (isset($item['question']) && isset($item['answer'])) {
+            // Έλεγχος αν η κατηγορία του προϊόντος υπάρχει στις επιλεγμένες κατηγορίες του accordion
+            $item_categories = explode(',', $item['category']);
+            $show_accordion = false;
+
+            foreach ($product_category as $category) {
+                if (in_array($category->slug, $item_categories)) {
+                    $show_accordion = true;
+                    break;
+                }
+            }
+
             // Αν το custom field είναι τσεκαρισμένο, παράλειψε το accordion "Φροντίδα Κοσμημάτων"
             if ($hide_jewelry_care_tab === 'yes' && $item['question'] === 'Φροντίδα Κοσμημάτων') {
-                continue;
+                $show_accordion = false;
             }
-            echo '<div class="accordion-item">';
-            echo '<h3 class="accordion-title">' . esc_html($item['question']) . '<span class="accordion-icon"></span></h3>';
-            echo '<div class="accordion-content">' . wpautop($item['answer']) . '</div>';
-            echo '</div>';
+
+            if ($show_accordion) {
+                echo '<div class="accordion-item">';
+                echo '<h3 class="accordion-title">' . esc_html($item['question']) . '<span class="accordion-icon"></span></h3>';
+                echo '<div class="accordion-content">' . wpautop($item['answer']) . '</div>';
+                echo '</div>';
+            }
         }
     }
-    
+
     echo '</div>';
 }
-
-
-                ?>
+?>
                 
                 <?php echo woocommerce_template_single_add_to_cart(); ?>
             </section>
