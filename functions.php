@@ -1204,3 +1204,109 @@ function save_slider_meta_boxes($post_id) {
 }
 add_action('save_post', 'save_slider_meta_boxes');
 
+
+
+// Προσθήκη του metabox για την επιλογή δεύτερης εικόνας προϊόντος
+add_action('add_meta_boxes', 'add_custom_image_metabox');
+function add_custom_image_metabox() {
+    add_meta_box(
+        'custom_product_image_metabox',
+        __('Custom Product Image', 'woocommerce'),
+        'custom_product_image_metabox_callback',
+        'product',
+        'side'
+    );
+}
+
+// Callback function για την εμφάνιση του metabox
+function custom_product_image_metabox_callback($post) {
+    wp_nonce_field('save_custom_product_image', 'custom_product_image_nonce');
+    $custom_image_id = get_post_meta($post->ID, '_custom_product_image_id', true);
+    $custom_image_src = wp_get_attachment_image_src($custom_image_id, 'thumbnail');
+    ?>
+    <div>
+        <img id="custom_product_image_preview" src="<?php echo esc_url($custom_image_src ? $custom_image_src[0] : ''); ?>" style="max-width:100%; height:auto;" />
+        <input type="hidden" id="custom_product_image_id" name="custom_product_image_id" value="<?php echo esc_attr($custom_image_id); ?>" />
+        <button type="button" class="button" id="custom_product_image_upload"><?php _e('Select Image', 'woocommerce'); ?></button>
+        <button type="button" class="button" id="custom_product_image_remove"><?php _e('Remove Image', 'woocommerce'); ?></button>
+    </div>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            var frame;
+            $('#custom_product_image_upload').on('click', function(event) {
+                event.preventDefault();
+                if (frame) {
+                    frame.open();
+                    return;
+                }
+                frame = wp.media({
+                    title: '<?php _e('Select or Upload Custom Product Image', 'woocommerce'); ?>',
+                    button: {
+                        text: '<?php _e('Use this image', 'woocommerce'); ?>',
+                    },
+                    multiple: false
+                });
+                frame.on('select', function() {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#custom_product_image_id').val(attachment.id);
+                    $('#custom_product_image_preview').attr('src', attachment.url);
+                });
+                frame.open();
+            });
+            $('#custom_product_image_remove').on('click', function(event) {
+                event.preventDefault();
+                $('#custom_product_image_id').val('');
+                $('#custom_product_image_preview').attr('src', '');
+            });
+        });
+    </script>
+    <?php
+}
+
+// Αποθήκευση της επιλεγμένης εικόνας
+add_action('save_post', 'save_custom_product_image');
+function save_custom_product_image($post_id) {
+    if (!isset($_POST['custom_product_image_nonce']) || !wp_verify_nonce($_POST['custom_product_image_nonce'], 'save_custom_product_image')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    if (isset($_POST['custom_product_image_id'])) {
+        update_post_meta($post_id, '_custom_product_image_id', absint($_POST['custom_product_image_id']));
+    } else {
+        delete_post_meta($post_id, '_custom_product_image_id');
+    }
+}
+
+
+// Αφαίρεση της προεπιλεγμένης εικόνας προϊόντος
+remove_action('woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10);
+
+// Προσθήκη δεύτερης εικόνας στο loop προϊόντων
+add_action('woocommerce_before_shop_loop_item_title', 'custom_woocommerce_template_loop_product_thumbnail', 11);
+function custom_woocommerce_template_loop_product_thumbnail() {
+    global $product;
+
+    // Λήψη της κύριας εικόνας
+    $main_image_id = $product->get_image_id();
+    $main_image_url = wp_get_attachment_image_url($main_image_id, 'woocommerce_thumbnail');
+
+    // Λήψη της δεύτερης εικόνας
+    $custom_image_id = get_post_meta($product->get_id(), '_custom_product_image_id', true);
+    $custom_image_url = wp_get_attachment_image_url($custom_image_id, 'woocommerce_thumbnail');
+
+    if ($custom_image_url) {
+        echo '<a href="' . get_permalink($product->get_id()) . '" class="product-image-link">';
+        echo '<img src="' . esc_url($main_image_url) . '" alt="' . esc_attr($product->get_name()) . '" class="main-image" />';
+        echo '<img src="' . esc_url($custom_image_url) . '" alt="' . esc_attr($product->get_name()) . '" class="hover-image" />';
+        echo '</a>';
+    } else {
+        echo '<a href="' . get_permalink($product->get_id()) . '" class="product-image-link">';
+        echo '<img src="' . esc_url($main_image_url) . '" alt="' . esc_attr($product->get_name()) . '" class="main-image" />';
+        echo '</a>';
+    }
+}
