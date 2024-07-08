@@ -32,7 +32,7 @@
             // Εμφάνιση ποσοστού έκπτωσης
             $discount_percentage = calculate_discount_percentage($regular_price, $sale_price);
             if ($discount_percentage) {
-                echo '<div class="discount-percentage-badge">' . esc_html($discount_percentage) . '%</div>';
+                echo '<div class="discount-percentage-badge">' . esc_html($discount_percentage) . '% OFF</div>';
             }
             ?>
         </div><!-- product price end -->
