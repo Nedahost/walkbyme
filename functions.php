@@ -41,6 +41,228 @@ add_action('wp_head', 'favicon');
 add_action('admin_head', 'favicon');
 
 
+
+function add_facebook_pixel_code() {
+    ?>
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '891327725921929');
+    fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+    <?php
+}
+add_action('wp_head', 'add_facebook_pixel_code');
+
+
+function facebook_pixel_product_category_view() {
+    if (is_product_category()) {
+        $category = get_queried_object();
+        ?>
+        <script>
+        fbq('track', 'ViewCategory', {
+            content_name: '<?php echo $category->name; ?>',
+            content_category: '<?php echo $category->slug; ?>',
+            content_ids: '<?php echo $category->term_id; ?>',
+            content_type: 'product_category'
+        });
+        </script>
+        <?php
+    }
+}
+add_action('wp_footer', 'facebook_pixel_product_category_view', 20, 0);
+
+function facebook_pixel_product_view() {
+    if (is_product() && !is_product_category()) {
+        global $product;
+        $category_names = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
+        if (empty($category_names)) {
+            $category_names = ['Uncategorized'];
+        }
+        ?>
+        <script>
+        fbq('track', 'ViewContent', {
+            content_ids: ['<?php echo $product->get_id(); ?>'],
+            content_type: 'product',
+            content_name: '<?php echo $product->get_name(); ?>',
+            content_category: '<?php echo implode(", ", $category_names); ?>',
+            value: <?php echo $product->get_price(); ?>,
+            currency: '<?php echo get_woocommerce_currency(); ?>'
+        });
+        </script>
+        <?php
+    }
+}
+add_action('wp_footer', 'facebook_pixel_product_view', 20);
+
+function facebook_pixel_add_to_cart() {
+    ?>
+    <script>
+    jQuery(document).ready(function($) {
+        $('body').on('added_to_cart', function(event, fragments, cart_hash, button) {
+            var product_id = button.data('product_id');
+            var product_name = button.data('product_name');
+            var product_category = button.data('product_category');
+            fbq('track', 'AddToCart', {
+                content_ids: [product_id],
+                content_type: 'product',
+                content_name: product_name,
+                content_category: product_category
+            });
+        });
+    });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'facebook_pixel_add_to_cart');
+
+function facebook_pixel_purchase($order_id) {
+    $order = wc_get_order($order_id);
+    $items = $order->get_items();
+    $content_ids = array();
+    $content_names = array();
+    $content_categories = array();
+
+    foreach ($items as $item) {
+        $product = $item->get_product();
+        $product_id = $product->get_id();
+
+        if ($product->is_type('variation')) {
+            $parent_id = $product->get_parent_id();
+            $product = wc_get_product($parent_id);
+        }
+
+        $content_ids[] = $product_id;
+        $content_names[] = $product->get_name();
+
+        $category_ids = $product->get_category_ids();
+        if (!empty($category_ids)) {
+            $category_names = array();
+            foreach ($category_ids as $cat_id) {
+                $category = get_term($cat_id, 'product_cat');
+                if ($category && !is_wp_error($category)) {
+                    if (isset($category->name)) {
+                        $category_names[] = $category->name;
+                    }
+                }
+            }
+            if (!empty($category_names)) {
+                $content_categories[] = implode(', ', $category_names);
+            } else {
+                $content_categories[] = 'Uncategorized';
+            }
+        } else {
+            $content_categories[] = 'Uncategorized';
+        }
+    }
+    ?>
+    <script>
+    fbq('track', 'Purchase', {
+        content_ids: <?php echo json_encode($content_ids); ?>,
+        content_type: 'product',
+        content_name: <?php echo json_encode($content_names); ?>,
+        content_category: <?php echo json_encode($content_categories); ?>,
+        value: <?php echo $order->get_total(); ?>,
+        currency: '<?php echo get_woocommerce_currency(); ?>'
+    });
+    </script>
+    <?php
+}
+add_action('woocommerce_thankyou', 'facebook_pixel_purchase');
+
+function facebook_pixel_search() {
+    if (is_search()) {
+        ?>
+        <script>
+        fbq('track', 'Search', {
+            search_string: '<?php echo get_search_query(); ?>'
+        });
+        </script>
+        <?php
+    }
+}
+add_action('wp_footer', 'facebook_pixel_search');
+
+function facebook_pixel_initiate_checkout() {
+    if ((is_cart() || is_checkout()) && !is_order_received_page()) {
+        $items = WC()->cart->get_cart_contents();
+        $content_ids = array();
+        $content_names = array();
+        $content_categories = array();
+        $value = 0;
+
+        foreach ($items as $item => $values) {
+            $_product = $values['data'];
+            $product_id = $_product->get_id();
+            
+            if ($_product->is_type('variation')) {
+                $parent_id = $_product->get_parent_id();
+                $product = wc_get_product($parent_id);
+            } else {
+                $product = $_product;
+            }
+
+            $content_ids[] = $product_id;
+            $content_names[] = $product->get_name();
+
+            $category_ids = $product->get_category_ids();
+            if (!empty($category_ids)) {
+                $category_names = array();
+                foreach ($category_ids as $cat_id) {
+                    $category = get_term($cat_id, 'product_cat');
+                    if ($category && !is_wp_error($category)) {
+                        if (isset($category->name)) {
+                            $category_names[] = $category->name;
+                        } else {
+                            error_log("Facebook Pixel Debug: Category object missing 'name' property. Category ID: " . $cat_id);
+                        }
+                    } else {
+                        error_log("Facebook Pixel Debug: Invalid category. Category ID: " . $cat_id);
+                    }
+                }
+                if (!empty($category_names)) {
+                    $content_categories[] = implode(', ', $category_names);
+                } else {
+                    $content_categories[] = 'Uncategorized';
+                    error_log("Facebook Pixel Debug: No valid category names found for product ID: " . $product_id);
+                }
+            } else {
+                $content_categories[] = 'Uncategorized';
+                error_log("Facebook Pixel Debug: No categories found for product ID: " . $product_id);
+            }
+
+            $value += $values['line_total'];
+        }
+        ?>
+        <script>
+        fbq('track', 'InitiateCheckout', {
+            content_ids: <?php echo json_encode($content_ids); ?>,
+            content_names: <?php echo json_encode($content_names); ?>,
+            content_categories: <?php echo json_encode($content_categories); ?>,
+            content_type: 'product',
+            value: <?php echo $value; ?>,
+            currency: '<?php echo get_woocommerce_currency(); ?>'
+        });
+        </script>
+        <?php
+    }
+}
+add_action('wp_footer', 'facebook_pixel_initiate_checkout');
+
+
+
+
+
+
+
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
 add_filter( 'woocommerce_sale_flash', '__return_null' );
