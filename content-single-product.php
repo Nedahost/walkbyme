@@ -100,6 +100,9 @@ if ( post_password_required() ) {
                     }
                     ?>
                 </div>
+
+                <?php echo woocommerce_template_single_add_to_cart(); ?>
+
                 <div class="productContent">
                     <?php the_content(); ?>
                 </div>
@@ -147,7 +150,7 @@ if (!empty($accordion_items)) {
 }
 ?>
                 
-                <?php echo woocommerce_template_single_add_to_cart(); ?>
+                <?php // echo woocommerce_template_single_add_to_cart(); ?>
             </section>
         </div>
     </div>
