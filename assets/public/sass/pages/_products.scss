@@ -394,35 +394,64 @@
 }
 
 @media screen and (max-width: 767px) {
-    /* Απενεργοποίηση του ζουμ στα κινητά */
+
+    .product-image {
+        padding: 0; // Αφαίρεση του padding για κινητές συσκευές
+    }
+
+    /* Απενεργοποίηση του zoom στα κινητά */
     .woocommerce-product-gallery__wrapper .woocommerce-product-gallery__image {
-      pointer-events: none;
+      pointer-events: auto !important;
     }
   
     .woocommerce-product-gallery__wrapper .woocommerce-product-gallery__image a {
-      cursor: default;
+      cursor: pointer !important;
     }
   
     .woocommerce-product-gallery__zoom:before {
-      display: none;
-    }
-  
-    .woocommerce-product-gallery__zoom .zoomImg {
       display: none !important;
     }
-
-    /* Διασφάλιση ότι οι thumbnails προσαρμόζονται σωστά στα κινητά */
-    .flex-control-nav.flex-control-thumbs {
-        flex-wrap: wrap;
-
-        li {
-            margin: 5px;
-            
-            img {
-                width: 60px;
-                height: 60px;
-            }
-        }
+  
+    .woocommerce-product-gallery__trigger {
+      display: none !important;
+    }
+  
+    /* Στυλ για το modal */
+    .mobile-image-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.9);
+    }
+  
+    .mobile-image-modal img {
+      display: block;
+      width: 90%;
+      max-width: none;
+      margin: 60px auto;
+      box-shadow: none;
+    }
+  
+    .mobile-image-modal .close {
+      color: #f1f1f1;
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      font-size: 40px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+  
+    .mobile-image-modal .close:hover,
+    .mobile-image-modal .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
     }
   }
 

@@ -390,7 +390,13 @@ function walkbyme_woocommerce_support() {
 }
 
 
-
+function modify_woo_gallery_on_mobile() {
+    if ( wp_is_mobile() ) {
+        remove_theme_support( 'wc-product-gallery-zoom' );
+        //remove_theme_support( 'wc-product-gallery-lightbox' );
+    }
+}
+add_action( 'after_setup_theme', 'modify_woo_gallery_on_mobile', 11 );
 
 // Συνάρτηση για τον υπολογισμό του ποσοστού έκπτωσης
 if (!function_exists('calculate_discount_percentage')) {
