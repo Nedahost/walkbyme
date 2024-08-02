@@ -42,6 +42,8 @@ add_action('admin_head', 'favicon');
 
 
 
+
+// Add Facebook Pixel base code
 function add_facebook_pixel_code() {
     ?>
     <!-- Meta Pixel Code -->
@@ -55,209 +57,177 @@ function add_facebook_pixel_code() {
     s.parentNode.insertBefore(t,s)}(window,document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '891327725921929');
-    fbq('track', 'PageView');
+    console.log('Meta Pixel initialized');
     </script>
+    <noscript>
+    <img height="1" width="1" style="display:none"
+         src="https://www.facebook.com/tr?id=891327725921929&ev=PageView&noscript=1"/>
+    </noscript>
     <!-- End Meta Pixel Code -->
     <?php
 }
 add_action('wp_head', 'add_facebook_pixel_code');
 
-
-function facebook_pixel_product_category_view() {
-    if (is_product_category()) {
-        $category = get_queried_object();
-        ?>
-        <script>
-        fbq('track', 'ViewCategory', {
-            content_name: '<?php echo $category->name; ?>',
-            content_category: '<?php echo $category->slug; ?>',
-            content_ids: '<?php echo $category->term_id; ?>',
-            content_type: 'product_category'
-        });
-        </script>
-        <?php
-    }
-}
-add_action('wp_footer', 'facebook_pixel_product_category_view', 20, 0);
-
-function facebook_pixel_product_view() {
-    if (is_product() && !is_product_category()) {
-        global $product;
-        $category_names = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
-        if (empty($category_names)) {
-            $category_names = ['Uncategorized'];
-        }
-        ?>
-        <script>
-        fbq('track', 'ViewContent', {
-            content_ids: ['<?php echo $product->get_id(); ?>'],
-            content_type: 'product',
-            content_name: '<?php echo $product->get_name(); ?>',
-            content_category: '<?php echo implode(", ", $category_names); ?>',
-            value: <?php echo $product->get_price(); ?>,
-            currency: '<?php echo get_woocommerce_currency(); ?>'
-        });
-        </script>
-        <?php
-    }
-}
-add_action('wp_footer', 'facebook_pixel_product_view', 20);
-
-function facebook_pixel_add_to_cart() {
+function facebook_pixel_events() {
     ?>
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // PageView Event - on all pages
+        fbq('track', 'PageView');
+        console.log('PageView event fired');
+
+        <?php if (is_product_category()): 
+        $category = get_queried_object();
+        ?>
+        // ViewCategory Event
+        fbq('track', 'ViewCategory', {
+            content_name: '<?php echo esc_js($category->name); ?>',
+            content_category: '<?php echo esc_js($category->slug); ?>',
+            content_ids: ['<?php echo esc_js($category->term_id); ?>'],
+            content_type: 'product_category'
+        });
+        console.log('ViewCategory event fired');
+        <?php endif; ?>
+
+        <?php if (is_product()): 
+        global $product;
+        $category_names = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
+        $category_names = !empty($category_names) ? $category_names : ['Uncategorized'];
+        ?>
+        // ViewContent Event
+        fbq('track', 'ViewContent', {
+            content_ids: ['<?php echo esc_js($product->get_id()); ?>'],
+            content_type: 'product',
+            content_name: '<?php echo esc_js($product->get_name()); ?>',
+            content_category: '<?php echo esc_js(implode(", ", $category_names)); ?>',
+            value: <?php echo esc_js($product->get_price()); ?>,
+            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
+        });
+        console.log('ViewContent event fired');
+        <?php endif; ?>
+
+        <?php if (is_cart()): 
+        $cart_contents = WC()->cart->get_cart_contents();
+        $content_ids = $content_names = array();
+        $cart_total = WC()->cart->get_cart_contents_total();
+
+        foreach ($cart_contents as $cart_item) {
+            $product = $cart_item['data'];
+            $content_ids[] = $product->get_id();
+            $content_names[] = $product->get_name();
+        }
+        ?>
+        // ViewCart Event (custom event for cart page)
+        fbq('trackCustom', 'ViewCart', {
+            content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
+            content_name: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
+            content_type: 'product',
+            value: <?php echo esc_js($cart_total); ?>,
+            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
+        });
+        console.log('ViewCart event fired');
+        <?php endif; ?>
+
+        <?php if (is_checkout() && !is_order_received_page()): 
+        $cart_contents = WC()->cart->get_cart_contents();
+        $content_ids = $content_names = $content_categories = array();
+        $value = 0;
+
+        foreach ($cart_contents as $cart_item) {
+            $product = $cart_item['data'];
+            $product_id = $product->get_id();
+            
+            $content_ids[] = $product_id;
+            $content_names[] = $product->get_name();
+            
+            $categories = get_the_terms($product_id, 'product_cat');
+            $content_categories[] = $categories ? wp_list_pluck($categories, 'name')[0] : 'Uncategorized';
+            
+            $value += $cart_item['line_total'];
+        }
+        ?>
+        // InitiateCheckout Event
+        fbq('track', 'InitiateCheckout', {
+            content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
+            content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
+            content_categories: <?php echo json_encode(array_map('esc_js', $content_categories)); ?>,
+            content_type: 'product',
+            value: <?php echo esc_js($value); ?>,
+            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
+        });
+        console.log('InitiateCheckout event fired');
+        <?php endif; ?>
+
+        <?php if (is_search()): ?>
+        // Search Event
+        fbq('track', 'Search', {
+            search_string: '<?php echo esc_js(get_search_query()); ?>'
+        });
+        console.log('Search event fired');
+        <?php endif; ?>
+    });
+
+    // AddToCart Event
     jQuery(document).ready(function($) {
         $('body').on('added_to_cart', function(event, fragments, cart_hash, button) {
             var product_id = button.data('product_id');
             var product_name = button.data('product_name');
             var product_category = button.data('product_category');
+            var price = button.data('price');
             fbq('track', 'AddToCart', {
                 content_ids: [product_id],
                 content_type: 'product',
                 content_name: product_name,
-                content_category: product_category
+                content_category: product_category,
+                value: price,
+                currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
             });
+            console.log('AddToCart event fired');
         });
     });
     </script>
     <?php
 }
-add_action('wp_footer', 'facebook_pixel_add_to_cart');
+add_action('wp_footer', 'facebook_pixel_events');
 
 function facebook_pixel_purchase($order_id) {
     $order = wc_get_order($order_id);
+    if (!$order) {
+        return;
+    }
+
     $items = $order->get_items();
-    $content_ids = array();
-    $content_names = array();
-    $content_categories = array();
+    $content_ids = $content_names = $content_categories = array();
 
     foreach ($items as $item) {
         $product = $item->get_product();
-        $product_id = $product->get_id();
-
-        if ($product->is_type('variation')) {
-            $parent_id = $product->get_parent_id();
-            $product = wc_get_product($parent_id);
+        if (!$product) {
+            continue;
         }
 
+        $product_id = $product->get_id();
         $content_ids[] = $product_id;
         $content_names[] = $product->get_name();
 
-        $category_ids = $product->get_category_ids();
-        if (!empty($category_ids)) {
-            $category_names = array();
-            foreach ($category_ids as $cat_id) {
-                $category = get_term($cat_id, 'product_cat');
-                if ($category && !is_wp_error($category)) {
-                    if (isset($category->name)) {
-                        $category_names[] = $category->name;
-                    }
-                }
-            }
-            if (!empty($category_names)) {
-                $content_categories[] = implode(', ', $category_names);
-            } else {
-                $content_categories[] = 'Uncategorized';
-            }
-        } else {
-            $content_categories[] = 'Uncategorized';
-        }
+        $categories = get_the_terms($product_id, 'product_cat');
+        $content_categories[] = $categories ? wp_list_pluck($categories, 'name')[0] : 'Uncategorized';
     }
+
     ?>
     <script>
     fbq('track', 'Purchase', {
-        content_ids: <?php echo json_encode($content_ids); ?>,
+        content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
         content_type: 'product',
-        content_name: <?php echo json_encode($content_names); ?>,
-        content_category: <?php echo json_encode($content_categories); ?>,
-        value: <?php echo $order->get_total(); ?>,
-        currency: '<?php echo get_woocommerce_currency(); ?>'
+        content_name: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
+        content_category: <?php echo json_encode(array_map('esc_js', $content_categories)); ?>,
+        value: <?php echo esc_js($order->get_total()); ?>,
+        currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
     });
+    console.log('Purchase event fired');
     </script>
     <?php
 }
 add_action('woocommerce_thankyou', 'facebook_pixel_purchase');
-
-function facebook_pixel_search() {
-    if (is_search()) {
-        ?>
-        <script>
-        fbq('track', 'Search', {
-            search_string: '<?php echo get_search_query(); ?>'
-        });
-        </script>
-        <?php
-    }
-}
-add_action('wp_footer', 'facebook_pixel_search');
-
-function facebook_pixel_initiate_checkout() {
-    if ((is_cart() || is_checkout()) && !is_order_received_page()) {
-        $items = WC()->cart->get_cart_contents();
-        $content_ids = array();
-        $content_names = array();
-        $content_categories = array();
-        $value = 0;
-
-        foreach ($items as $item => $values) {
-            $_product = $values['data'];
-            $product_id = $_product->get_id();
-            
-            if ($_product->is_type('variation')) {
-                $parent_id = $_product->get_parent_id();
-                $product = wc_get_product($parent_id);
-            } else {
-                $product = $_product;
-            }
-
-            $content_ids[] = $product_id;
-            $content_names[] = $product->get_name();
-
-            $category_ids = $product->get_category_ids();
-            if (!empty($category_ids)) {
-                $category_names = array();
-                foreach ($category_ids as $cat_id) {
-                    $category = get_term($cat_id, 'product_cat');
-                    if ($category && !is_wp_error($category)) {
-                        if (isset($category->name)) {
-                            $category_names[] = $category->name;
-                        } else {
-                            error_log("Facebook Pixel Debug: Category object missing 'name' property. Category ID: " . $cat_id);
-                        }
-                    } else {
-                        error_log("Facebook Pixel Debug: Invalid category. Category ID: " . $cat_id);
-                    }
-                }
-                if (!empty($category_names)) {
-                    $content_categories[] = implode(', ', $category_names);
-                } else {
-                    $content_categories[] = 'Uncategorized';
-                    error_log("Facebook Pixel Debug: No valid category names found for product ID: " . $product_id);
-                }
-            } else {
-                $content_categories[] = 'Uncategorized';
-                error_log("Facebook Pixel Debug: No categories found for product ID: " . $product_id);
-            }
-
-            $value += $values['line_total'];
-        }
-        ?>
-        <script>
-        fbq('track', 'InitiateCheckout', {
-            content_ids: <?php echo json_encode($content_ids); ?>,
-            content_names: <?php echo json_encode($content_names); ?>,
-            content_categories: <?php echo json_encode($content_categories); ?>,
-            content_type: 'product',
-            value: <?php echo $value; ?>,
-            currency: '<?php echo get_woocommerce_currency(); ?>'
-        });
-        </script>
-        <?php
-    }
-}
-add_action('wp_footer', 'facebook_pixel_initiate_checkout');
-
-
 
 
 
@@ -368,7 +338,24 @@ function walkbyme_setup(){
         register_sidebar($newsletter);
 }
 
+
+
+function jewelry_theme_widgets_init() {
+    register_sidebar( array(
+        'name'          => 'Jewelry Sidebar',
+        'id'            => 'sidebar-jewelry',
+        'description'   => 'Add widgets here to appear in your jewelry sidebar.',
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+    ) );
+}
+add_action( 'widgets_init', 'jewelry_theme_widgets_init' );
+
+
 add_action( 'after_setup_theme', 'walkbyme_woocommerce_support' );
+
 
 function walkbyme_woocommerce_support() {
 	add_theme_support( 'woocommerce', array(
@@ -820,97 +807,105 @@ function update_custom_sitemap($post_id) {
 
 
 
-
-//XML FEED for Article and Categories
-
 function custom_sitemap_articles() {
-    if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate-articles') {
-        // Create a custom sitemap for WordPress articles and categories
-        header('Content-Type: text/xml; charset=utf-8');
+    $sitemap_action = isset($_GET['custom-sitemap-articles']) ? sanitize_text_field($_GET['custom-sitemap-articles']) : '';
+    if ($sitemap_action === 'generate') {
+        // Αύξηση του ορίου μνήμης
+        ini_set('memory_limit', '256M');
         
-        // Set the file path for the XML file
-        $file_path = ABSPATH . '/custom-sitemap-articles.xml';
-
-        // Open the file for writing
-        $file = fopen($file_path, 'w');
-
-        // Check if the file was opened successfully
-        if ($file !== false) {
-            // Start buffering the output
+        header('Content-Type: text/xml; charset=utf-8');
+       
+        $file_path = ABSPATH . 'custom-sitemap-articles.xml';
+        
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once (ABSPATH . '/wp-admin/includes/file.php');
+            WP_Filesystem();
+        }
+        
+        if ($wp_filesystem->put_contents($file_path, '', FS_CHMOD_FILE)) {
             ob_start();
-
             echo '<?xml version="1.0" encoding="UTF-8"?>';
-            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
-
-            // Retrieve all categories
+            
             $categories = get_categories(array(
                 'taxonomy' => 'category',
                 'hide_empty' => false,
             ));
-
-            // Add categories to the sitemap
+            
             foreach ($categories as $category) {
                 $category_url = get_term_link($category);
-                echo '<url>';
-                echo '<loc>' . esc_url($category_url) . '</loc>';
-                echo '<changefreq>weekly</changefreq>';
-                echo '<priority>0.80</priority>'; // Adjust priority if needed
-                echo '</url>';
+                if (!is_wp_error($category_url)) {
+                    echo '<url>';
+                    echo '<loc>' . esc_url(trim($category_url)) . '</loc>';
+                    echo '<changefreq>weekly</changefreq>';
+                    echo '<priority>0.80</priority>';
+                    echo '</url>';
+                } else {
+                    custom_error_log('Σφάλμα στην κατηγορία: ' . $category->name . ' - ' . $category_url->get_error_message());
+                }
             }
-
-            // Retrieve all articles
+            
             $args = array(
                 'post_type' => 'post',
                 'posts_per_page' => -1,
+                'post_status' => 'publish',
             );
-
             $articles = new WP_Query($args);
-            while ($articles->have_posts()) {
-                $articles->the_post();
-                $article_url = get_permalink();
-                echo '<url>';
-                echo '<loc>' . esc_url($article_url) . '</loc>';
-                echo '<lastmod>' . gmdate('c', strtotime(get_the_modified_date('Y-m-d H:i:s'))) . '</lastmod>'; // Include the last modification date if desired.
-                echo '<priority>0.80</priority>';
-                echo '</url>';
+            
+            $article_count = 0;
+            if ($articles->have_posts()) {
+                while ($articles->have_posts()) {
+                    $articles->the_post();
+                    $article_url = get_permalink();
+                    echo '<url>';
+                    echo '<loc>' . esc_url(trim($article_url)) . '</loc>';
+                    echo '<lastmod>' . get_the_modified_time('c') . '</lastmod>';
+                    echo '<priority>0.80</priority>';
+                    echo '</url>';
+                    $article_count++;
+                }
+                wp_reset_postdata();
             }
-
-            wp_reset_postdata();
-
+            
             echo '</urlset>';
-
-            // End buffering and write the contents to the file
+            
             $xml_content = ob_get_clean();
-            fwrite($file, $xml_content);
-
-            // Set file permissions
-            chmod($file_path, 0644);
-
-            // Close the file
-            fclose($file);
-
-            // Output the XML to the browser
+            $wp_filesystem->put_contents($file_path, $xml_content, FS_CHMOD_FILE);
+            
+            custom_error_log('Sitemap δημιουργήθηκε επιτυχώς. Συμπεριλήφθηκαν ' . $article_count . ' άρθρα.');
+            
             echo $xml_content;
-
-            // Terminate script execution
             die();
+        } else {
+            custom_error_log('Αποτυχία ανοίγματος του αρχείου sitemap για εγγραφή.');
         }
     }
 }
 
 add_action('init', 'custom_sitemap_articles');
 
-add_action('save_post', 'update_custom_sitemap_articles');
-
 function update_custom_sitemap_articles($post_id) {
     $post_type = get_post_type($post_id);
-    if (in_array($post_type, array('post', 'category'))) {
+    if ($post_type === 'post' && get_post_status($post_id) === 'publish') {
         custom_sitemap_articles();
     }
 }
+
+add_action('save_post', 'update_custom_sitemap_articles');
+add_action('edit_category', 'update_custom_sitemap_articles');
+add_action('delete_category', 'update_custom_sitemap_articles');
+
+function custom_error_log($message) {
+    if (WP_DEBUG_LOG) {
+        error_log($message);
+    }
+}
+
+
 
 
 
