@@ -10,13 +10,26 @@
     </div><!-- outer breadcrumb end -->
 <?php } ?>
 <div class="wrapper"><!-- wrapper start -->
-<?php while (have_posts()) : the_post(); ?>
-    <article <?php post_class(); ?>>
-        <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-        <div class="entry-content">
-            <?php the_excerpt(); ?>
-        </div>
-    </article>
-    <?php endwhile; ?>
+    <div class="outerarricles">
+        <?php while (have_posts()) : the_post(); ?>
+            <article <?php post_class(); ?>>
+                <?php if (has_post_thumbnail()) : ?>
+                    <figure>
+                        <a href="<?php the_permalink(); ?>">
+                            <?php the_post_thumbnail(); ?>
+                        </a>
+                    </figure>
+                <?php endif; ?>
+                <h2>
+                    <a href="<?php the_permalink(); ?>">
+                        <?php the_title(); ?>
+                    </a>
+                </h2>
+                <div class="sortdescription"><!-- sort description start -->
+                    <?php the_excerpt(); ?>
+                </div><!-- sort description end -->
+            </article>
+            <?php endwhile; ?>
+    </div>
 </div><!-- wrapper end -->
 <?php  get_footer();

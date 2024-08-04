@@ -1,9 +1,21 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/style.scss to edit this template
-*/
-/*
-    Created on : 19 Ιαν 2022, 12:27:18 μ.μ.
-    Author     : User
-*/
-
+.outerarricles{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    article{
+        width: 24%;
+        figure{
+            margin: 0;
+            padding: 0;
+            img{
+                width: 100%;
+                height: auto;
+            }
+        }
+        h2{
+            a{
+                color: black;
+            }
+        }
+    }
+}

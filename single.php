@@ -27,10 +27,7 @@
 
                         <header class="entry-header">
                             <h1 class="entry-title"><?php the_title(); ?></h1>
-                            <div class="entry-meta">
-                                <span class="posted-on">Δημοσιεύτηκε στις <?php echo get_the_date(); ?></span>
-                                <span class="byline"> από <?php the_author(); ?></span>
-                            </div>
+                            
                         </header>
 
                         <div class="entry-content">
