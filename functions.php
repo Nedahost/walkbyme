@@ -44,14 +44,13 @@ add_action('admin_head', 'favicon');
 
 
 
-// Προσθέστε αυτές τις σταθερές στην αρχή του αρχείου σας ή στο αρχείο ρυθμίσεων σας
-define('FB_ACCESS_TOKEN', 'EAAVjM1dKZAp0BOxbdGQoRPhHVDH6nnHJjP2l2yFcnjxV3mskuVqJ4wNT2fqcNrj8AUsRqpyFNCpDOodBpb9huN3bELLspPTXiAgXdXQbQU1pzmV4icdZAwqBZAKVQe1opr8NjgcdvPX9sS0dC9lbMoPtYeSAMd6QoiZCkqRxcuwzYMcvTsZBpUQ7P5yujapCf1wZDZD');
+// Ορισμός σταθερών
 define('FB_PIXEL_ID', '891327725921929');
 
-// Add Facebook Pixel base code
-function add_facebook_pixel_code() {
+// Προσθήκη βασικού κώδικα Facebook Pixel
+function add_facebook_pixel_base() {
     ?>
-    <!-- Meta Pixel Code -->
+    <!-- Facebook Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -59,464 +58,305 @@ function add_facebook_pixel_code() {
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
     n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window,document,'script',
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '<?php echo FB_PIXEL_ID; ?>');
-    <?php if (!is_cart()): ?>
     fbq('track', 'PageView');
-    <?php endif; ?>
     </script>
     <noscript>
-    <img height="1" width="1" style="display:none"
+    <img height="1" width="1" style="display:none" 
          src="https://www.facebook.com/tr?id=<?php echo FB_PIXEL_ID; ?>&ev=PageView&noscript=1"/>
     </noscript>
-    <!-- End Meta Pixel Code -->
+    <!-- End Facebook Pixel Code -->
     <?php
 }
-add_action('wp_head', 'add_facebook_pixel_code');
+add_action('wp_head', 'add_facebook_pixel_base');
 
+// Καταγραφή events
 function facebook_pixel_events() {
-    $current_user = wp_get_current_user();
     ?>
     <script>
-    // Ορίζουμε τη συνάρτηση sendServerEvent στο global scope
-    function sendServerEvent(eventName, eventData, eventId) {
-        // Αποστολή του event στο server για το Conversion API
-        jQuery.ajax({
-            url: '<?php echo admin_url('admin-ajax.php'); ?>',
-            type: 'POST',
-            data: {
-                action: 'facebook_capi_event',
-                event_name: eventName,
-                event_data: JSON.stringify(eventData),
-                event_id: eventId
-            },
-            success: function(response) {
-                console.log('Server event sent:', response);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error sending server event:', error);
-            }
-        });
-    }
-
-    function getParameters() {
-        return {
-            fbc: getCookie('_fbc') || null,
-            fbp: getCookie('_fbp') || null,
-            external_id: getExternalId()
-        };
-    }
-
-    function getCookie(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
-    }
-
-    function getExternalId() {
-        var externalId = getCookie('external_id');
-        if (!externalId) {
-            externalId = generateEventId();
-            document.cookie = "external_id=" + externalId + "; path=/; max-age=31536000"; // 1 year
-        }
-        return externalId;
-    }
-
-    function generateEventId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var parameters = getParameters();
-
-        <?php if (is_product_category()): 
-        $category = get_queried_object();
-        ?>
-        var viewCategoryEventId = generateEventId();
-        fbq('track', 'ViewCategory', Object.assign({
-            content_name: '<?php echo esc_js($category->name); ?>',
-            content_category: '<?php echo esc_js($category->slug); ?>',
-            content_ids: ['<?php echo esc_js($category->term_id); ?>'],
-            content_type: 'product_category'
-        }, parameters), {eventID: viewCategoryEventId});
-        sendServerEvent('ViewCategory', Object.assign({
-            content_name: '<?php echo esc_js($category->name); ?>',
-            content_category: '<?php echo esc_js($category->slug); ?>',
-            content_ids: ['<?php echo esc_js($category->term_id); ?>'],
-            content_type: 'product_category'
-        }, parameters), viewCategoryEventId);
-        <?php endif; ?>
-
-        <?php if (is_product()): 
-        global $product;
-        $category_names = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
-        $category_names = !empty($category_names) ? $category_names : ['Uncategorized'];
-        ?>
-        var viewContentEventId = generateEventId();
-        fbq('track', 'ViewContent', Object.assign({
-            content_ids: ['<?php echo esc_js($product->get_id()); ?>'],
-            content_type: 'product',
-            content_name: '<?php echo esc_js($product->get_name()); ?>',
-            content_category: '<?php echo esc_js(implode(", ", $category_names)); ?>',
-            value: <?php echo esc_js($product->get_price()); ?>,
-            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-            availability: '<?php echo esc_js($product->get_stock_status()); ?>',
-            sku: '<?php echo esc_js($product->get_sku()); ?>',
-            em: '<?php echo esc_js($current_user->user_email); ?>',
-            fn: '<?php echo esc_js($current_user->user_firstname); ?>',
-            ln: '<?php echo esc_js($current_user->user_lastname); ?>'
-        }, parameters), {eventID: viewContentEventId});
-        sendServerEvent('ViewContent', Object.assign({
-            content_ids: ['<?php echo esc_js($product->get_id()); ?>'],
-            content_type: 'product',
-            content_name: '<?php echo esc_js($product->get_name()); ?>',
-            content_category: '<?php echo esc_js(implode(", ", $category_names)); ?>',
-            value: <?php echo esc_js($product->get_price()); ?>,
-            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-            availability: '<?php echo esc_js($product->get_stock_status()); ?>',
-            sku: '<?php echo esc_js($product->get_sku()); ?>',
-            em: '<?php echo esc_js($current_user->user_email); ?>',
-            fn: '<?php echo esc_js($current_user->user_firstname); ?>',
-            ln: '<?php echo esc_js($current_user->user_lastname); ?>'
-        }, parameters), viewContentEventId);
-        <?php endif; ?>
-
-        <?php if (is_cart()): 
-        $cart_contents = WC()->cart->get_cart_contents();
-        $content_ids = $content_names = array();
-        foreach ($cart_contents as $cart_item) {
-            $product = $cart_item['data'];
-            $content_ids[] = $product->get_id();
-            $content_names[] = $product->get_name();
-        }
-        $cart_total = WC()->cart->get_cart_contents_total();
-        ?>
-        var viewCartEventId = generateEventId();
-        fbq('track', 'ViewCart', Object.assign({
-            content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
-            content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
-            content_type: 'product',
-            value: <?php echo esc_js($cart_total); ?>,
-            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-            em: '<?php echo esc_js($current_user->user_email); ?>',
-            fn: '<?php echo esc_js($current_user->user_firstname); ?>',
-            ln: '<?php echo esc_js($current_user->user_lastname); ?>'
-        }, parameters), {eventID: viewCartEventId});
-        sendServerEvent('ViewCart', Object.assign({
-            content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
-            content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
-            content_type: 'product',
-            value: <?php echo esc_js($cart_total); ?>,
-            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-            em: '<?php echo esc_js($current_user->user_email); ?>',
-            fn: '<?php echo esc_js($current_user->user_firstname); ?>',
-            ln: '<?php echo esc_js($current_user->user_lastname); ?>'
-        }, parameters), viewCartEventId);
-
-        jQuery('button[name="update_cart"]').on('click', function() {
-            var cart_contents = <?php echo json_encode(WC()->cart->get_cart()); ?>;
-            var content_ids = [];
-            var content_names = [];
-            var content_categories = [];
-            var value = 0;
-
-            jQuery.each(cart_contents, function(key, item) {
-                if (item && item.product_id && item.data) {
-                    var product_id = item.product_id;
-                    var product = item.data;
-                    content_ids.push(product_id);
-                    content_names.push(product.name || '');
-                    var categories = product.category || ['Uncategorized'];
-                    content_categories = content_categories.concat(categories);
-                    value += parseFloat(item.line_total || 0);
-                }
-            });
-
-            if (content_ids.length > 0) {
-                var addToCartEventId = generateEventId();
-                fbq('track', 'AddToCart', Object.assign({
-                    content_ids: content_ids,
-                    content_name: content_names.join(', '),
-                    content_category: content_categories.join(', '),
-                    content_type: 'product',
-                    value: value,
-                    currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
-                }, parameters), {eventID: addToCartEventId});
-
-                sendServerEvent('AddToCart', Object.assign({
-                    content_ids: content_ids,
-                    content_name: content_names.join(', '),
-                    content_category: content_categories.join(', '),
-                    content_type: 'product',
-                    value: value,
-                    currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
-                }, parameters), addToCartEventId);
-            }
-        });
-        <?php endif; ?>
-
-        <?php if (is_checkout() && !is_order_received_page()): 
-        $cart_contents = WC()->cart->get_cart_contents();
-        $content_ids = $content_names = $content_categories = array();
-        $value = 0;
-        foreach ($cart_contents as $cart_item) {
-            $product = $cart_item['data'];
-            $product_id = $product->get_id();
-            $content_ids[] = $product_id;
-            $content_names[] = $product->get_name();
-            $categories = get_the_terms($product_id, 'product_cat');
-            $content_categories[] = $categories ? implode(', ', wp_list_pluck($categories, 'name')) : 'Uncategorized';
-            $value += $cart_item['line_total'];
-        }
-        $customer = WC()->customer;
-        ?>
-        var initiateCheckoutEventId = generateEventId();
-        fbq('track', 'InitiateCheckout', Object.assign({
-            content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
-            content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
-            content_categories: <?php echo json_encode(array_map('esc_js', $content_categories)); ?>,
-            content_type: 'product',
-            value: <?php echo esc_js($value); ?>,
-            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-            em: '<?php echo esc_js($customer->get_billing_email()); ?>',
-            ph: '<?php echo esc_js($customer->get_billing_phone()); ?>',
-            fn: '<?php echo esc_js($customer->get_billing_first_name()); ?>',
-            ln: '<?php echo esc_js($customer->get_billing_last_name()); ?>',
-            ct: '<?php echo esc_js($customer->get_billing_city()); ?>',
-            st: '<?php echo esc_js($customer->get_billing_state()); ?>',
-            zp: '<?php echo esc_js($customer->get_billing_postcode()); ?>',
-            country: '<?php echo esc_js($customer->get_billing_country()); ?>'
-        }, parameters), {eventID: initiateCheckoutEventId});
-        sendServerEvent('InitiateCheckout', Object.assign({
-            content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
-            content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
-            content_categories: <?php echo json_encode(array_map('esc_js', $content_categories)); ?>,
-            content_type: 'product',
-            value: <?php echo esc_js($value); ?>,
-            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-            em: '<?php echo esc_js($customer->get_billing_email()); ?>',
-            ph: '<?php echo esc_js($customer->get_billing_phone()); ?>',
-            fn: '<?php echo esc_js($customer->get_billing_first_name()); ?>',
-            ln: '<?php echo esc_js($customer->get_billing_last_name()); ?>',
-            ct: '<?php echo esc_js($customer->get_billing_city()); ?>',
-            st: '<?php echo esc_js($customer->get_billing_state()); ?>',
-            zp: '<?php echo esc_js($customer->get_billing_postcode()); ?>',
-            country: '<?php echo esc_js($customer->get_billing_country()); ?>'
-        }, parameters), initiateCheckoutEventId);
-        <?php endif; ?>
-
-        <?php if (is_search()): ?>
-        var searchEventId = generateEventId();
-        fbq('track', 'Search', Object.assign({
-            search_string: '<?php echo esc_js(get_search_query()); ?>'
-        }, parameters), {eventID: searchEventId});
-        sendServerEvent('Search', Object.assign({
-            search_string: '<?php echo esc_js(get_search_query()); ?>'
-        }, parameters), searchEventId);
-        <?php endif; ?>
-    });
-
     jQuery(document).ready(function($) {
-        // Add to Cart Event
-        $('body').on('added_to_cart', function(event, fragments, cart_hash, button) {
-            var product_id = button.data('product_id');
-            var product_name = button.data('product_name');
-            var product_category = button.data('product_category');
-            var price = button.data('price');
-            var current_user = <?php echo json_encode([
-                'email' => $current_user->user_email,
-                'firstname' => $current_user->user_firstname,
-                'lastname' => $current_user->user_lastname
-            ]); ?>;
+        // ViewContent event για σελίδες προϊόντων
+        <?php if (is_product()) : 
+            global $product;
+           
+            $category_names = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
+            $category = !empty($category_names) ? implode(', ', $category_names) : 'Uncategorized';
+           
+            $product_type = $product->get_type();
+           
+            $content_ids = array($product->get_id());
+            $contents = array();
+            $regular_price = $sale_price = 0;
+            $sku = $product->get_sku();
             
-            // Αποφυγή διπλής καταγραφής
-            if (!window.addToCartTracked) {
-                var addToCartEventId = generateEventId();
-                fbq('track', 'AddToCart', Object.assign({
-                    content_ids: [product_id],
-                    content_type: 'product',
-                    content_name: product_name,
-                    content_category: product_category,
-                    value: price,
-                    currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-                    em: current_user.email,
-                    fn: current_user.firstname,
-                    ln: current_user.lastname
-                }, getParameters()), {eventID: addToCartEventId});
-                sendServerEvent('AddToCart', Object.assign({
-                    content_ids: [product_id],
-                    content_type: 'product',
-                    content_name: product_name,
-                    content_category: product_category,
-                    value: price,
-                    currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-                    em: current_user.email,
-                    fn: current_user.firstname,
-                    ln: current_user.lastname
-                }, getParameters()), addToCartEventId);
-                window.addToCartTracked = true;
-                setTimeout(function() { window.addToCartTracked = false; }, 1000);
+            if ($product_type === 'variable') {
+                $variations = $product->get_available_variations();
+                $variation_prices = $product->get_variation_prices();
+                
+                foreach ($variations as $variation) {
+                    $variation_id = $variation['variation_id'];
+                    $content_ids[] = $variation_id;
+                    $contents[] = array(
+                        'id' => $variation_id,
+                        'quantity' => 1
+                    );
+                }
+                
+                $regular_price = max($variation_prices['regular_price']);
+                $sale_price = min($variation_prices['sale_price']);
+            } else {
+                $regular_price = $product->get_regular_price();
+                $sale_price = $product->get_sale_price();
+                $contents[] = array(
+                    'id' => $product->get_id(),
+                    'quantity' => 1
+                );
             }
-        });
 
-        // Remove from Cart Event
-        $(document.body).on('removed_from_cart', function(event, fragments, cart_hash, button) {
-            var product_id = button.data('product_id');
-            var product_name = button.data('product_name');
-            var product_category = button.data('product_category');
-            var price = button.data('price');
+            if (empty($sale_price)) {
+                $sale_price = $regular_price;
+            }
+
+            $stock_status = $product->get_stock_status();
+            $stock_quantity = $product->get_stock_quantity();
+        ?>
+        fbq('track', 'ViewContent', {
+            content_name: '<?php echo esc_js($product->get_name()); ?>',
+            content_ids: <?php echo json_encode(array_unique($content_ids)); ?>,
+            content_type: 'product',
+            value: <?php echo esc_js($sale_price); ?>,
+            currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
+            content_category: '<?php echo esc_js($category); ?>',
+            contents: <?php echo json_encode($contents); ?>,
+            availability: '<?php echo esc_js($stock_status); ?>',
+            <?php if (!is_null($stock_quantity)) : ?>
+            inventory: <?php echo esc_js($stock_quantity); ?>,
+            <?php endif; ?>
+            item_group_id: <?php echo $product_type === 'variable' ? esc_js($product->get_id()) : 'null'; ?>,
+            sku: '<?php echo esc_js($sku); ?>',
+            regular_price: <?php echo esc_js($regular_price); ?>,
+            sale_price: <?php echo esc_js($sale_price); ?>
+        });
+        <?php endif; ?>
+
+        // AddToCart event - AJAX
+        // AddToCart event - AJAX
+$(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
+    var product_id = $button.data('product_id');
+    var variation_id = $button.data('variation_id');
+    var quantity = $button.data('quantity') || 1;
+    
+    console.log('AddToCart event triggered via AJAX for product ID:', product_id, 'variation ID:', variation_id); // Debugging
+    
+    var content_ids = [product_id];
+    if (variation_id) {
+        content_ids.push(variation_id);
+    }
+    
+    fbq('track', 'AddToCart', {
+        content_ids: content_ids,
+        content_type: 'product',
+        value: 0, // Θα ενημερωθεί αργότερα με την πραγματική τιμή
+        currency: '<?php echo get_woocommerce_currency(); ?>',
+        contents: [{
+            id: variation_id || product_id,
+            quantity: quantity
+        }]
+    });
+});
+
+// AddToCart event - Button click
+$('.single_add_to_cart_button').on('click', function(e) {
+    var $form = $(this).closest('form.cart');
+    var product_id = $form.find('input[name=product_id]').val() || $(this).val();
+    var variation_id = $form.find('input[name=variation_id]').val();
+    var quantity = $form.find('input[name=quantity]').val() || 1;
+    
+    console.log('AddToCart button clicked for product ID:', product_id, 'variation ID:', variation_id); // Debugging
+    
+    var content_ids = [product_id];
+    if (variation_id) {
+        content_ids.push(variation_id);
+    }
+    
+    fbq('track', 'AddToCart', {
+        content_ids: content_ids,
+        content_type: 'product',
+        value: 0, // Θα ενημερωθεί αργότερα με την πραγματική τιμή
+        currency: '<?php echo get_woocommerce_currency(); ?>',
+        contents: [{
+            id: variation_id || product_id,
+            quantity: quantity
+        }]
+    });
+});
+
+        // ViewCart event
+        <?php if (is_cart()) : 
+            $cart = WC()->cart;
+            $cart_total = $cart->get_cart_contents_total();
+            $currency = get_woocommerce_currency();
             
-            // Αποφυγή διπλής καταγραφής
-            if (!window.removeFromCartTracked) {
-                var removeFromCartEventId = generateEventId();
-                fbq('trackCustom', 'RemoveFromCart', Object.assign({
-                    content_ids: [product_id],
-                    content_type: 'product',
-                    content_name: product_name,
-                    content_category: product_category,
-                    value: price,
-                    currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
-                }, getParameters()), {eventID: removeFromCartEventId});
-                sendServerEvent('RemoveFromCart', Object.assign({
-                    content_ids: [product_id],
-                    content_type: 'product',
-                    content_name: product_name,
-                    content_category: product_category,
-                    value: price,
-                    currency: '<?php echo esc_js(get_woocommerce_currency()); ?>'
-                }, getParameters()), removeFromCartEventId);
-                window.removeFromCartTracked = true;
-                setTimeout(function() { window.removeFromCartTracked = false; }, 1000);
+            $content_ids = [];
+            $contents = [];
+            $num_items = 0;
+            
+            foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
+                $product = $cart_item['data'];
+                $product_id = $product->get_id();
+                $quantity = $cart_item['quantity'];
+                
+                $content_ids[] = $product_id;
+                $contents[] = [
+                    'id' => $product_id,
+                    'quantity' => $quantity,
+                ];
+                $num_items += $quantity;
+            }
+        ?>
+        fbq('trackCustom', 'ViewCart', {
+            content_ids: <?php echo json_encode($content_ids); ?>,
+            content_type: 'product',
+            contents: <?php echo json_encode($contents); ?>,
+            value: <?php echo $cart_total; ?>,
+            currency: '<?php echo $currency; ?>',
+            num_items: <?php echo $num_items; ?>
+        });
+        <?php endif; ?>
+
+        // InitiateCheckout event
+        <?php if (is_checkout() && !is_order_received_page()) : 
+            $cart = WC()->cart;
+            $cart_total = $cart->get_cart_contents_total();
+            $currency = get_woocommerce_currency();
+            
+            $content_ids = [];
+            $contents = [];
+            $num_items = 0;
+            
+            foreach ($cart->get_cart() as $cart_item) {
+                $product = $cart_item['data'];
+                $product_id = $product->get_id();
+                $quantity = $cart_item['quantity'];
+                
+                $content_ids[] = $product_id;
+                $contents[] = [
+                    'id' => $product_id,
+                    'quantity' => $quantity,
+                ];
+                $num_items += $quantity;
+            }
+            
+            $customer = WC()->customer;
+        ?>
+        fbq('track', 'InitiateCheckout', {
+            content_ids: <?php echo json_encode($content_ids); ?>,
+            content_type: 'product',
+            contents: <?php echo json_encode($contents); ?>,
+            num_items: <?php echo $num_items; ?>,
+            value: <?php echo $cart_total; ?>,
+            currency: '<?php echo $currency; ?>',
+            user_data: {
+                em: '<?php echo esc_js($customer->get_billing_email()); ?>',
+                ph: '<?php echo esc_js($customer->get_billing_phone()); ?>',
+                fn: '<?php echo esc_js($customer->get_billing_first_name()); ?>',
+                ln: '<?php echo esc_js($customer->get_billing_last_name()); ?>',
+                ct: '<?php echo esc_js($customer->get_billing_city()); ?>',
+                st: '<?php echo esc_js($customer->get_billing_state()); ?>',
+                zp: '<?php echo esc_js($customer->get_billing_postcode()); ?>',
+                country: '<?php echo esc_js($customer->get_billing_country()); ?>'
             }
         });
+        <?php endif; ?>
     });
     </script>
     <?php
 }
 add_action('wp_footer', 'facebook_pixel_events');
 
+// Purchase event
 function facebook_pixel_purchase($order_id) {
     $order = wc_get_order($order_id);
     if (!$order) return;
-    $items = $order->get_items();
-    $content_ids = $content_names = $content_categories = array();
-    $total_quantity = 0;
-    foreach ($items as $item) {
+
+    $value = $order->get_total();
+    $currency = $order->get_currency();
+    
+    $content_ids = [];
+    $contents = [];
+    $num_items = 0;
+    foreach ($order->get_items() as $item) {
         $product = $item->get_product();
-        if (!$product) continue;
         $product_id = $product->get_id();
+        $quantity = $item->get_quantity();
         $content_ids[] = $product_id;
-        $content_names[] = $product->get_name();
-        $categories = get_the_terms($product_id, 'product_cat');
-        $content_categories[] = $categories ? wp_list_pluck($categories, 'name')[0] : 'Uncategorized';
-        $total_quantity += $item->get_quantity();
+        $contents[] = [
+            'id' => $product_id,
+            'quantity' => $quantity,
+            'item_price' => $product->get_price()
+        ];
+        $num_items += $quantity;
     }
-    $customer_email = $order->get_billing_email();
-    $customer_phone = $order->get_billing_phone();
-    $customer_first_name = $order->get_billing_first_name();
-    $customer_last_name = $order->get_billing_last_name();
-    $customer_city = $order->get_billing_city();
-    $customer_state = $order->get_billing_state();
-    $customer_postcode = $order->get_billing_postcode();
-    $customer_country = $order->get_billing_country();
+
+    // Πληροφορίες πελάτη
+    $customer = $order->get_user();
+    $user_data = [];
+    if ($customer) {
+        $user_data = [
+            'em' => $customer->user_email,
+            'ph' => $order->get_billing_phone(),
+            'fn' => $order->get_billing_first_name(),
+            'ln' => $order->get_billing_last_name(),
+            'ct' => $order->get_billing_city(),
+            'st' => $order->get_billing_state(),
+            'zp' => $order->get_billing_postcode(),
+            'country' => $order->get_billing_country()
+        ];
+    }
+
     ?>
     <script>
-    var purchaseEventId = generateEventId();
-    fbq('track', 'Purchase', Object.assign({
-        content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
-        content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
-        content_categories: <?php echo json_encode(array_map('esc_js', $content_categories)); ?>,
+    fbq('track', 'Purchase', {
+        content_ids: <?php echo json_encode($content_ids); ?>,
         content_type: 'product',
-        value: <?php echo esc_js($order->get_total()); ?>,
-        currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-        num_items: <?php echo esc_js($total_quantity); ?>,
-        em: '<?php echo esc_js($customer_email); ?>',
-        ph: '<?php echo esc_js($customer_phone); ?>',
-        fn: '<?php echo esc_js($customer_first_name); ?>',
-        ln: '<?php echo esc_js($customer_last_name); ?>',
-        ct: '<?php echo esc_js($customer_city); ?>',
-        st: '<?php echo esc_js($customer_state); ?>',
-        zp: '<?php echo esc_js($customer_postcode); ?>',
-        country: '<?php echo esc_js($customer_country); ?>'
-    }, getParameters()), {eventID: purchaseEventId});
-
-    sendServerEvent('Purchase', Object.assign({
-        content_ids: <?php echo json_encode(array_map('esc_js', $content_ids)); ?>,
-        content_names: <?php echo json_encode(array_map('esc_js', $content_names)); ?>,
-        content_categories: <?php echo json_encode(array_map('esc_js', $content_categories)); ?>,
-        content_type: 'product',
-        value: <?php echo esc_js($order->get_total()); ?>,
-        currency: '<?php echo esc_js(get_woocommerce_currency()); ?>',
-        num_items: <?php echo esc_js($total_quantity); ?>,
-        em: '<?php echo esc_js($customer_email); ?>',
-        ph: '<?php echo esc_js($customer_phone); ?>',
-        fn: '<?php echo esc_js($customer_first_name); ?>',
-        ln: '<?php echo esc_js($customer_last_name); ?>',
-        ct: '<?php echo esc_js($customer_city); ?>',
-        st: '<?php echo esc_js($customer_state); ?>',
-        zp: '<?php echo esc_js($customer_postcode); ?>',
-        country: '<?php echo esc_js($customer_country); ?>'
-    }, getParameters()), purchaseEventId);
+        contents: <?php echo json_encode($contents); ?>,
+        value: <?php echo esc_js($value); ?>,
+        currency: '<?php echo esc_js($currency); ?>',
+        num_items: <?php echo $num_items; ?>,
+        order_id: '<?php echo esc_js($order->get_order_number()); ?>',
+        user_data: <?php echo json_encode($user_data); ?>
+    });
     </script>
     <?php
 }
 add_action('woocommerce_thankyou', 'facebook_pixel_purchase');
 
-function handle_facebook_capi_event() {
-    if (!isset($_POST['event_name']) || !isset($_POST['event_data']) || !isset($_POST['event_id'])) {
-        wp_send_json_error('Invalid event data');
-        return;
+
+// AJAX handler για λήψη πληροφοριών προϊόντος
+function get_product_info_for_pixel() {
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    
+    if ($product_id) {
+        $product = wc_get_product($product_id);
+        if ($product) {
+            wp_send_json_success(array(
+                'id' => $product->get_id(),
+                'name' => $product->get_name(),
+                'price' => $product->get_price(),
+                'sku' => $product->get_sku()
+            ));
+        }
     }
-
-    $event_name = sanitize_text_field($_POST['event_name']);
-    $event_data = json_decode(stripslashes($_POST['event_data']), true);
-    $event_id = sanitize_text_field($_POST['event_id']);
-
-    if (!$event_data) {
-        wp_send_json_error('Invalid event data format');
-        return;
-    }
-
-    $url = 'https://graph.facebook.com/v13.0/' . FB_PIXEL_ID . '/events';
-    $data = array(
-        'data' => array(
-            array(
-                'event_name' => $event_name,
-                'event_time' => time(),
-                'event_id' => $event_id,
-                'user_data' => $event_data,
-                'custom_data' => $event_data,
-                'action_source' => 'website'
-            )
-        ),
-        'access_token' => FB_ACCESS_TOKEN
-    );
-
-    $args = array(
-        'body'        => json_encode($data),
-        'headers'     => array('Content-Type' => 'application/json'),
-        'timeout'     => 60,
-        'redirection' => 5,
-        'blocking'    => true,
-        'httpversion' => '1.0',
-        'sslverify'   => false,
-    );
-
-    $response = wp_remote_post($url, $args);
-
-    if (is_wp_error($response)) {
-        $error_message = $response->get_error_message();
-        wp_send_json_error("Something went wrong: $error_message");
-    } else {
-        wp_send_json_success('Event sent successfully');
-    }
+    wp_send_json_error();
 }
-add_action('wp_ajax_facebook_capi_event', 'handle_facebook_capi_event');
-add_action('wp_ajax_nopriv_facebook_capi_event', 'handle_facebook_capi_event');
+add_action('wp_ajax_get_product_info_for_pixel', 'get_product_info_for_pixel');
+add_action('wp_ajax_nopriv_get_product_info_for_pixel', 'get_product_info_for_pixel');
+
+
+
+
 
 
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
