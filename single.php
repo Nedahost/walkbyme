@@ -30,9 +30,9 @@
                             
                         </header>
 
-                        <div class="entry-content">
+                        <div class="article-content"><!-- article content start -->
                             <?php the_content(); ?>
-                        </div>
+                        </div><!-- article content end -->
 
                     </article>
 

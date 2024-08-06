@@ -47,7 +47,17 @@ jQuery(document).on("ready", function() {
           infinite: false,
           slidesToShow: 1,
           slidesToScroll: 1,
-          
+          responsive: [
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                dots: false,
+                arrows:false
+              }
+            }
+          ]
           });
         
 });

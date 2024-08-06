@@ -1,5 +1,40 @@
 .container{
     .row{
         display: flex;
+
+        .col-main{
+            article{
+                .article-content{
+                    p{
+                        a{
+                            font-weight: 600;
+                            color: #9a715b;
+                        }
+                    }
+                    ul{
+                        list-style: disc;
+                        margin-left: 25px;
+                        line-height: 25px;
+                        li{
+                            a{
+                                font-weight: 600;
+                                color: #9a715b;
+                            }
+                        }
+                    }
+                    ol{
+                        list-style: decimal;
+                        margin-left: 25px;
+                        line-height: 25px;
+                        li{
+                            a{
+                                font-weight: 600;
+                                color: #9a715b;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 } 
