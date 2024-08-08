@@ -825,110 +825,125 @@ add_action('create_product_cat', 'save_custom_category_field', 20, 1);
 
 
 
-// function update_custom_sitemap($post_id, $post, $update) {
-//     // Ελέγχουμε αν το αποθηκευμένο έγγραφο είναι ένα προϊόν του WooCommerce
-//     if (get_post_type($post_id) === 'product') {
-//         // Καλούμε τη συνάρτηση custom_sitemap για να ενημερώσουμε τον χάρτη ιστοσελίδας
-//         custom_sitemap();
-//     }
-// }
 
-// add_action('save_post', 'update_custom_sitemap', 10, 3);
-
-
-function custom_sitemap() {
+function custom_product_sitemap() {
     if (isset($_GET['custom-sitemap']) && $_GET['custom-sitemap'] === 'generate') {
-        // Create a custom sitemap for WooCommerce products
-        header('Content-Type: text/xml; charset=utf-8');
-        
-        // Set the file path for the XML file
+        // Αύξηση ορίου μνήμης και χρόνου εκτέλεσης
+        ini_set('memory_limit', '256M');
+        set_time_limit(300); // 5 λεπτά
+
+        header('Content-Type: application/xml; charset=utf-8');
+
         $file_path = ABSPATH . 'custom-sitemap.xml';
 
-        // Open the file for writing
-        $file = fopen($file_path, 'w');
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once (ABSPATH . '/wp-admin/includes/file.php');
+            WP_Filesystem();
+        }
 
-        // Check if the file was opened successfully
-        if ($file !== false) {
-            // Start buffering the output
-            ob_start();
+        ob_start();
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+              http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . "\n";
 
-            echo '<?xml version="1.0" encoding="UTF-8"?>';
-            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
+        // Προσθήκη αρχικής σελίδας
+        echo '  <url>' . "\n";
+        echo '    <loc>' . esc_url(home_url('/')) . '</loc>' . "\n";
+        echo '    <changefreq>daily</changefreq>' . "\n";
+        echo '    <priority>1.0</priority>' . "\n";
+        echo '  </url>' . "\n";
 
-            echo '<url>';
-            echo '<loc>https://www.walkbyme.gr/</loc>';
-            echo '<changefreq>daily</changefreq>';
-            echo '<priority>1.0</priority>';
-            echo '</url>';
+        // Προσθήκη κατηγοριών προϊόντων
+        $categories = get_terms(array(
+            'taxonomy' => 'product_cat',
+            'hide_empty' => false,
+        ));
 
-            // Ανάκτηση όλων των κατηγοριών
-            $categories = get_categories(array(
-                'taxonomy' => 'product_cat',
-                'hide_empty' => false,
-            ));
-
-            // Προσθήκη κατηγοριών στον χάρτη ιστοσελίδας
-            foreach ($categories as $category) {
-                $category_url = get_term_link($category);
-                echo '<url>';
-                echo '<loc>' . esc_url($category_url) . '</loc>';
-                echo '<changefreq>weekly</changefreq>';
-                echo '<priority>0.80</priority>'; // Προσαρμόστε την προτεραιότητα (αν χρειάζεται)
-                echo '</url>';
+        foreach ($categories as $category) {
+            $category_url = get_term_link($category);
+            if (!is_wp_error($category_url)) {
+                echo '  <url>' . "\n";
+                echo '    <loc>' . esc_url($category_url) . '</loc>' . "\n";
+                echo '    <changefreq>weekly</changefreq>' . "\n";
+                echo '    <priority>0.8</priority>' . "\n";
+                echo '  </url>' . "\n";
             }
+        }
 
-            $args = array(
-                'post_type' => 'product',
-                'posts_per_page' => -1,
-            );
+        // Προσθήκη προϊόντων
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+        );
+        $products = new WP_Query($args);
 
-            $products = new WP_Query($args);
+        if ($products->have_posts()) {
             while ($products->have_posts()) {
                 $products->the_post();
                 $product_url = get_permalink();
-                echo '<url>';
-                echo '<loc>' . esc_url($product_url) . '</loc>';
-                echo '<lastmod>' . gmdate('c', strtotime(get_the_modified_date('Y-m-d H:i:s'))) . '</lastmod>'; // Include the last modification date if desired.
-                echo '<priority>0.80</priority>';
-                echo '</url>';
+                $modified_time = get_the_modified_time('c');
+                echo '  <url>' . "\n";
+                echo '    <loc>' . esc_url($product_url) . '</loc>' . "\n";
+                echo '    <lastmod>' . $modified_time . '</lastmod>' . "\n";
+                echo '    <changefreq>weekly</changefreq>' . "\n";
+                echo '    <priority>0.6</priority>' . "\n";
+                echo '  </url>' . "\n";
             }
-
             wp_reset_postdata();
-
-            echo '</urlset>';
-
-            // End buffering and write the contents to the file
-            $xml_content = ob_get_clean();
-            fwrite($file, $xml_content);
-
-            // Ανανέωση των δικαιωμάτων του αρχείου
-            chmod($file_path, 0644);
-
-            // Close the file
-            fclose($file);
-
-            // Output the XML to the browser
-            echo $xml_content;
-
-            // Terminate script execution
-            die();
         }
+
+        echo '</urlset>';
+
+        $xml_content = ob_get_clean();
+        
+        if ($wp_filesystem->put_contents($file_path, $xml_content, FS_CHMOD_FILE)) {
+            echo $xml_content;
+        } else {
+            wp_die('Αποτυχία εγγραφής του sitemap στο αρχείο.');
+        }
+        
+        die();
     }
 }
+add_action('init', 'custom_product_sitemap');
 
-add_action('init', 'custom_sitemap');
-
-add_action('save_post', 'update_custom_sitemap');
-
-function update_custom_sitemap($post_id) {
-    // Ελέγχουμε αν το αποθηκευμένο έγγραφο είναι ένα προϊόν του WooCommerce
-    if (get_post_type($post_id) === 'product') {
-        // Καλούμε τη συνάρτηση custom_sitemap για να ενημερώσουμε τον χάρτη ιστοσελίδας
-        custom_sitemap();
+function schedule_product_sitemap_update($post_id) {
+    if (get_post_type($post_id) === 'product' && get_post_status($post_id) === 'publish') {
+        wp_schedule_single_event(time() + 300, 'update_product_sitemap_event');
     }
+}
+add_action('save_post', 'schedule_product_sitemap_update');
+add_action('edited_product_cat', 'schedule_product_sitemap_update');
+add_action('delete_product_cat', 'schedule_product_sitemap_update');
+
+function do_update_product_sitemap() {
+    $sitemap_url = add_query_arg('custom-sitemap', 'generate', home_url());
+    wp_remote_get($sitemap_url);
+}
+add_action('update_product_sitemap_event', 'do_update_product_sitemap');
+
+function add_update_product_sitemap_button() {
+    add_submenu_page(
+        'edit.php?post_type=product',
+        'Ενημέρωση Sitemap Προϊόντων',
+        'Ενημέρωση Sitemap Προϊόντων',
+        'manage_options',
+        'update-product-sitemap',
+        'update_product_sitemap_page'
+    );
+}
+add_action('admin_menu', 'add_update_product_sitemap_button');
+
+function update_product_sitemap_page() {
+    echo '<div class="wrap">';
+    echo '<h1>Ενημέρωση XML Sitemap Προϊόντων</h1>';
+    echo '<p>Πατήστε το κουμπί για να ενημερώσετε χειροκίνητα το XML sitemap των προϊόντων.</p>';
+    echo '<a href="' . esc_url(add_query_arg('custom-sitemap', 'generate', home_url())) . '" class="button button-primary">Ενημέρωση Sitemap Προϊόντων</a>';
+    echo '</div>';
 }
 
 
@@ -936,99 +951,110 @@ function update_custom_sitemap($post_id) {
 function custom_sitemap_articles() {
     $sitemap_action = isset($_GET['custom-sitemap-articles']) ? sanitize_text_field($_GET['custom-sitemap-articles']) : '';
     if ($sitemap_action === 'generate') {
-        // Αύξηση του ορίου μνήμης
+        // Αύξηση του ορίου μνήμης και χρόνου εκτέλεσης
         ini_set('memory_limit', '256M');
-        
-        header('Content-Type: text/xml; charset=utf-8');
-       
+        set_time_limit(300); // 5 λεπτά
+
+        header('Content-Type: application/xml; charset=utf-8');
+
         $file_path = ABSPATH . 'custom-sitemap-articles.xml';
-        
+
         global $wp_filesystem;
         if (empty($wp_filesystem)) {
             require_once (ABSPATH . '/wp-admin/includes/file.php');
             WP_Filesystem();
         }
-        
-        if ($wp_filesystem->put_contents($file_path, '', FS_CHMOD_FILE)) {
-            ob_start();
-            echo '<?xml version="1.0" encoding="UTF-8"?>';
-            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
-            
-            $categories = get_categories(array(
-                'taxonomy' => 'category',
-                'hide_empty' => false,
-            ));
-            
-            foreach ($categories as $category) {
-                $category_url = get_term_link($category);
-                if (!is_wp_error($category_url)) {
-                    echo '<url>';
-                    echo '<loc>' . esc_url(trim($category_url)) . '</loc>';
-                    echo '<changefreq>weekly</changefreq>';
-                    echo '<priority>0.80</priority>';
-                    echo '</url>';
-                } else {
-                    custom_error_log('Σφάλμα στην κατηγορία: ' . $category->name . ' - ' . $category_url->get_error_message());
-                }
+
+        ob_start();
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+              http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . "\n";
+
+        // Προσθήκη κατηγοριών
+        $categories = get_categories(array('taxonomy' => 'category', 'hide_empty' => false));
+        foreach ($categories as $category) {
+            $category_url = get_term_link($category);
+            if (!is_wp_error($category_url)) {
+                echo '  <url>' . "\n";
+                echo '    <loc>' . esc_url(trim($category_url)) . '</loc>' . "\n";
+                echo '    <changefreq>weekly</changefreq>' . "\n";
+                echo '    <priority>0.8</priority>' . "\n";
+                echo '  </url>' . "\n";
             }
-            
-            $args = array(
-                'post_type' => 'post',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
-            );
-            $articles = new WP_Query($args);
-            
-            $article_count = 0;
-            if ($articles->have_posts()) {
-                while ($articles->have_posts()) {
-                    $articles->the_post();
-                    $article_url = get_permalink();
-                    echo '<url>';
-                    echo '<loc>' . esc_url(trim($article_url)) . '</loc>';
-                    echo '<lastmod>' . get_the_modified_time('c') . '</lastmod>';
-                    echo '<priority>0.80</priority>';
-                    echo '</url>';
-                    $article_count++;
-                }
-                wp_reset_postdata();
-            }
-            
-            echo '</urlset>';
-            
-            $xml_content = ob_get_clean();
-            $wp_filesystem->put_contents($file_path, $xml_content, FS_CHMOD_FILE);
-            
-            custom_error_log('Sitemap δημιουργήθηκε επιτυχώς. Συμπεριλήφθηκαν ' . $article_count . ' άρθρα.');
-            
-            echo $xml_content;
-            die();
-        } else {
-            custom_error_log('Αποτυχία ανοίγματος του αρχείου sitemap για εγγραφή.');
         }
+
+        // Προσθήκη άρθρων
+        $args = array(
+            'post_type' => 'post',
+            'posts_per_page' => -1,
+            'post_status' => 'publish',
+        );
+        $articles = new WP_Query($args);
+
+        if ($articles->have_posts()) {
+            while ($articles->have_posts()) {
+                $articles->the_post();
+                $post_modified = get_the_modified_time('c');
+                echo '  <url>' . "\n";
+                echo '    <loc>' . esc_url(get_permalink()) . '</loc>' . "\n";
+                echo '    <lastmod>' . $post_modified . '</lastmod>' . "\n";
+                echo '    <changefreq>monthly</changefreq>' . "\n";
+                echo '    <priority>0.6</priority>' . "\n";
+                echo '  </url>' . "\n";
+            }
+            wp_reset_postdata();
+        }
+
+        echo '</urlset>';
+
+        $xml_content = ob_get_clean();
+        
+        if ($wp_filesystem->put_contents($file_path, $xml_content, FS_CHMOD_FILE)) {
+            echo $xml_content;
+        } else {
+            wp_die('Αποτυχία εγγραφής του sitemap στο αρχείο.');
+        }
+        
+        die();
     }
 }
-
 add_action('init', 'custom_sitemap_articles');
 
 function update_custom_sitemap_articles($post_id) {
+    // Ελέγχουμε αν πρόκειται για αυτόματη αποθήκευση
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+    // Ελέγχουμε τον τύπο του post και την κατάστασή του
     $post_type = get_post_type($post_id);
     if ($post_type === 'post' && get_post_status($post_id) === 'publish') {
-        custom_sitemap_articles();
+        // Προγραμματίζουμε την ενημέρωση του sitemap
+        wp_schedule_single_event(time() + 300, 'update_sitemap_event');
     }
 }
-
 add_action('save_post', 'update_custom_sitemap_articles');
 add_action('edit_category', 'update_custom_sitemap_articles');
 add_action('delete_category', 'update_custom_sitemap_articles');
 
-function custom_error_log($message) {
-    if (WP_DEBUG_LOG) {
-        error_log($message);
-    }
+// Ορίζουμε τη λειτουργία που θα εκτελεστεί όταν ενεργοποιηθεί το event
+function do_update_sitemap() {
+    custom_sitemap_articles();
+}
+add_action('update_sitemap_event', 'do_update_sitemap');
+
+// Προσθέτουμε ένα κουμπί στο admin menu για χειροκίνητη ενημέρωση
+function add_update_sitemap_button() {
+    add_management_page('Ενημέρωση Sitemap', 'Ενημέρωση Sitemap', 'manage_options', 'update-sitemap', 'update_sitemap_page');
+}
+add_action('admin_menu', 'add_update_sitemap_button');
+
+function update_sitemap_page() {
+    echo '<div class="wrap">';
+    echo '<h1>Ενημέρωση XML Sitemap</h1>';
+    echo '<p>Πατήστε το κουμπί για να ενημερώσετε χειροκίνητα το XML sitemap.</p>';
+    echo '<a href="' . esc_url(add_query_arg('custom-sitemap-articles', 'generate', home_url())) . '" class="button button-primary">Ενημέρωση Sitemap</a>';
+    echo '</div>';
 }
 
 
@@ -1317,3 +1343,14 @@ function custom_woocommerce_template_loop_product_thumbnail() {
         echo '</a>';
     }
 }
+
+
+
+
+
+
+
+
+
+
+

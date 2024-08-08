@@ -3,38 +3,48 @@
         display: flex;
 
         .col-main{
+            width: 70%;
             article{
-                .article-content{
-                    p{
-                        a{
-                            font-weight: 600;
-                            color: #9a715b;
-                        }
-                    }
-                    ul{
-                        list-style: disc;
-                        margin-left: 25px;
-                        line-height: 25px;
-                        li{
+                .article-wrapper{
+               
+                    
+                    .article-content{
+               
+                  
+                        p{
                             a{
                                 font-weight: 600;
                                 color: #9a715b;
                             }
                         }
-                    }
-                    ol{
-                        list-style: decimal;
-                        margin-left: 25px;
-                        line-height: 25px;
-                        li{
-                            a{
-                                font-weight: 600;
-                                color: #9a715b;
+                        ul{
+                            list-style: disc;
+                            margin-left: 25px;
+                            line-height: 25px;
+                            li{
+                                a{
+                                    font-weight: 600;
+                                    color: #9a715b;
+                                }
+                            }
+                        }
+                        ol{
+                            list-style: decimal;
+                            margin-left: 25px;
+                            line-height: 25px;
+                            li{
+                                a{
+                                    font-weight: 600;
+                                    color: #9a715b;
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+        .col-sidebar{
+            width: 30%;
         }
     }
 } 
