@@ -44,6 +44,7 @@ add_action('admin_head', 'favicon');
 
 
 
+
 // Ορισμός σταθερών
 define('FB_PIXEL_ID', '891327725921929');
 
@@ -77,6 +78,61 @@ function facebook_pixel_events() {
     ?>
     <script>
     jQuery(document).ready(function($) {
+        // Μεταβλητή για να αποφύγουμε διπλές καταγραφές
+        var addToCartProcessing = false;
+
+        // Συνάρτηση για την καταγραφή του AddToCart event
+        function trackAddToCart(product_id, variation_id, quantity) {
+            if (addToCartProcessing) return;
+            addToCartProcessing = true;
+
+            // Ανάκτηση πληροφοριών προϊόντος μέσω AJAX
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'get_product_info_for_pixel',
+                    product_id: product_id,
+                    variation_id: variation_id
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var productInfo = response.data;
+                        fbq('track', 'AddToCart', {
+                            content_ids: [productInfo.id],
+                            content_type: 'product',
+                            value: productInfo.price * quantity,
+                            currency: '<?php echo get_woocommerce_currency(); ?>',
+                            contents: [{
+                                id: productInfo.id,
+                                quantity: quantity
+                            }]
+                        });
+                    }
+                },
+                complete: function() {
+                    addToCartProcessing = false;
+                }
+            });
+        }
+
+        // AddToCart event - AJAX
+        $(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
+            var product_id = $button.data('product_id');
+            var variation_id = $button.data('variation_id') || product_id;
+            var quantity = $button.data('quantity') || 1;
+            trackAddToCart(product_id, variation_id, quantity);
+        });
+
+        // AddToCart event - Button click (για περιπτώσεις που το AJAX αποτύχει)
+        $('.single_add_to_cart_button').on('click', function(e) {
+            var $form = $(this).closest('form.cart');
+            var product_id = $form.find('input[name=product_id]').val() || $(this).val();
+            var variation_id = $form.find('input[name=variation_id]').val() || product_id;
+            var quantity = $form.find('input[name=quantity]').val() || 1;
+            trackAddToCart(product_id, variation_id, quantity);
+        });
+
         // ViewContent event για σελίδες προϊόντων
         <?php if (is_product()) : 
             global $product;
@@ -140,58 +196,6 @@ function facebook_pixel_events() {
             sale_price: <?php echo esc_js($sale_price); ?>
         });
         <?php endif; ?>
-
-        // AddToCart event - AJAX
-        // AddToCart event - AJAX
-$(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
-    var product_id = $button.data('product_id');
-    var variation_id = $button.data('variation_id');
-    var quantity = $button.data('quantity') || 1;
-    
-    console.log('AddToCart event triggered via AJAX for product ID:', product_id, 'variation ID:', variation_id); // Debugging
-    
-    var content_ids = [product_id];
-    if (variation_id) {
-        content_ids.push(variation_id);
-    }
-    
-    fbq('track', 'AddToCart', {
-        content_ids: content_ids,
-        content_type: 'product',
-        value: 0, // Θα ενημερωθεί αργότερα με την πραγματική τιμή
-        currency: '<?php echo get_woocommerce_currency(); ?>',
-        contents: [{
-            id: variation_id || product_id,
-            quantity: quantity
-        }]
-    });
-});
-
-// AddToCart event - Button click
-$('.single_add_to_cart_button').on('click', function(e) {
-    var $form = $(this).closest('form.cart');
-    var product_id = $form.find('input[name=product_id]').val() || $(this).val();
-    var variation_id = $form.find('input[name=variation_id]').val();
-    var quantity = $form.find('input[name=quantity]').val() || 1;
-    
-    console.log('AddToCart button clicked for product ID:', product_id, 'variation ID:', variation_id); // Debugging
-    
-    var content_ids = [product_id];
-    if (variation_id) {
-        content_ids.push(variation_id);
-    }
-    
-    fbq('track', 'AddToCart', {
-        content_ids: content_ids,
-        content_type: 'product',
-        value: 0, // Θα ενημερωθεί αργότερα με την πραγματική τιμή
-        currency: '<?php echo get_woocommerce_currency(); ?>',
-        contents: [{
-            id: variation_id || product_id,
-            quantity: quantity
-        }]
-    });
-});
 
         // ViewCart event
         <?php if (is_cart()) : 
@@ -333,13 +337,13 @@ function facebook_pixel_purchase($order_id) {
 }
 add_action('woocommerce_thankyou', 'facebook_pixel_purchase');
 
-
 // AJAX handler για λήψη πληροφοριών προϊόντος
 function get_product_info_for_pixel() {
     $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    $variation_id = isset($_POST['variation_id']) ? intval($_POST['variation_id']) : 0;
     
     if ($product_id) {
-        $product = wc_get_product($product_id);
+        $product = wc_get_product($variation_id ? $variation_id : $product_id);
         if ($product) {
             wp_send_json_success(array(
                 'id' => $product->get_id(),
@@ -353,8 +357,6 @@ function get_product_info_for_pixel() {
 }
 add_action('wp_ajax_get_product_info_for_pixel', 'get_product_info_for_pixel');
 add_action('wp_ajax_nopriv_get_product_info_for_pixel', 'get_product_info_for_pixel');
-
-
 
 
 
