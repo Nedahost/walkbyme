@@ -45,7 +45,7 @@ add_action('admin_head', 'favicon');
 
 
 
-// Ορισμός σταθερών
+// Ορισμός σταθερώνω
 define('FB_PIXEL_ID', '891327725921929');
 
 // Προσθήκη βασικού κώδικα Facebook Pixel
