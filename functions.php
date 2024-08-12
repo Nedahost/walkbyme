@@ -280,14 +280,17 @@ function facebook_pixel_events() {
 }
 add_action('wp_footer', 'facebook_pixel_events');
 
+
+
 // Purchase event
+
 function facebook_pixel_purchase($order_id) {
     $order = wc_get_order($order_id);
     if (!$order) return;
 
-    $value = $order->get_total();
+    $value = floatval($order->get_total());
     $currency = $order->get_currency();
-    
+   
     $content_ids = [];
     $contents = [];
     $num_items = 0;
@@ -295,47 +298,54 @@ function facebook_pixel_purchase($order_id) {
         $product = $item->get_product();
         $product_id = $product->get_id();
         $quantity = $item->get_quantity();
-        $content_ids[] = $product_id;
+        $content_ids[] = (string)$product_id;
         $contents[] = [
-            'id' => $product_id,
-            'quantity' => $quantity,
-            'item_price' => $product->get_price()
+            'id' => (string)$product_id,
+            'quantity' => intval($quantity),
+            'item_price' => floatval($product->get_price())
         ];
         $num_items += $quantity;
     }
 
     // Πληροφορίες πελάτη
-    $customer = $order->get_user();
-    $user_data = [];
-    if ($customer) {
-        $user_data = [
-            'em' => $customer->user_email,
-            'ph' => $order->get_billing_phone(),
-            'fn' => $order->get_billing_first_name(),
-            'ln' => $order->get_billing_last_name(),
-            'ct' => $order->get_billing_city(),
-            'st' => $order->get_billing_state(),
-            'zp' => $order->get_billing_postcode(),
-            'country' => $order->get_billing_country()
-        ];
-    }
+    $user_data = [
+        'em' => hash('sha256', strtolower($order->get_billing_email())),
+        'ph' => hash('sha256', preg_replace('/[^0-9]/', '', $order->get_billing_phone())),
+        'fn' => hash('sha256', strtolower($order->get_billing_first_name())),
+        'ln' => hash('sha256', strtolower($order->get_billing_last_name())),
+        'ct' => hash('sha256', strtolower($order->get_billing_city())),
+        'st' => hash('sha256', strtolower($order->get_billing_state())),
+        'zp' => hash('sha256', $order->get_billing_postcode()),
+        'country' => hash('sha256', strtolower($order->get_billing_country()))
+    ];
+
+    // Αφαίρεση κενών τιμών
+    $user_data = array_filter($user_data);
+
+    $event_id = wp_generate_uuid4();
 
     ?>
     <script>
+    console.log('Attempting to track Purchase event');
     fbq('track', 'Purchase', {
         content_ids: <?php echo json_encode($content_ids); ?>,
-        content_type: 'product',
+        content_type: <?php echo count($content_ids) > 1 ? "'product_group'" : "'product'"; ?>,
         contents: <?php echo json_encode($contents); ?>,
-        value: <?php echo esc_js($value); ?>,
+        value: <?php echo json_encode($value); ?>,
         currency: '<?php echo esc_js($currency); ?>',
-        num_items: <?php echo $num_items; ?>,
-        order_id: '<?php echo esc_js($order->get_order_number()); ?>',
+        num_items: <?php echo intval($num_items); ?>,
+        order_id: '<?php echo esc_js($order->get_order_number()); ?>'
+    }, {
+        eventID: '<?php echo $event_id; ?>',
         user_data: <?php echo json_encode($user_data); ?>
     });
+    console.log('Purchase event tracked');
     </script>
     <?php
 }
-add_action('woocommerce_thankyou', 'facebook_pixel_purchase');
+add_action('woocommerce_thankyou', 'facebook_pixel_purchase', 10, 1);
+add_action('woocommerce_payment_complete', 'facebook_pixel_purchase', 10, 1);
+
 
 // AJAX handler για λήψη πληροφοριών προϊόντος
 function get_product_info_for_pixel() {
