@@ -1362,7 +1362,45 @@ function custom_woocommerce_template_loop_product_thumbnail() {
 
 
 
+function add_custom_meta_box() {
+    add_meta_box(
+        'custom_cta_meta_box',
+        'Προτροπή Δράσης',
+        'custom_cta_meta_box_callback',
+        'post'
+    );
+}
+add_action('add_meta_boxes', 'add_custom_meta_box');
 
+function custom_cta_meta_box_callback($post) {
+    wp_nonce_field('custom_cta_meta_box', 'custom_cta_meta_box_nonce');
+    $value = get_post_meta($post->ID, '_custom_cta', true);
+    wp_editor($value, 'custom_cta_editor', array(
+        'textarea_name' => 'custom_cta',
+        'media_buttons' => true,
+        'tinymce'       => true,
+        'quicktags'     => true,
+    ));
+}
+
+function save_custom_cta_meta_box_data($post_id) {
+    if (!isset($_POST['custom_cta_meta_box_nonce'])) {
+        return;
+    }
+    if (!wp_verify_nonce($_POST['custom_cta_meta_box_nonce'], 'custom_cta_meta_box')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    if (isset($_POST['custom_cta'])) {
+        update_post_meta($post_id, '_custom_cta', wp_kses_post($_POST['custom_cta']));
+    }
+}
+add_action('save_post', 'save_custom_cta_meta_box_data');
 
 
 

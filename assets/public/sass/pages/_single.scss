@@ -1,15 +1,31 @@
 .container{
     .row{
         display: flex;
-
+        justify-content: center;
         .col-main{
-            width: 70%;
-            article{
-                .article-wrapper{
-               
+            width: 57%;
+                .main-article{
+                    .article-title{
+                        font-size: 36px;
+                        font-weight: 600;
+                        margin: 30px 0;
+                    }
+                    .article-image{
+                        img{
+                            width: 100%;
+                            height: auto;
+                        }
+                    }
                     
                     .article-content{
-               
+                        
+                        font-size: 20px;
+                        font-weight: 400;
+                        letter-spacing: inherit;
+                        line-height: 1.6666666667;
+                        overflow-wrap: break-word;
+                        word-break: break-word;
+
                   
                         p{
                             a{
@@ -20,8 +36,8 @@
                         ul{
                             list-style: disc;
                             margin-left: 25px;
-                            line-height: 25px;
                             li{
+                                padding: 0 0 10px;
                                 a{
                                     font-weight: 600;
                                     color: #9a715b;
@@ -31,8 +47,8 @@
                         ol{
                             list-style: decimal;
                             margin-left: 25px;
-                            line-height: 25px;
                             li{
+                                padding: 0 0 10px;
                                 a{
                                     font-weight: 600;
                                     color: #9a715b;
@@ -47,4 +63,3 @@
             width: 30%;
         }
     }
-} 

@@ -19,18 +19,23 @@
             <div class="col-main">
                 <?php while (have_posts()) : the_post(); ?>
                     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                    <div class="article-wrapper"><!-- article wrapper start -->
+                        <div class="main-article"><!-- main article start -->
+
+                            <h1 class="article-title"><?php the_title(); ?></h1>
+
                             <?php if (has_post_thumbnail()) : ?>
-                                <div class="post-thumbnail">
-                                    <?php the_post_thumbnail('large'); ?>
-                                </div>
+                                <div class="article-image"><!-- article image start -->
+                                    <figure>
+                                        <?php the_post_thumbnail('large'); ?>
+                                    </figure>
+                                </div><!-- article image start -->
                             <?php endif; ?>
 
                             <div class="article-content"><!-- article content start -->
-                                <h1 class="article-title"><?php the_title(); ?></h1>
+                                
                                 <?php the_content(); ?>
                             </div><!-- article content end -->
-                        </div><!-- article wrapper end -->
+                        </div><!-- main article end -->
                     </article>
 
                 
