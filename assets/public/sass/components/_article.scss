@@ -1,20 +1,64 @@
-.outerarricles{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    article{
-        width: 24%;
-        figure{
+@use '../abstracts' as a;
+
+.outerarricles {
+    display: grid;
+    gap: a.rem(20);
+
+    // 4 στήλες για μεγάλες οθόνες
+    grid-template-columns: repeat(4, 1fr);
+
+    // 3 στήλες για μεσαίες οθόνες
+    @include a.breakpoint-down(lg) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    // 2 στήλες για μικρές οθόνες
+    @include a.breakpoint-down(md) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    // 1 στήλη για πολύ μικρές οθόνες
+    @include a.breakpoint-down(sm) {
+        grid-template-columns: 1fr;
+    }
+
+    article {
+        width: 100%; // Το πλάτος ελέγχεται πλέον από το grid
+
+        figure {
             margin: 0;
             padding: 0;
-            img{
+            aspect-ratio: 16 / 9; // Διατηρεί σταθερή αναλογία διαστάσεων
+            overflow: hidden;
+
+            img {
                 width: 100%;
-                height: auto;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    transform: scale(1.05);
+                }
             }
         }
-        h2{
-            a{
+
+        h2 {
+            font-size: a.rem(18);
+            margin-top: a.rem(10);
+
+            @include a.breakpoint-down(md) {
+                font-size: a.rem(16);
+            }
+
+            a {
                 color: black;
+                text-decoration: none;
+                transition: color 0.3s ease;
+
+                &:hover {
+                    color: #9a715b; // Προσαρμόστε το χρώμα ανάλογα με το design σας
+                }
             }
         }
     }

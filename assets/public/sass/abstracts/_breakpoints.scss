@@ -1,37 +1,48 @@
-@use './functions' as f;
+@use 'functions' as f;
 
-// 280px , 700px  , 900px , 1440px
-$breakpoints-up: (
-    "small" : 280px,
-    "medium" :576px,
-    "xmedium": 768px, 
-    "large" : 992px,
-    "xlarge" :1200px,
-    "xxlarge": 1400px,
-    "xxxlarge": 1680px
+// Ορισμός breakpoints
+$breakpoints: (
+  "xs": 280px,
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+  "xxl": 1400px,
+  "xxxl": 1680px,
+  "xmedium": 768px,  // Προσθήκα του 'xmedium'
+  "mlarge": 1024px,  // Προσθήκα του 'mlarge'
+  "large": 992px     // Επιβεβαίωση ότι το 'large' υπάρχει
 );
 
-
-//699.98px , 899.98px, 1439.98px
-$breakpoints-down: (
-    "small": 319.98px,
-    "medium": 575.98px,
-    "xmedium" : 767.98px,
-    "large": 991.98px,
-    "mlarge": 1023.98px,
-    "xlarge" : 1199.98px, 
-    "xxlarge" : 1399.98px
-);
-
-@mixin  breakpoint($size) {
-    @media (min-width: map-get($breakpoints-up, $size)){
-        @content;
+// Mixin για min-width media queries
+@mixin breakpoint-up($size) {
+  @if map-has-key($breakpoints, $size) {
+    @media (min-width: #{map-get($breakpoints, $size)}) {
+      @content;
     }
+  } @else {
+    @warn "Το breakpoint '#{$size}' δεν υπάρχει στο $breakpoints map.";
+  }
 }
 
+// Mixin για max-width media queries
 @mixin breakpoint-down($size) {
-    @media(max-width:map-get($breakpoints-down, $size)){
-        @content;
+  @if map-has-key($breakpoints, $size) {
+    @media (max-width: #{map-get($breakpoints, $size) - 1px}) {
+      @content;
     }
-    
+  } @else {
+    @warn "Το breakpoint '#{$size}' δεν υπάρχει στο $breakpoints map.";
+  }
+}
+
+// Mixin για min-width και max-width media queries
+@mixin breakpoint-between($lower, $upper) {
+  @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+    @media (min-width: #{map-get($breakpoints, $lower)}) and (max-width: #{map-get($breakpoints, $upper) - 1px}) {
+      @content;
+    }
+  } @else {
+    @warn "Ένα ή και τα δύο breakpoints '#{$lower}' και '#{$upper}' δεν υπάρχουν στο $breakpoints map.";
+  }
 }

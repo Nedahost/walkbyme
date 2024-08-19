@@ -1,65 +1,95 @@
-.container{
-    .row{
+@use '../abstracts' as a;
+
+.container {
+    .row {
         display: flex;
-        justify-content: center;
-        .col-main{
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        @include a.breakpoint-down(md) {
+            flex-direction: column;
+        }
+
+        .col-main {
             width: 57%;
-                .main-article{
-                    .article-title{
-                        font-size: 36px;
-                        font-weight: 600;
-                        margin: 30px 0;
+
+            @include a.breakpoint-down(md) {
+                width: 100%;
+            }
+
+            .main-article {
+                .article-title {
+                    font-size: a.rem(36);
+                    font-weight: 600;
+                    margin: a.rem(30) 0;
+
+                    @include a.breakpoint-down(sm) {
+                        font-size: a.rem(28);
+                        margin: a.rem(20) 0;
                     }
-                    .article-image{
-                        img{
-                            width: 100%;
-                            height: auto;
+                }
+
+                .article-image {
+                    img {
+                        width: 100%;
+                        height: auto;
+                    }
+                }
+
+                .article-content {
+                    font-size: a.rem(20);
+                    font-weight: 400;
+                    letter-spacing: inherit;
+                    line-height: 1.6666666667;
+                    overflow-wrap: break-word;
+                    word-break: break-word;
+
+                    @include a.breakpoint-down(sm) {
+                        font-size: a.rem(16);
+                    }
+
+                    p {
+                        a {
+                            font-weight: 600;
+                            color: #9a715b;
                         }
                     }
-                    
-                    .article-content{
-                        
-                        font-size: 20px;
-                        font-weight: 400;
-                        letter-spacing: inherit;
-                        line-height: 1.6666666667;
-                        overflow-wrap: break-word;
-                        word-break: break-word;
 
-                  
-                        p{
-                            a{
+                    ul, ol {
+                        margin-left: a.rem(25);
+
+                        @include a.breakpoint-down(sm) {
+                            margin-left: a.rem(20);
+                        }
+
+                        li {
+                            padding: 0 0 a.rem(10);
+
+                            a {
                                 font-weight: 600;
                                 color: #9a715b;
                             }
                         }
-                        ul{
-                            list-style: disc;
-                            margin-left: 25px;
-                            li{
-                                padding: 0 0 10px;
-                                a{
-                                    font-weight: 600;
-                                    color: #9a715b;
-                                }
-                            }
-                        }
-                        ol{
-                            list-style: decimal;
-                            margin-left: 25px;
-                            li{
-                                padding: 0 0 10px;
-                                a{
-                                    font-weight: 600;
-                                    color: #9a715b;
-                                }
-                            }
-                        }
+                    }
+
+                    ul {
+                        list-style: disc;
+                    }
+
+                    ol {
+                        list-style: decimal;
                     }
                 }
             }
         }
-        .col-sidebar{
+
+        .col-sidebar {
             width: 30%;
+
+            @include a.breakpoint-down(md) {
+                width: 100%;
+                margin-top: a.rem(30);
+            }
         }
     }
+}
