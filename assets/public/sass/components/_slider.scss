@@ -3,6 +3,7 @@
     margin: 0;
 }
 
+
 .sliderimages {
     display: flex;
     flex-direction: row;
@@ -19,6 +20,12 @@ figure {
 
 figure img {
     width: 100%;
+}
+
+.slick-initialized {
+    figure img {
+        opacity: 1;
+    }
 }
 
 .slider-caption {
