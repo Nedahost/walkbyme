@@ -203,6 +203,10 @@
                 margin: 45px 0 0;
             }
 
+            .variations_button{
+                display: flex;
+            }
+
             .quantity .qty {
                 height: 45px;
             }
@@ -216,7 +220,7 @@
                 width: 100%;
 
                 @include a.breakpoint-up(md) {
-                    width: auto;
+                    width: 100%;
                 }
 
                 &:hover {
