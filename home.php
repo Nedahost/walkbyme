@@ -66,6 +66,7 @@
             </div>
             <div class="imagecontent">
                 <header class="sectionheader"><!-- section header start -->
+                    <h1><u>Χειροποίητα Κοσμήματα</u></h1>
                     <h2 class="sectionheader_title">
                         Το πάθος μας για χειροποίητα κοσμήματα από ασήμι 925 και χρυσό!
                     </h2>
