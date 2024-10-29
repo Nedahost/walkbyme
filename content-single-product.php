@@ -155,5 +155,7 @@ if (!empty($accordion_items)) {
         </div>
     </div>
 </div>
+<div class="faqproducts"><!-- faq products start -->
 
+</div><!-- faq products end -->
 <?php echo woocommerce_output_related_products(); ?>
