@@ -1080,3 +1080,137 @@ add_action('save_post', 'save_custom_cta_meta_box_data');
 
 
 
+function apply_bulk_discount() {
+    $discount_percentage = 60;
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => -1
+    );
+    
+    $products = get_posts($args);
+    
+    foreach ($products as $product) {
+        $product_id = $product->ID;
+        $product_obj = wc_get_product($product_id);
+        
+        if ($product_obj) {
+            if ($product_obj->is_type('variable')) {
+                $variations = $product_obj->get_available_variations();
+                foreach ($variations as $variation) {
+                    $variation_id = $variation['variation_id'];
+                    $variation_obj = wc_get_product($variation_id);
+                    
+                    if ($variation_obj) {
+                        $regular_price = $variation_obj->get_regular_price();
+                        if ($regular_price > 0) {
+                            $sale_price = $regular_price * (1 - ($discount_percentage / 100));
+                            $sale_price = round($sale_price, 2);
+                            update_post_meta($variation_id, '_sale_price', $sale_price);
+                            update_post_meta($variation_id, '_price', $sale_price);
+                        }
+                    }
+                }
+            } else {
+                $regular_price = $product_obj->get_regular_price();
+                if ($regular_price > 0) {
+                    $sale_price = $regular_price * (1 - ($discount_percentage / 100));
+                    $sale_price = round($sale_price, 2);
+                    update_post_meta($product_id, '_sale_price', $sale_price);
+                    update_post_meta($product_id, '_price', $sale_price);
+                }
+            }
+        }
+    }
+    wc_delete_product_transients();
+}
+
+// Νέα συνάρτηση για την αφαίρεση των εκπτώσεων
+function remove_all_discounts() {
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => -1
+    );
+    
+    $products = get_posts($args);
+    
+    foreach ($products as $product) {
+        $product_id = $product->ID;
+        $product_obj = wc_get_product($product_id);
+        
+        if ($product_obj) {
+            if ($product_obj->is_type('variable')) {
+                $variations = $product_obj->get_available_variations();
+                foreach ($variations as $variation) {
+                    $variation_id = $variation['variation_id'];
+                    $regular_price = get_post_meta($variation_id, '_regular_price', true);
+                    
+                    // Αφαίρεση της τιμής έκπτωσης
+                    delete_post_meta($variation_id, '_sale_price');
+                    update_post_meta($variation_id, '_price', $regular_price);
+                }
+            } else {
+                $regular_price = get_post_meta($product_id, '_regular_price', true);
+                
+                // Αφαίρεση της τιμής έκπτωσης
+                delete_post_meta($product_id, '_sale_price');
+                update_post_meta($product_id, '_price', $regular_price);
+            }
+        }
+    }
+    wc_delete_product_transients();
+}
+
+// Προσθήκη κουμπιών στο διαχειριστικό
+function add_discount_management_buttons() {
+    if (isset($_GET['apply_bulk_discount'])) {
+        apply_bulk_discount();
+        wp_redirect(admin_url('edit.php?post_type=product&bulk_discount_applied=true'));
+        exit;
+    }
+    
+    if (isset($_GET['remove_all_discounts'])) {
+        remove_all_discounts();
+        wp_redirect(admin_url('edit.php?post_type=product&discounts_removed=true'));
+        exit;
+    }
+    
+    ?>
+    <div class="wrap">
+        <a href="<?php echo admin_url('edit.php?post_type=product&apply_bulk_discount=true'); ?>" 
+           class="button button-primary" 
+           style="margin-right: 10px;"
+           onclick="return confirm('Είστε σίγουροι ότι θέλετε να εφαρμόσετε έκπτωση 60% σε όλα τα προϊόντα;');">
+            Εφαρμογή έκπτωσης 60%
+        </a>
+        
+        <a href="<?php echo admin_url('edit.php?post_type=product&remove_all_discounts=true'); ?>" 
+           class="button button-secondary" 
+           onclick="return confirm('Είστε σίγουροι ότι θέλετε να αφαιρέσετε όλες τις εκπτώσεις;');">
+            Αφαίρεση όλων των εκπτώσεων
+        </a>
+    </div>
+    <?php
+}
+
+add_action('admin_notices', 'add_discount_management_buttons');
+
+// Προσθήκη μηνυμάτων επιτυχίας
+function discount_management_notices() {
+    if (isset($_GET['bulk_discount_applied'])) {
+        ?>
+        <div class="notice notice-success is-dismissible">
+            <p>Η έκπτωση 60% εφαρμόστηκε με επιτυχία σε όλα τα προϊόντα!</p>
+        </div>
+        <?php
+    }
+    
+    if (isset($_GET['discounts_removed'])) {
+        ?>
+        <div class="notice notice-success is-dismissible">
+            <p>Όλες οι εκπτώσεις αφαιρέθηκαν με επιτυχία!</p>
+        </div>
+        <?php
+    }
+}
+
+add_action('admin_notices', 'discount_management_notices');
