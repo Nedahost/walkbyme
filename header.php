@@ -5,6 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="profile" href="http://gmpg.org/xfn/11">
         <meta name="format-detection" content="telephone=no">
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="q5e3pMcT7fo/ZnKPMuJFNA" defer="true"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <meta name="p:domain_verify" content="47d2a4d6f4ed2663e7cbd09e076d1c6e">
         <title><?php wp_title( '|', true, 'right' ); ?></title>
