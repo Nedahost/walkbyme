@@ -42,7 +42,8 @@
 </script>
 
     </head>
-    <body>
+    <body <?php body_class(); ?>>
+    <?php wp_body_open(); ?>
     
         <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5QBSL8G"
@@ -77,6 +78,7 @@
                                <?php echo WC()->cart->get_cart_total() . ' (' . WC()->cart->get_cart_contents_count() .')' ; ?></a>
                         </li>
                     </ul>
+                </div>
                 <div id="logo"><!-- logo start -->
                     <?php
                     $header_image = get_header_image();
