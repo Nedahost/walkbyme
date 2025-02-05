@@ -1,0 +1,196 @@
+@use '../abstracts' as a;
+@use '../base' as t;
+
+.container {
+    #pagecontent {
+        margin-top: a.rem(40);
+
+        h1 {
+            margin: 0;
+            padding: 0;
+            font-size: a.rem(24);
+            font-weight: normal;
+            font-family: var(--f-second);
+            text-align: center;
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(20);
+            }
+        }
+
+        p {
+            font-size: a.rem(15);
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(14);
+            }
+        }
+
+        ol {
+            list-style: decimal;
+            line-height: 1.5;
+            margin-left: a.rem(20);
+            font-size: a.rem(16);
+            letter-spacing: t.$letter-spacing;
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(14);
+                margin-left: a.rem(15);
+            }
+        }
+
+        .outercontentpage {
+            @include a.breakpoint-down(md) {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .imagepage {
+                float: left;
+                width: 40%;
+
+                @include a.breakpoint-down(md) {
+                    float: none;
+                    width: 100%;
+                    margin-bottom: a.rem(20);
+                }
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+            .contentpage {
+                float: left;
+                width: 55%;
+                margin-left: a.rem(30);
+
+                @include a.breakpoint-down(md) {
+                    float: none;
+                    width: 100%;
+                    margin-left: 0;
+                }
+
+                ul {
+                    margin-top: a.rem(20);
+                    display: grid;
+                    gap: a.rem(8);
+                    grid-template-columns: repeat(3, 1fr);
+
+                    @include a.breakpoint-down(sm) {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+
+                    @include a.breakpoint-down(xs) {
+                        grid-template-columns: 1fr;
+                    }
+
+                    li {
+                        a {
+                            filter: brightness(97%);
+                            figure {
+                                img {
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.wp-block-woocommerce-cart {
+    margin-top: a.rem(30);
+    a {
+        color: var(--clr-primary);
+        &:hover {
+            color: var(--clr-primary-hover);
+        }
+    }
+}
+
+.page {
+    > .titlepage {
+        h1 {
+            margin: 0;
+            padding: 0;
+            font-size: a.rem(24);
+            font-weight: normal;
+            font-family: var(--f-second);
+            text-align: center;
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(20);
+            }
+        }
+    }
+
+    .detailspages {
+        > p {
+            font-size: a.rem(17) !important;
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(15) !important;
+            }
+        }
+
+        ol, ul {
+            list-style: decimal;
+            line-height: 1.5;
+            margin-left: a.rem(20);
+            font-size: a.rem(16);
+            letter-spacing: t.$letter-spacing;
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(14);
+                margin-left: a.rem(15);
+            }
+
+            ul {
+                margin: 0 0 0 a.rem(25);
+                padding: 0;
+                list-style: disc;
+            }
+        }
+    }
+}
+
+.outernotfound {
+    text-align: center;
+    padding: a.rem(50) 0;
+
+    .titlenotfound {
+        h1 {
+            margin: 0;
+            padding: 0;
+            font-size: a.rem(24);
+            font-weight: normal;
+            font-family: var(--f-second);
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(20);
+            }
+        }
+    }
+
+    .desctiptionnotfound {
+        p {
+            font-size: a.rem(15);
+
+            @include a.breakpoint-down(sm) {
+                font-size: a.rem(14);
+            }
+        }
+
+        a {
+            color: black;
+            &:hover {
+                color: #9a715b;
+                text-decoration: underline;
+            }
+        }
+    }
+}

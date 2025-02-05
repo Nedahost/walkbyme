@@ -1,0 +1,21 @@
+@use 'sass:math';
+
+@function em($pixels, $context: 16) {
+  @if type-of($pixels) == "number" and unitless($pixels) {
+    @return math.div($pixels, $context) * 1em;
+  } @else if type-of($pixels) == "number" and unit($pixels) == "px" {
+    @return math.div($pixels, $context * 1px) * 1em;
+  } @else {
+    @error "Η παράμετρος $pixels πρέπει να είναι αριθμός με ή χωρίς μονάδα px στη συνάρτηση em().";
+  }
+}
+
+@function rem($pixels, $context: 16) {
+  @if type-of($pixels) == "number" and unitless($pixels) {
+    @return math.div($pixels, $context) * 1rem;
+  } @else if type-of($pixels) == "number" and unit($pixels) == "px" {
+    @return math.div($pixels, $context * 1px) * 1rem;
+  } @else {
+    @error "Η παράμετρος $pixels πρέπει να είναι αριθμός με ή χωρίς μονάδα px στη συνάρτηση rem().";
+  }
+}

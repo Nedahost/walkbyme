@@ -1,0 +1,43 @@
+@use './typography' as t;
+
+html{
+    font-size: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    height: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+}
+
+*, *::before , *::after{
+    -moz-box-sizing: inherit;
+    -ms-box-sizing: inherit;
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+} 
+
+
+body{
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    background: var(--clr-background);
+    font-family: var(--f-secondary);
+    color: var(--clr-primary);
+    font-size: t.$font-size-body;
+}
+
+main{
+    background: var(--clr-white);
+}
+
+.wrapper{
+    margin: 0 auto;
+    padding: 0 3%;
+    max-width: 1600px;
+    width: 100%;
+}
+

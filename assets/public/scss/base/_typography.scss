@@ -1,0 +1,58 @@
+@use './../abstracts/functions' as f;
+
+$font-size-body: f.rem(16);
+$font-size-h1: f.rem(25);
+$font-size-h2: f.rem(24);
+$font-size-h3: f.rem(17);
+
+$font-size-p: f.rem(15);
+
+$font-size-more: f.rem(14);
+$letter-spacing: f.rem(1);
+
+.generic-titles{
+    $letter-spacing: $letter-spacing;
+    h2{
+        font-size: $font-size-h2;
+        font-weight: 400;
+    }    
+    text-align: center;
+    margin-bottom: 25px;
+    > p{
+        font-size: f.rem(11);
+        font-style: italic;
+        margin: 0;
+    }
+}
+
+
+
+.font-size-24{
+    font-size: 24px; 
+}
+
+
+.more { 
+    a{
+        color: #000;
+        position: relative; 
+        &::after{
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--clr-gold);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        &:hover{
+            &::after{
+                transform: scaleX(1);
+                transform-origin: bottom left;
+            }
+        }
+    }
+}
