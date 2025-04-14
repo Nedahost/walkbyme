@@ -1,0 +1,14 @@
+// Χρώματα χάρτης (map)
+$colors:(
+    "main":hsl(0, 0%, 99%), //#fdfdfd 
+    "white": hsl(0, 0%, 100%), 
+);
+
+// Function για πρόσβαση στα χρώματα
+@function color($name) {
+    @if map-has-key($colors, $name) {
+      @return map-get($colors, $name);
+    } @else {
+      @error "Το χρώμα '#{$name}' δεν υπάρχει στον χάρτη $colors.";
+    }
+  }

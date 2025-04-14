@@ -1,4 +1,5 @@
 @use './typography' as t;
+@use '../abstracts' as a;
 
 html{
     font-size: 100%;
@@ -26,12 +27,12 @@ body{
     padding: 0px;
     background: var(--clr-background);
     font-family: var(--f-secondary);
-    color: var(--clr-primary);
+    font-weight: 300;
     font-size: t.$font-size-body;
 }
 
 main{
-    background: var(--clr-white);
+    background: a.color('main');
 }
 
 .wrapper{
