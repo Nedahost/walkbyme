@@ -151,7 +151,12 @@
         .rightdetailsproduct {
             margin: auto 0;
             padding: 0 30px;
-
+            background-color: a.color('white');
+            -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
+            box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
+            -webkit-transition: -webkit-box-shadow .3s ease-out;
+            -ms-transition: box-shadow .3s ease-out;
+            transition: box-shadow .3s ease-out;
             @include a.breakpoint-down(md) {
                 padding: 0 15px;
             }
