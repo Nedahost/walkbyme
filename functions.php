@@ -97,7 +97,6 @@ function is_product_excluded_from_facebook_feed($product_id) {
     return ($excluded === 'yes');
 }
 
-
 // Δημιουργία κουπονιού για δωρεάν αντικαταβολή για συγκεκριμένο πελάτη
 function create_free_cod_coupon_for_customer($customer_email, $expiry_days = 7) {
     // Δημιουργία μοναδικού κωδικού κουπονιού
@@ -133,41 +132,79 @@ function create_free_cod_coupon_for_customer($customer_email, $expiry_days = 7) 
 }
 
 // Αποστολή email με το κουπόνι για δωρεάν αντικαταβολή
-function send_free_cod_email($customer_email, $coupon_code) {
+function send_free_cod_email($customer_email, $coupon_code, $gender = '', $customer_name = '') {
     // Ανάκτηση της τιμής της αντικαταβολής από τις ρυθμίσεις
     $cod_fee = get_option('cash_on_delivery_fee', 2.5);
     
+    // Προσαρμογή προσφώνησης ανάλογα με το φύλο και το όνομα
+    $greeting = 'Αγαπητέ/ή πελάτη';
+    if (!empty($customer_name)) {
+        if ($gender === 'male') {
+            $greeting = 'Αγαπητέ ' . $customer_name;
+        } elseif ($gender === 'female') {
+            $greeting = 'Αγαπητή ' . $customer_name;
+        } else {
+            $greeting = 'Αγαπητέ/ή ' . $customer_name;
+        }
+    } else {
+        if ($gender === 'male') {
+            $greeting = 'Αγαπητέ πελάτη';
+        } elseif ($gender === 'female') {
+            $greeting = 'Αγαπητή πελάτισσα';
+        }
+    }
+    
     $subject = 'Ειδική προσφορά για εσάς: Δωρεάν αντικαταβολή!';
     
-    $message = 'Αγαπητέ πελάτη,
+    // Δημιουργία του πλαισίου κουπονιού με CSS
+    $coupon_style = '
+    <div style="border: 2px dashed #ddd; padding: 15px; margin: 15px 0; text-align: center; background-color: #f9f9f9;">
+        <span style="font-size: 20px; font-weight: bold; color: #0066cc;">' . $coupon_code . '</span>
+    </div>';
     
-Παρατηρήσαμε ότι έχετε προϊόντα στο καλάθι σας. Θα θέλαμε να σας προσφέρουμε ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ειδικά για εσάς!
+    $message = '
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <p>' . $greeting . ',</p>
+        
+        <p>Παρατηρήσαμε ότι έχετε προϊόντα στο καλάθι σας. Θα θέλαμε να σας προσφέρουμε <strong>ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ</strong> ειδικά για εσάς!</p>
 
-Για να επωφεληθείτε από αυτήν την προσφορά:
-1. Προσθέστε τα προϊόντα στο καλάθι σας
-2. Χρησιμοποιήστε τον παρακάτω κωδικό κουπονιού:
-' . $coupon_code . '
-3. Επιλέξτε ως τρόπο πληρωμής την "Αντικαταβολή"
+        <p><strong>Για να επωφεληθείτε από αυτήν την προσφορά:</strong></p>
+        <ol>
+            <li>Επιστρέψτε στο ηλεκτρονικό μας κατάστημα</li>
+            <li>Χρησιμοποιήστε τον παρακάτω κωδικό κουπονιού:</li>
+        </ol>
+        
+        ' . $coupon_style . '
+        
+        <ol start="3">
+            <li>Επιλέξτε ως τρόπο πληρωμής την "<strong>Αντικαταβολή</strong>"</li>
+        </ol>
 
-Το κόστος της αντικαταβολής (' . $cod_fee . '€) θα αφαιρεθεί αυτόματα από τη συνολική τιμή της παραγγελίας σας!
+        <p>Το κόστος της αντικαταβολής (' . $cod_fee . '€) θα αφαιρεθεί αυτόματα από τη συνολική τιμή της παραγγελίας σας!</p>
 
-Η προσφορά ισχύει για 7 ημέρες. Μην χάσετε αυτήν την ευκαιρία!
+        <p>Η προσφορά ισχύει για 7 ημέρες. Μην χάσετε αυτήν την ευκαιρία!</p>
 
-Με εκτίμηση,
-Η ομάδα του ' . get_bloginfo('name');
+        <p>Με εκτίμηση,<br>
+        Η ομάδα του ' . get_bloginfo('name') . '</p>
+    </body>
+    </html>';
+    
+    // Ρύθμιση επικεφαλίδων για HTML email
+    $headers = array('Content-Type: text/html; charset=UTF-8');
     
     // Αποστολή του email
-    wp_mail($customer_email, $subject, $message);
+    wp_mail($customer_email, $subject, $message, $headers);
 }
 
 // Λειτουργία για χειροκίνητη αποστολή email σε συγκεκριμένο πελάτη
-function send_free_cod_to_specific_customer($customer_email) {
+function send_free_cod_to_specific_customer($customer_email, $gender = '', $customer_name = '') {
     // Δημιουργία κουπονιού
     $coupon_code = create_free_cod_coupon_for_customer($customer_email);
     
     // Αποστολή email
     if ($coupon_code) {
-        send_free_cod_email($customer_email, $coupon_code);
+        send_free_cod_email($customer_email, $coupon_code, $gender, $customer_name);
         return true;
     }
     
@@ -258,6 +295,85 @@ function add_free_cod_message_in_checkout() {
     }
 }
 
+// ΝΕΟΣ ΚΩΔΙΚΑΣ: Παρακολούθηση αλλαγών στη μέθοδο πληρωμής
+add_action('woocommerce_checkout_update_order_review', 'check_payment_method_for_cod_coupon');
+function check_payment_method_for_cod_coupon($post_data) {
+    parse_str($post_data, $output);
+    
+    // Έλεγχος αν το καλάθι έχει κουπόνι δωρεάν αντικαταβολής
+    if (cart_has_free_cod_coupon()) {
+        // Έλεγχος αν η επιλεγμένη μέθοδος πληρωμής ΔΕΝ είναι η αντικαταβολή
+        if (isset($output['payment_method']) && $output['payment_method'] !== 'cod') {
+            // Αποθήκευση του κουπονιού για να μπορούμε να το επαναφέρουμε αργότερα
+            $free_cod_coupon = '';
+            foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
+                if (is_free_cod_coupon($coupon_code)) {
+                    $free_cod_coupon = $coupon_code;
+                    break;
+                }
+            }
+            
+            // Αποθήκευση του κουπονιού στη συνεδρία για πιθανή επαναφορά
+            if (!empty($free_cod_coupon)) {
+                WC()->session->set('saved_free_cod_coupon', $free_cod_coupon);
+                // Αφαίρεση του κουπονιού όταν η μέθοδος πληρωμής δεν είναι αντικαταβολή
+                WC()->cart->remove_coupon($free_cod_coupon);
+                
+                // Προσθήκη μηνύματος
+                wc_add_notice('Το κουπόνι δωρεάν αντικαταβολής αφαιρέθηκε επειδή επιλέξατε διαφορετικό τρόπο πληρωμής.', 'notice');
+            }
+        } 
+    } else if (isset($output['payment_method']) && $output['payment_method'] === 'cod') {
+        // Έλεγχος αν υπάρχει αποθηκευμένο κουπόνι στη συνεδρία και αν η μέθοδος πληρωμής είναι αντικαταβολή
+        $saved_coupon = WC()->session->get('saved_free_cod_coupon');
+        if (!empty($saved_coupon)) {
+            // Επαναφορά του κουπονιού
+            WC()->cart->apply_coupon($saved_coupon);
+            WC()->session->set('saved_free_cod_coupon', '');
+            
+            // Προσθήκη μηνύματος
+            wc_add_notice('Το κουπόνι δωρεάν αντικαταβολής εφαρμόστηκε ξανά.', 'success');
+        }
+    }
+}
+
+// ΝΕΟΣ ΚΩΔΙΚΑΣ: Έλεγχος εφαρμογής κουπονιού σε σχέση με τη μέθοδο πληρωμής
+add_filter('woocommerce_coupon_is_valid', 'validate_free_cod_coupon', 10, 3);
+function validate_free_cod_coupon($is_valid, $coupon, $discount) {
+    // Έλεγχος αν είναι κουπόνι δωρεάν αντικαταβολής
+    if (get_post_meta($coupon->get_id(), 'free_cod_coupon', true) === 'yes') {
+        // Έλεγχος αν η επιλεγμένη μέθοδος πληρωμής είναι αντικαταβολή
+        $chosen_payment_method = WC()->session->get('chosen_payment_method');
+        
+        if ($chosen_payment_method !== 'cod') {
+            // Προσθήκη μηνύματος σφάλματος
+            if (is_checkout()) {
+                wc_add_notice('Το κουπόνι δωρεάν αντικαταβολής μπορεί να χρησιμοποιηθεί μόνο με τη μέθοδο πληρωμής "Αντικαταβολή".', 'error');
+            }
+            return false;
+        }
+    }
+    
+    return $is_valid;
+}
+
+// ΝΕΟΣ ΚΩΔΙΚΑΣ: Ενημέρωση του καλαθιού όταν αλλάζει η μέθοδος πληρωμής
+add_action('woocommerce_review_order_before_payment', 'add_payment_method_script');
+function add_payment_method_script() {
+    if (cart_has_free_cod_coupon() || WC()->session->get('saved_free_cod_coupon')) {
+        ?>
+        <script type="text/javascript">
+            jQuery(function($) {
+                $('form.checkout').on('change', 'input[name="payment_method"]', function() {
+                    // Ενημέρωση του καλαθιού όταν αλλάζει η μέθοδος πληρωμής
+                    $('body').trigger('update_checkout');
+                });
+            });
+        </script>
+        <?php
+    }
+}
+
 // Προσθήκη σελίδας διαχειριστή για αποστολή προσαρμοσμένων emails
 function custom_admin_menu() {
     add_menu_page(
@@ -282,9 +398,11 @@ function custom_offer_sender_page() {
         // Έλεγχος αν υποβλήθηκε η φόρμα
         if (isset($_POST['submit_offer'])) {
             $customer_email = sanitize_email($_POST['customer_email']);
+            $gender = isset($_POST['customer_gender']) ? sanitize_text_field($_POST['customer_gender']) : '';
+            $customer_name = isset($_POST['customer_name']) ? sanitize_text_field($_POST['customer_name']) : '';
             
             if (!empty($customer_email) && is_email($customer_email)) {
-                $result = send_free_cod_to_specific_customer($customer_email);
+                $result = send_free_cod_to_specific_customer($customer_email, $gender, $customer_name);
                 
                 if ($result) {
                     echo '<div class="notice notice-success"><p>Το email με το κουπόνι δωρεάν αντικαταβολής εστάλη επιτυχώς στο ' . $customer_email . '!</p></div>';
@@ -306,10 +424,44 @@ function custom_offer_sender_page() {
                         <p class="description">Εισάγετε το email του πελάτη στον οποίο θέλετε να στείλετε την προσφορά δωρεάν αντικαταβολής.</p>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><label for="customer_name">Όνομα Πελάτη</label></th>
+                    <td>
+                        <input type="text" name="customer_name" id="customer_name" class="regular-text">
+                        <p class="description">Εισάγετε το όνομα του πελάτη για προσωποποιημένη προσφώνηση (π.χ. "Αγαπητέ Γιώργο").</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="customer_gender">Φύλο Πελάτη</label></th>
+                    <td>
+                        <select name="customer_gender" id="customer_gender" class="regular-text">
+                            <option value="">-- Επιλέξτε φύλο --</option>
+                            <option value="male">Άνδρας</option>
+                            <option value="female">Γυναίκα</option>
+                        </select>
+                        <p class="description">Επιλέξτε το φύλο του πελάτη για σωστή προσφώνηση στο email.</p>
+                    </td>
+                </tr>
             </table>
             
             <?php submit_button('Αποστολή Προσφοράς', 'primary', 'submit_offer'); ?>
         </form>
+        
+        <div class="card" style="max-width: 600px; margin-top: 20px;">
+            <h2>Προεπισκόπηση Email</h2>
+            <div style="border: 1px solid #ddd; padding: 15px; background-color: #fff;">
+                <p><strong>Παράδειγμα προσφώνησης:</strong></p>
+                <ul>
+                    <li>Με όνομα: "Αγαπητέ Γιώργο," ή "Αγαπητή Μαρία,"</li>
+                    <li>Χωρίς όνομα: "Αγαπητέ πελάτη," ή "Αγαπητή πελάτισσα,"</li>
+                </ul>
+                <p><strong>Παράδειγμα μορφοποίησης κουπονιού:</strong></p>
+                <div style="border: 2px dashed #ddd; padding: 15px; margin: 15px 0; text-align: center; background-color: #f9f9f9;">
+                    <span style="font-size: 20px; font-weight: bold; color: #0066cc;">FREE-COD-XXXXXXXX</span>
+                </div>
+                <p>Το κουπόνι θα εμφανίζεται με αυτή τη μορφή στο email που θα σταλεί στον πελάτη.</p>
+            </div>
+        </div>
     </div>
     <?php
 }
