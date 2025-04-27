@@ -18,7 +18,7 @@
                 <div class="outerpageinfo">
                     <div class="pageinfo"><!-- page info start -->
                         <h1 class="page-title">
-                            <i><?php woocommerce_page_title(); ?></i>
+                            <?php woocommerce_page_title(); ?>
                         </h1>
 
                         <?php

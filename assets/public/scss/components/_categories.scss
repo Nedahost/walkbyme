@@ -12,6 +12,13 @@
             .pageinfo{
                 width: 100%;
                 max-width: 660px;
+                .page-title{
+                    font-weight: 300;
+                    font-size: 22px;
+                }
+                p{
+                    font-size: .956rem;
+                }
             }
         }
     }
