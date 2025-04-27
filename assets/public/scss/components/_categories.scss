@@ -1,7 +1,6 @@
 .outercategories{
     width: 100%;
     height: auto;
-    min-height: 260px;
     display: flex;
     align-items: center;
     background-position: center right;
@@ -9,10 +8,7 @@
     background-size: cover;
 
     .row{
-        display: flex;
-        flex-wrap: wrap;
         .outerpageinfo{
-            padding-left: 40px;
             .pageinfo{
                 width: 100%;
                 max-width: 660px;

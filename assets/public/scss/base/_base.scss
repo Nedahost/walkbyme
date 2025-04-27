@@ -32,12 +32,12 @@ body{
 }
 
 main{
-    background: a.color('main');
+    background: a.color('white');
 }
 
 .wrapper{
     margin: 0 auto;
-    padding: 0 3%;
+    padding: 0;
     max-width: 1600px;
     width: 100%;
 }

@@ -24,31 +24,27 @@ if ( post_password_required() ) {
             <section class="rightdetailsproduct">
                 <h1><?php echo $product->get_name(); ?></h1>
                 
-                <?php 
-                    $slogan = get_post_meta(get_the_ID(), '_text_field', true); 
-                    $result = substr(strstr($slogan, " "), 1);
-                    echo $result;
-                ?>
-                
+                <div class="product-identity">
+                    <?php 
+                        $slogan = get_post_meta(get_the_ID(), '_text_field', true); 
+                        $result = substr(strstr($slogan, " "), 1);
+                        echo $slogan;
+                    ?>
+                </div>
                 <div class="importantdetails">
                     <div class="skuproduct">
                         <?php
                             $sku = $product->get_sku();
+                            $availability = get_post_meta(get_the_ID(), '_select', true);
                             if (!empty($sku)) {
                                 echo '<b>Ref.:</b> ' . $sku;
                             }
+                            if (!empty($availability)) {
+                                echo ' • <b>Διαθεσιμότητα:</b> ' . esc_html($availability) . '';
+                            }
                         ?>
-                    </div>
-                    <?php 
-                    // Εμφάνιση διαθεσιμότητας
-                    $availability = get_post_meta(get_the_ID(), '_select', true);
-                    if (!empty($availability)) {
-                        echo '<div class="availability"><b>Διαθεσιμότητα:</b> ' . esc_html($availability) . '</div>';
-                    }
-                    ?>
-                    <div class="textsales">
-                        <b><u><?php echo get_post_meta($post->ID, '_date_field', true); ?></u></b>
-                    </div>
+                    </div> 
+                    
                 </div>
                 <div class="singleprice">
                     <?php
@@ -65,7 +61,7 @@ if ( post_password_required() ) {
                         } else {
                             if ($min_regular_price !== $min_price) {
                                 echo '<span class="price-container">';
-                                echo '<span class="product-standard-price">' . wc_price($min_regular_price) . '</span>';
+                                echo '<span class="product-standard-price"> Τιμή:' . wc_price($min_regular_price) . '</span>';
                                 echo '<span class="lowred">' . wc_price($min_price) . '</span>';
                                 echo '</span>';
 

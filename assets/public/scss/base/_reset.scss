@@ -47,3 +47,7 @@ h4 { font-size: 16px; }
 h5 { font-size: 14px; }
 
 h6 { font-size: 12px; }
+
+a, area, button, [role="button"], input, label, select, summary, textarea {
+    touch-action: manipulation;
+  }

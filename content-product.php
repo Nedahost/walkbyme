@@ -7,7 +7,7 @@
 
     // Εμφάνιση ονόματος προϊόντος (τίτλος ή custom field)
     $product_title = get_post_meta(get_the_ID(), '_text_field', true);
-    $title = !empty($product_title) ? esc_html($product_title) : get_the_title();
+    $title = get_the_title();
     ?>
 
     <h3>

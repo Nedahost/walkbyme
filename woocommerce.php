@@ -13,7 +13,7 @@
         // echo "<img src='{$image}' alt='' width='100%' height='auto' />";
         // background-image:url(<?php echo $image; );
     ?>
-        <div class="outercategories" style="background-color: #f7f7f7;">
+        <div class="outercategories">
             <div class="row"><!-- row start -->
                 <div class="outerpageinfo">
                     <div class="pageinfo"><!-- page info start -->

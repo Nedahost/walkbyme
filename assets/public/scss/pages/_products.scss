@@ -24,6 +24,11 @@
             margin: 0 !important;
             position: relative;
             overflow: hidden;
+            -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
+            box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
+            -webkit-transition: -webkit-box-shadow .3s ease-out;
+            -ms-transition: box-shadow .3s ease-out;
+            transition: box-shadow .3s ease-out;
             .product-image-link {
                 position: relative;
                 display: block;
@@ -151,12 +156,6 @@
         .rightdetailsproduct {
             margin: auto 0;
             padding: 0 30px;
-            background-color: a.color('white');
-            -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
-            box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
-            -webkit-transition: -webkit-box-shadow .3s ease-out;
-            -ms-transition: box-shadow .3s ease-out;
-            transition: box-shadow .3s ease-out;
             @include a.breakpoint-down(md) {
                 padding: 0 15px;
             }
@@ -164,6 +163,10 @@
             h1 {
                 font-size: 21px;
                 font-weight: 300;
+            }
+
+            .product-identity{
+                font-size: 12px;
             }
 
             .importantdetails {
@@ -176,10 +179,11 @@
             }
 
             .singleprice {
-                border-top: 1px solid #000000;
-                border-bottom: 1px solid #000000;
+                border-top: 1px solid #eee;
+                border-bottom: 1px solid #eee;
                 font-size: 18px;
                 padding: 15px 6px;
+                letter-spacing: 0.3px;
                 .price-container {
                     .product-standard-price {
                         text-decoration: line-through;
@@ -334,7 +338,6 @@
             -webkit-transition: -webkit-box-shadow .3s ease-out;
             -ms-transition: box-shadow .3s ease-out;
             transition: box-shadow .3s ease-out;
-            background-color: a.color('white');
             padding-bottom: 1.5em;
             .product-image-link {
                 position: relative;
