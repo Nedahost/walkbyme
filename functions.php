@@ -465,3 +465,14 @@ function custom_offer_sender_page() {
     </div>
     <?php
 }
+
+
+
+
+
+
+add_action('init', 'remove_customer_zone_notice');
+function remove_customer_zone_notice() {
+    remove_action('woocommerce_before_shop_loop', 'woocommerce_output_all_notices', 10);
+    remove_action('woocommerce_before_single_product', 'woocommerce_output_all_notices', 10);
+}

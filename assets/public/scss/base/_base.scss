@@ -33,12 +33,13 @@ body{
 
 main{
     background: a.color('white');
+    
 }
 
 .wrapper{
     margin: 0 auto;
-    padding: 0;
-    max-width: 1600px;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
     width: 100%;
 }
 

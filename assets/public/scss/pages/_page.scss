@@ -130,7 +130,7 @@
 
     .detailspages {
         > p {
-            font-size: a.rem(17) !important;
+            //font-size: a.rem(17) !important;
 
             @include a.breakpoint-down(sm) {
                 font-size: a.rem(15) !important;
