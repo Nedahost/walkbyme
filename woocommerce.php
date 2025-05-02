@@ -1,5 +1,9 @@
 <?php get_header(); ?>
-
+<?php 
+    if(is_product_category(135)){ ?>
+        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/headerjpg.jpg" alt=""  />
+  <?php  }
+?>
 <div class="wrapper">
     <?php if (is_product_category()) {
         global $wp_query;
@@ -21,7 +25,7 @@
                             <?php woocommerce_page_title(); ?>
                         </h1>
 
-                        <?php
+                        <?php 
                         $category_description = category_description();
                         if (!empty($category_description)) {
                             echo '<p>' . $category_description . '</p>';
