@@ -2,14 +2,19 @@
 
 header {
 
+    #outerheader{
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 1rem 2rem;
 
     #logo {
-        text-align: center;
+        justify-self: start;
 
     }
 
     nav {
-        padding-top: 25px;
+     
         
     }
 
@@ -75,6 +80,7 @@ header {
             }
         }
     }
+}
 }
 
 
