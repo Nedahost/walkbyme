@@ -8,27 +8,57 @@ header {
         align-items: center;
         padding: 1rem 2rem;
 
+        @include a.breakpoint-up(md) {
+            padding: 1rem 2rem;
+        }
+        
+        // Για μικρές οθόνες, αλλάζουμε σε κάθετη διάταξη
+        @include a.breakpoint-down(md) {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
+            grid-gap: 1rem;
+            text-align: center;
+        }
+
+
     #logo {
         justify-self: start;
-
+        @include a.breakpoint-down(md) {
+            justify-self: center;
+        }
     }
 
     nav {
-     
+        @include a.breakpoint-down(md) {
+            grid-row: 3;
+            width: 100%;
+        }
         
     }
 
     .shopdetails {
         text-align: right;
         padding: 20px 0;
-
+        @include a.breakpoint-down(md) {
+            grid-row: 2;
+            text-align: center;
+            padding: 10px 0;
+        }
         ul {
+            @include a.breakpoint-down(sm) {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
             li {
                 display: inline-flex;
                 padding: 0 10px;
                 font-size: 14px;
                 font-weight: 300;
-
+                @include a.breakpoint-down(sm) {
+                    padding: 5px;
+                }
                 a {
                     color: var(--clr-black);
 
