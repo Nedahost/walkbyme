@@ -97,6 +97,9 @@ function is_product_excluded_from_facebook_feed($product_id) {
     return ($excluded === 'yes');
 }
 
+
+
+
 // Δημιουργία κουπονιού για δωρεάν αντικαταβολή για συγκεκριμένο πελάτη
 function create_free_cod_coupon_for_customer($customer_email, $expiry_days = 7) {
     // Δημιουργία μοναδικού κωδικού κουπονιού
@@ -469,10 +472,3 @@ function custom_offer_sender_page() {
 
 
 
-
-
-add_action('init', 'remove_customer_zone_notice');
-function remove_customer_zone_notice() {
-    remove_action('woocommerce_before_shop_loop', 'woocommerce_output_all_notices', 10);
-    remove_action('woocommerce_before_single_product', 'woocommerce_output_all_notices', 10);
-}

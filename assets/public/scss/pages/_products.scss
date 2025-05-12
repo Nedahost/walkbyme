@@ -5,7 +5,7 @@
     ul{
         display: grid;
         grid-gap: 8px;
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(2, 1fr);
 
         @include a.breakpoint-up(sm) {
             grid-template-columns: repeat(2, 1fr);
@@ -24,11 +24,6 @@
             margin: 0 !important;
             position: relative;
             overflow: hidden;
-            -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
-            box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
-            -webkit-transition: -webkit-box-shadow .3s ease-out;
-            -ms-transition: box-shadow .3s ease-out;
-            transition: box-shadow .3s ease-out;
             .product-image-link {
                 position: relative;
                 display: block;
@@ -328,17 +323,12 @@
         }
 
         @include a.breakpoint-down(sm) {
-            grid-template-columns: 1fr;
+            grid-template-columns: 2fr;
         }
 
         li {
             text-align: center;
-            -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
-            box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
-            -webkit-transition: -webkit-box-shadow .3s ease-out;
-            -ms-transition: box-shadow .3s ease-out;
-            transition: box-shadow .3s ease-out;
-            padding-bottom: 1.5em;
+           
             .product-image-link {
                 position: relative;
                 display: block;
