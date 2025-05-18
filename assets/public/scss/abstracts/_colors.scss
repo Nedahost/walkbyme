@@ -1,14 +1,77 @@
-// Χρώματα χάρτης (map)
-$colors:(
-    "main":hsl(0, 0%, 99%), //#fdfdfd 
-    "white": hsl(0, 0%, 100%), 
+// Base color palette
+$primary-colors: (
+  "main": hsl(0, 0%, 99%),
+  "white": hsl(0, 0%, 100%),
+  "black": hsl(0, 0%, 0%),
+  "primary": hsl(210, 100%, 50%),
+  "secondary": hsl(280, 80%, 60%),
+  "accent": hsl(30, 100%, 50%)
 );
 
-// Function για πρόσβαση στα χρώματα
+// Color variations and shades
+$color-variants: (
+  "primary-light": hsl(210, 100%, 65%),
+  "primary-dark": hsl(210, 100%, 35%),
+  "secondary-light": hsl(280, 80%, 75%),
+  "secondary-dark": hsl(280, 80%, 45%),
+  
+  // Gray scale
+  "gray-100": hsl(0, 0%, 95%),
+  "gray-200": hsl(0, 0%, 85%),
+  "gray-300": hsl(0, 0%, 75%),
+  "gray-400": hsl(0, 0%, 65%),
+  "gray-500": hsl(0, 0%, 55%),
+  "gray-600": hsl(0, 0%, 45%),
+  "gray-700": hsl(0, 0%, 35%),
+  "gray-800": hsl(0, 0%, 25%),
+  "gray-900": hsl(0, 0%, 15%)
+);
+
+// Semantic purpose colors
+$semantic-colors: (
+  "success": hsl(120, 60%, 50%),
+  "warning": hsl(40, 100%, 50%),
+  "error": hsl(0, 100%, 50%),
+  "info": hsl(200, 80%, 60%)
+);
+
+// Merge all color maps
+$colors: map-merge($primary-colors, map-merge($color-variants, $semantic-colors));
+
+// Text-specific colors
+$text-colors: (
+  "body": hsl(0, 0%, 20%),
+  "muted": hsl(0, 0%, 45%),
+  "light": hsl(0, 0%, 75%),
+  "link": map-get($primary-colors, "primary"),
+  "link-hover": map-get($color-variants, "primary-dark")
+);
+
+// Access a color from any map
 @function color($name) {
-    @if map-has-key($colors, $name) {
-      @return map-get($colors, $name);
-    } @else {
-      @error "Το χρώμα '#{$name}' δεν υπάρχει στον χάρτη $colors.";
-    }
+  @if map-has-key($colors, $name) {
+    @return map-get($colors, $name);
+  } @else if map-has-key($text-colors, $name) {
+    @return map-get($text-colors, $name);
+  } @else {
+    @error "Color '#{$name}' doesn't exist in the color maps.";
   }
+}
+
+// Create rgba from an existing color
+@function color-alpha($name, $opacity) {
+  $color: color($name);
+  @return rgba($color, $opacity);
+}
+
+// Get a lighter shade of a color
+@function lighten-color($name, $percentage) {
+  $color: color($name);
+  @return lighten($color, $percentage);
+}
+
+// Get a darker shade of a color
+@function darken-color($name, $percentage) {
+  $color: color($name);
+  @return darken($color, $percentage);
+}

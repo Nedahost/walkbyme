@@ -1,53 +1,103 @@
 /*====================================== reset.css is here ========================================*/
-body, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, blockquote { margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html { margin: 0 !important; }
+body,
+h1, h2, h3, h4, h5, h6,
+p,
+figure,
+blockquote,
+dl, dd {
+  margin: 0;
+}
 
-table { border-collapse: collapse; border-spacing: 0; }
+html {
+  scroll-behavior: smooth;
+}
 
-fieldset, img { border: 0; }
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
 
 address, caption, cite, code, dfn, em, th, var { font-style: normal; font-weight: normal; }
 
-ol, ul { list-style: none; margin: 0px;  padding: 0px;}
+ul, ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
-caption, th { text-align: left; }
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
 
-h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: bold; }
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
 
-q:before, q:after { content: ''; }
 
-abbr, acronym { border: 0; }
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
 
-.clear_0 { clear: both; font-size: 0px; line-height: 0px; display: block; }
 
-.last { margin-right: 0 !important; }
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
-.pad_last { padding: 0 !important; }
 
-.no_bg { background: none !important; }
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
 
-/**************************************************************************************/
-a { text-decoration: none; outline: 0 none; -webkit-tap-highlight-color: rgba(0,0,0,0);}
+fieldset, img {
+  border: 0;
+}
 
-a:hover { text-decoration: none; }
-
-::selection { color: #fff; background-color: #e6e7e8; }
-
-::-moz-selection { color: #ffffff; background-color: #e6e7e8; }
-
-h1 { font-size: 24px; }
-
-h2 { font-size: 22px; }
-
-h3 { font-size: 18px; }
-
-h4 { font-size: 16px; }
-
-h5 { font-size: 14px; }
-
-h6 { font-size: 12px; }
+a {
+  text-decoration: none;
+  color: inherit;
+  outline: 0 none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  
+  &:hover {
+    text-decoration: none;
+  }
+}
 
 a, area, button, [role="button"], input, label, select, summary, textarea {
-    touch-action: manipulation;
-  }
+  touch-action: manipulation;
+}
+
+
+::selection {
+  color: #fff;
+  background-color: var(--clr-primary, #000);
+}
+
+::-moz-selection {
+  color: #ffffff;
+  background-color: var(--clr-primary, #000);
+}

@@ -1,6 +1,6 @@
 @use 'functions' as f;
 
-// Ορισμός breakpoints
+// Breakpoints map
 $breakpoints: (
   "xs": 280px,
   "sm": 576px,
@@ -8,41 +8,99 @@ $breakpoints: (
   "lg": 992px,
   "xl": 1200px,
   "xxl": 1400px,
-  "xxxl": 1680px,
-  "xmedium": 768px,  // Προσθήκα του 'xmedium'
-  "mlarge": 1024px,  // Προσθήκα του 'mlarge'
-  "large": 992px     // Επιβεβαίωση ότι το 'large' υπάρχει
+  "xxxl": 1680px
 );
 
-// Mixin για min-width media queries
+// Container max-widths for each breakpoint
+$container-max-widths: (
+  "xs": 100%,
+  "sm": 540px,
+  "md": 720px,
+  "lg": 960px,
+  "xl": 1140px,
+  "xxl": 1320px,
+  "xxxl": 1600px
+);
+
+// Min-width media query (mobile-first)
 @mixin breakpoint-up($size) {
   @if map-has-key($breakpoints, $size) {
     @media (min-width: #{map-get($breakpoints, $size)}) {
       @content;
     }
   } @else {
-    @warn "Το breakpoint '#{$size}' δεν υπάρχει στο $breakpoints map.";
+    @warn "Breakpoint '#{$size}' doesn't exist in $breakpoints map.";
   }
 }
 
-// Mixin για max-width media queries
+// Max-width media query
 @mixin breakpoint-down($size) {
   @if map-has-key($breakpoints, $size) {
     @media (max-width: #{map-get($breakpoints, $size) - 1px}) {
       @content;
     }
   } @else {
-    @warn "Το breakpoint '#{$size}' δεν υπάρχει στο $breakpoints map.";
+    @warn "Breakpoint '#{$size}' doesn't exist in $breakpoints map.";
   }
 }
 
-// Mixin για min-width και max-width media queries
+// Range between two breakpoints
 @mixin breakpoint-between($lower, $upper) {
   @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
     @media (min-width: #{map-get($breakpoints, $lower)}) and (max-width: #{map-get($breakpoints, $upper) - 1px}) {
       @content;
     }
   } @else {
-    @warn "Ένα ή και τα δύο breakpoints '#{$lower}' και '#{$upper}' δεν υπάρχουν στο $breakpoints map.";
+    @warn "One or both breakpoints '#{$lower}' and '#{$upper}' don't exist in $breakpoints map.";
+  }
+}
+
+// Create responsive container
+@mixin make-container($padding-x: 1rem) {
+  width: 100%;
+  padding-right: $padding-x;
+  padding-left: $padding-x;
+  margin-right: auto;
+  margin-left: auto;
+  
+  @each $breakpoint, $container-max-width in $container-max-widths {
+    @include breakpoint-up($breakpoint) {
+      max-width: $container-max-width;
+    }
+  }
+}
+
+// Hide element at specified breakpoint and up
+@mixin hide-at($breakpoint) {
+  @include breakpoint-up($breakpoint) {
+    display: none !important;
+  }
+}
+
+// Show element at specified breakpoint and up
+@mixin show-at($breakpoint) {
+  display: none !important;
+  
+  @include breakpoint-up($breakpoint) {
+    display: block !important;
+  }
+}
+
+// Fluid typography between breakpoints
+@mixin fluid-type($min-size, $max-size, $min-width: map-get($breakpoints, 'sm'), $max-width: map-get($breakpoints, 'xl')) {
+  font-size: $min-size;
+  
+  @supports (font-size: clamp(1rem, 1vw, 2rem)) {
+    font-size: clamp(#{$min-size}, #{f.fluid-value($min-size, $max-size, $min-width, $max-width)}, #{$max-size});
+  }
+  
+  @supports not (font-size: clamp(1rem, 1vw, 2rem)) {
+    @media (min-width: $min-width) {
+      font-size: calc(#{$min-size} + #{f.strip-unit($max-size - $min-size)} * ((100vw - #{$min-width}) / #{f.strip-unit($max-width - $min-width)}));
+    }
+    
+    @media (min-width: $max-width) {
+      font-size: $max-size;
+    }
   }
 }

@@ -10,7 +10,7 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 45px;
         text-align: center;
-        @include a.breakpoint-down(large){
+        @include a.breakpoint-down(lg){
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }

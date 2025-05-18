@@ -2,6 +2,13 @@
 
 header {
 
+    .topeader{
+        background-color: a.color('black');
+        color: a.color('white');
+        text-align: center;
+        padding: 5px 0;
+    }
+
     #outerheader{
         display: grid;
         grid-template-columns: 1fr auto 1fr;
@@ -76,7 +83,7 @@ header {
                         content: "\f007";
                     }
 
-                    @include a.breakpoint-down(xmedium) {
+                    @include a.breakpoint-down(md) {
                         span {
                             display: none;
 
@@ -91,7 +98,7 @@ header {
                         font-family: "FontAwesome";
                         content: "\f08b";
                     }
-                    @include a.breakpoint-down(xmedium) {
+                    @include a.breakpoint-down(md) {
                         span {
                             display: none;
 

@@ -15,7 +15,7 @@
             grid-template-columns: repeat(4, 1fr);
         }
 
-        @include a.breakpoint-down(mlarge){
+        @include a.breakpoint-down(lg){
             grid-template-columns: repeat(2, 1fr);
         }
 
@@ -91,7 +91,7 @@
             grid-template-columns: repeat(2, 1fr);
         }
         
-        @include a.breakpoint-down(mlarge) {
+        @include a.breakpoint-down(lg) {
             grid-template-columns: 1fr;
         }
 

@@ -54,7 +54,13 @@
         <!-- End Google Tag Manager (noscript) -->
         <noscript><img height="1" width="1" style="display:none" alt="facebook" src="https://www.facebook.com/tr?id=891327725921929&ev=PageView&noscript=1"/></noscript>
         <header>
+            <div class="topeader"><!-- top header start -->
+                <div class="wrapper"><!-- wrapper start -->
+                    ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΣΕ ΟΛΗ ΤΗΝ ΕΛΛΑΔΑ! 
+                </div><!-- wrapper end -->
+            </div><!-- top header end -->
             <div class="wrapper"><!-- wrapper start -->
+                
                 <div id="outerheader">
                     <div id="logo"><!-- logo start -->
                         <?php

@@ -1,21 +1,62 @@
 @use 'sass:math';
 
+// Converts pixels to em units
 @function em($pixels, $context: 16) {
   @if type-of($pixels) == "number" and unitless($pixels) {
     @return math.div($pixels, $context) * 1em;
   } @else if type-of($pixels) == "number" and unit($pixels) == "px" {
     @return math.div($pixels, $context * 1px) * 1em;
   } @else {
-    @error "Η παράμετρος $pixels πρέπει να είναι αριθμός με ή χωρίς μονάδα px στη συνάρτηση em().";
+    @error "The $pixels parameter must be a number with or without px unit in em() function.";
   }
 }
 
+// Converts pixels to rem units
 @function rem($pixels, $context: 16) {
   @if type-of($pixels) == "number" and unitless($pixels) {
     @return math.div($pixels, $context) * 1rem;
   } @else if type-of($pixels) == "number" and unit($pixels) == "px" {
     @return math.div($pixels, $context * 1px) * 1rem;
   } @else {
-    @error "Η παράμετρος $pixels πρέπει να είναι αριθμός με ή χωρίς μονάδα px στη συνάρτηση rem().";
+    @error "The $pixels parameter must be a number with or without px unit in rem() function.";
   }
+}
+
+// Converts pixels to viewport width units
+@function vw($pixels, $viewport-width: 1920) {
+  @if type-of($pixels) == "number" {
+    @return math.div($pixels, $viewport-width) * 100vw;
+  } @else {
+    @error "The $pixels parameter must be a number in vw() function.";
+  }
+}
+
+// Converts pixels to viewport height units
+@function vh($pixels, $viewport-height: 1080) {
+  @if type-of($pixels) == "number" {
+    @return math.div($pixels, $viewport-height) * 100vh;
+  } @else {
+    @error "The $pixels parameter must be a number in vh() function.";
+  }
+}
+
+// Removes units from a value
+@function strip-unit($number) {
+  @if type-of($number) == "number" and not unitless($number) {
+    @return math.div($number, $number * 0 + 1);
+  }
+  @return $number;
+}
+
+// Calculates fluid values between two breakpoints
+@function fluid-value($min-size, $max-size, $min-width, $max-width) {
+  $min-size-no-unit: strip-unit($min-size);
+  $max-size-no-unit: strip-unit($max-size);
+  $min-width-no-unit: strip-unit($min-width);
+  $max-width-no-unit: strip-unit($max-width);
+  
+  $slope: math.div($max-size-no-unit - $min-size-no-unit, $max-width-no-unit - $min-width-no-unit);
+  $y-intercept: $min-size-no-unit - $slope * $min-width-no-unit;
+  
+  @return calc(#{$y-intercept}px + #{$slope * 100}vw);
 }
