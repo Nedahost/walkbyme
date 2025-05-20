@@ -1,0 +1,116 @@
+@use '../abstracts' as a;
+
+:root {
+  // Colors
+  --clr-background: #{a.color('main')};
+  --clr-white: #{a.color('white')};
+  --clr-black: #{a.color('black')};
+  
+  --clr-primary: #{a.color('primary')};
+  --clr-primary-light: #{a.color('primary-light')};
+  --clr-primary-dark: #{a.color('primary-dark')};
+  
+  --clr-secondary: #{a.color('secondary')};
+  --clr-secondary-light: #{a.color('secondary-light')};
+  --clr-secondary-dark: #{a.color('secondary-dark')};
+  
+  --clr-accent: #{a.color('accent')};
+  
+  // Gray scale
+  --clr-gray-100: #{a.color('gray-100')};
+  --clr-gray-200: #{a.color('gray-200')};
+  --clr-gray-300: #{a.color('gray-300')};
+  --clr-gray-400: #{a.color('gray-400')};
+  --clr-gray-500: #{a.color('gray-500')};
+  --clr-gray-600: #{a.color('gray-600')};
+  --clr-gray-700: #{a.color('gray-700')};
+  --clr-gray-800: #{a.color('gray-800')};
+  --clr-gray-900: #{a.color('gray-900')};
+  
+  // Semantic colors
+  --clr-success: #{a.color('success')};
+  --clr-warning: #{a.color('warning')};
+  --clr-error: #{a.color('error')};
+  --clr-info: #{a.color('info')};
+  
+  // Text colors
+  --clr-text: #{a.color('body')};
+  --clr-text-muted: #{a.color('muted')};
+  --clr-text-light: #{a.color('light')};
+  --clr-link: #{a.color('link')};
+  --clr-link-hover: #{a.color('link-hover')};
+  
+  // Fonts
+  --f-primary: 'Open Sans', sans-serif; // Αντικατέστησε με τη δική σου γραμματοσειρά
+  --f-secondary: 'Roboto', sans-serif;  // Αντικατέστησε με τη δική σου γραμματοσειρά
+  
+  // Spacing
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
+  --space-8: 5rem;
+  
+  // Borders
+  --border-radius-sm: 0.125rem;
+  --border-radius: 0.25rem;
+  --border-radius-md: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 1rem;
+  --border-radius-full: 9999px;
+  
+  // Shadows
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  // Transitions
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 500ms;
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --transition-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  // Z-index
+  --z-below: -1;
+  --z-normal: 1;
+  --z-above: 10;
+  --z-modal: 100;
+  --z-popover: 200;
+  --z-tooltip: 300;
+  --z-overlay: 400;
+}
+
+// Dark theme (προσθήκη μελλοντικής υποστήριξης dark mode)
+@media (prefers-color-scheme: dark) {
+  :root {
+    // Αντιστροφή χρωμάτων για dark mode
+    // Μπορείς να το σχολιάσεις αν δεν θέλεις dark mode ακόμα
+    /*
+    --clr-background: #{a.color('gray-900')};
+    --clr-text: #{a.color('gray-100')};
+    --clr-text-muted: #{a.color('gray-400')};
+    --clr-text-light: #{a.color('gray-600')};
+    
+    // Προσαρμογή άλλων χρωμάτων για dark mode
+    --clr-gray-100: #{a.color('gray-800')};
+    --clr-gray-200: #{a.color('gray-700')};
+    --clr-gray-800: #{a.color('gray-200')};
+    --clr-gray-900: #{a.color('gray-100')};
+    
+    // Σκοτεινότερες σκιές για dark mode
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    */
+  }
+}

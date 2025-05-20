@@ -87,22 +87,37 @@ a {
   }
 }
 
-// Lists
+
 ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none; // Βεβαιωνόμαστε ότι όλες οι λίστες δεν έχουν bullets εξ ορισμού
+}
+
+// Lists
+.list {
   padding-left: 1.5rem;
   margin-bottom: 1.5rem;
   
   li {
     margin-bottom: 0.5rem;
   }
-}
-
-ul {
-  list-style-type: disc;
-}
-
-ol {
-  list-style-type: decimal;
+  
+  &--disc {
+    list-style-type: disc;
+  }
+  
+  &--decimal {
+    list-style-type: decimal;
+  }
+  
+  &--circle {
+    list-style-type: circle;
+  }
+  
+  &--square {
+    list-style-type: square;
+  }
 }
 
 // Emphasis

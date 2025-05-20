@@ -23,23 +23,6 @@ foreach ($required_files as $file) {
 
 
 
-function adjust_admin_bar() {
-    if (is_admin_bar_showing()) {
-        echo '<style>
-            header { 
-                margin-top: 32px !important; 
-            }
-            @media screen and (max-width: 782px) {
-            header { 
-                    margin-top: 46px !important; 
-                }
-            }
-        </style>';
-    }
-}
-add_action('wp_head', 'adjust_admin_bar');
-
-
 
 
 

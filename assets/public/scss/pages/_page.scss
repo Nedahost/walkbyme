@@ -31,7 +31,7 @@
             line-height: 1.5;
             margin-left: a.rem(20);
             font-size: a.rem(16);
-            letter-spacing: t.$letter-spacing;
+            
 
             @include a.breakpoint-down(sm) {
                 font-size: a.rem(14);
@@ -138,11 +138,10 @@
         }
 
         ol, ul {
-            list-style: decimal;
+            
             line-height: 1.5;
             margin-left: a.rem(20);
             font-size: a.rem(16);
-            letter-spacing: t.$letter-spacing;
 
             @include a.breakpoint-down(sm) {
                 font-size: a.rem(14);
@@ -152,7 +151,6 @@
             ul {
                 margin: 0 0 0 a.rem(25);
                 padding: 0;
-                list-style: disc;
             }
         }
     }
