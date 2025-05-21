@@ -1,0 +1,58 @@
+@use '../abstracts' as a;
+
+// Custom grid system
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  
+  // Grid columns variants
+  &--2cols {
+    grid-template-columns: repeat(1, 1fr);
+    
+    @include a.breakpoint-up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  &--3cols {
+    grid-template-columns: repeat(1, 1fr);
+    
+    @include a.breakpoint-up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include a.breakpoint-up(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  &--4cols {
+    grid-template-columns: repeat(1, 1fr);
+    
+    @include a.breakpoint-up(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include a.breakpoint-up(lg) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  // Grid gap variants
+  &--gap-sm {
+    gap: var(--space-2);
+  }
+  
+  &--gap-md {
+    gap: var(--space-4);
+  }
+  
+  &--gap-lg {
+    gap: var(--space-6);
+  }
+  
+  // No gap option
+  &--no-gap {
+    gap: 0;
+  }
+}

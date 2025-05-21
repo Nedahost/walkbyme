@@ -1,0 +1,83 @@
+@use '../abstracts' as a;
+
+// Flex layouts
+.flex {
+  display: flex;
+  
+  // Flex direction
+  &--row {
+    flex-direction: row;
+  }
+  
+  &--column {
+    flex-direction: column;
+  }
+  
+  // Flex wrapping
+  &--wrap {
+    flex-wrap: wrap;
+  }
+  
+  &--nowrap {
+    flex-wrap: nowrap;
+  }
+  
+  // Justify content
+  &--justify-start {
+    justify-content: flex-start;
+  }
+  
+  &--justify-end {
+    justify-content: flex-end;
+  }
+  
+  &--justify-center {
+    justify-content: center;
+  }
+  
+  &--justify-between {
+    justify-content: space-between;
+  }
+  
+  &--justify-around {
+    justify-content: space-around;
+  }
+  
+  // Align items
+  &--items-start {
+    align-items: flex-start;
+  }
+  
+  &--items-end {
+    align-items: flex-end;
+  }
+  
+  &--items-center {
+    align-items: center;
+  }
+  
+  &--items-stretch {
+    align-items: stretch;
+  }
+  
+  // Responsive variants
+  @each $breakpoint, $width in a.$breakpoints {
+    @include a.breakpoint-up($breakpoint) {
+      &--#{$breakpoint}-row {
+        flex-direction: row;
+      }
+      
+      &--#{$breakpoint}-column {
+        flex-direction: column;
+      }
+      
+      &--#{$breakpoint}-justify-between {
+        justify-content: space-between;
+      }
+      
+      &--#{$breakpoint}-items-center {
+        align-items: center;
+      }
+    }
+  }
+}

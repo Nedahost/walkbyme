@@ -1,0 +1,41 @@
+@use '../abstracts' as a;
+
+// Standard page layout
+.page {  
+  // Page header
+  &__header {
+    margin-bottom: var(--space-5);
+    
+    h1 {
+      margin-bottom: var(--space-2);
+    }
+    
+    &--center {
+      text-align: center;
+    }
+  }
+  
+  // Page content
+  &__content {
+    max-width: 800px;
+    margin: 0 auto;
+    
+    &--wide {
+      max-width: 1000px;
+    }
+    
+    &--full {
+      max-width: none;
+    }
+  }
+  
+  // Sidebar page
+  &--with-sidebar {
+    display: grid;
+    gap: var(--space-5);
+    
+    @include a.breakpoint-up(lg) {
+      grid-template-columns: 3fr 1fr;
+    }
+  }
+}

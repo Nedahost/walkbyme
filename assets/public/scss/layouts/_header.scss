@@ -1,165 +1,193 @@
 @use '../abstracts' as a;
 
 header {
-
-    .topeader{
-        background-color: a.color('black');
-        color: a.color('white');
+    // Το top header banner
+    .topeader {
+        background-color: var(--clr-black, a.color('black')); // Χρησιμοποιούμε CSS μεταβλητή με fallback
+        color: var(--clr-white, a.color('white'));
         text-align: center;
         padding: 5px 0;
     }
-
-    #outerheader{
+    
+    // Το κύριο header container
+    #outerheader {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         padding: 1rem 2rem;
-
+        
         @include a.breakpoint-up(md) {
             padding: 1rem 2rem;
         }
-        
+       
         // Για μικρές οθόνες, αλλάζουμε σε κάθετη διάταξη
         @include a.breakpoint-down(md) {
             grid-template-columns: 1fr;
             grid-template-rows: auto auto auto;
-            grid-gap: 1rem;
+            gap: 1rem; // Σύγχρονη ιδιότητα αντί για grid-gap
             text-align: center;
-        }
-
-
-    #logo {
-        justify-self: start;
-        @include a.breakpoint-down(md) {
-            justify-self: center;
-        }
-    }
-
-    nav {
-        @include a.breakpoint-down(md) {
-            grid-row: 3;
-            width: 100%;
         }
         
-    }
-
-    .shopdetails {
-        text-align: right;
-        padding: 20px 0;
-        @include a.breakpoint-down(md) {
-            grid-row: 2;
-            text-align: center;
-            padding: 10px 0;
-        }
-        ul {
-            @include a.breakpoint-down(sm) {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
+        // Logo styling
+        #logo {
+            justify-self: start;
+            
+            @include a.breakpoint-down(md) {
+                justify-self: center;
             }
-
-            li {
-                display: inline-flex;
-                padding: 0 10px;
-                font-size: 14px;
-                font-weight: 300;
+        }
+        
+        // Navigation
+        nav {
+            @include a.breakpoint-down(md) {
+                grid-row: 3;
+                width: 100%;
+            }
+            
+            // Προσθήκη βελτιωμένης προσβασιμότητας για το μενού
+            ul {
+                list-style: none; // Βεβαιώνουμε ότι δεν υπάρχουν bullets
+                padding: 0;
+                margin: 0;
+            }
+        }
+        
+        // Shop details section (cart, account, etc)
+        .shopdetails {
+            text-align: right;
+            padding: 20px 0;
+            
+            @include a.breakpoint-down(md) {
+                grid-row: 2;
+                text-align: center;
+                padding: 10px 0;
+            }
+            
+            ul {
+                list-style: none; // Βεβαιώνουμε ότι δεν υπάρχουν bullets
+                padding: 0;
+                margin: 0;
+                
                 @include a.breakpoint-down(sm) {
-                    padding: 5px;
+                    display: flex;
+                    justify-content: center;
+                    flex-wrap: wrap;
                 }
-                a {
-                    color: var(--clr-black);
-
-                    &:hover {
-                        color: var(--clr-primary-hover);
+                
+                li {
+                    display: inline-flex;
+                    padding: 0 10px;
+                    font-size: 14px;
+                    font-weight: 300;
+                    
+                    @include a.breakpoint-down(sm) {
+                        padding: 5px;
                     }
-                }
-
-            }
-
-            .headeraccount {
-                a {
-                    &:before {
-                        font-family: "FontAwesome";
-                        content: "\f007";
-                    }
-
-                    @include a.breakpoint-down(md) {
-                        span {
-                            display: none;
-
+                    
+                    a {
+                        color: var(--clr-text, #000); // Χρησιμοποιούμε τη μεταβλητή text color με fallback
+                        transition: color 0.2s ease;
+                        
+                        &:hover {
+                            color: var(--clr-primary, #9a715b); // Χρησιμοποιούμε primary με fallback
                         }
                     }
                 }
-            }
-
-            .headerlogout {
-                a {
-                    &:before {
-                        font-family: "FontAwesome";
-                        content: "\f08b";
-                    }
-                    @include a.breakpoint-down(md) {
-                        span {
-                            display: none;
-
+                
+                // User account icon
+                .headeraccount {
+                    a {
+                        display: inline-flex;
+                        align-items: center;
+                        
+                        &:before {
+                            font-family: "FontAwesome";
+                            content: "\f007";
+                            margin-right: 0.3em;
+                        }
+                        
+                        @include a.breakpoint-down(md) {
+                            span {
+                                display: none;
+                            }
                         }
                     }
                 }
-            }
-
-            .headercart {
-                a {
-                    &:before {
-                        font-family: "FontAwesome";
-                        content: "\f291";
+                
+                // Logout icon
+                .headerlogout {
+                    a {
+                        display: inline-flex;
+                        align-items: center;
+                        
+                        &:before {
+                            font-family: "FontAwesome";
+                            content: "\f08b";
+                            margin-right: 0.3em;
+                        }
+                        
+                        @include a.breakpoint-down(md) {
+                            span {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+                
+                // Cart icon
+                .headercart {
+                    a {
+                        display: inline-flex;
+                        align-items: center;
+                        
+                        &:before {
+                            font-family: "FontAwesome";
+                            content: "\f291";
+                            margin-right: 0.3em;
+                        }
                     }
                 }
             }
         }
     }
 }
-}
 
-
-
-
+// WooCommerce search form
 .woocommerce-product-search {
-    display: flex; /* Τοποθέτηση των στοιχείων δίπλα-δίπλα */
+    display: flex;
     align-items: center;
     justify-content: center;
     max-width: 100%;
     margin: 0 auto;
-
+    
     input[type="text"] {
         flex-grow: 1;
         padding: 15px;
         margin-right: 10px;
-        border: 1px solid #ccc;
-        border-radius: 50px; /* Στρογγυλοποίηση για μοντέρνο look */
-        font-size: 16px; /* Μεγαλύτερη γραμματοσειρά */
-        transition: border-color 0.3s;
-
+        border: 1px solid var(--clr-gray-300, #ccc);
+        border-radius: 50px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        
         &:focus {
-            border-color: #777; /* Αλλαγή χρώματος ορίου κατά την εστίαση */
+            border-color: var(--clr-gray-600, #777);
             outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
         }
     }
-
+    
     input[type="submit"] {
         padding: 15px 20px;
-        background-color: #555;
-        color: #fff;
+        background-color: var(--clr-gray-700, #555);
+        color: var(--clr-white, #fff);
         border: none;
-        border-radius: 50px; /* Στρογγυλοποίηση για μοντέρνο look */
+        border-radius: 50px;
         cursor: pointer;
-        font-size: 16px; /* Μεγαλύτερη γραμματοσειρά */
+        font-size: 16px;
         transition: background-color 0.3s;
-
+        
         &:hover {
-            background-color: #444; /* Αλλαγή χρώματος κουμπιού κατά το hover */
+            background-color: var(--clr-gray-800, #444);
         }
     }
 }
-
-
-

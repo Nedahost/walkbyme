@@ -1,17 +1,39 @@
-.outerbreadcrumb{
+@use '../abstracts' as a;
+
+.outerbreadcrumb {
+  font-size: a.rem(13);
+  font-weight: 300;
+  color: var(--clr-primary);
+  padding: 10px 0;
+  margin: 0;
   
-   font-size: 13px;
-   font-weight: 300;
-   color: var(--clr-primary);
-   padding:10px 0px;
-   margin: 0px 0px;
-   span{
-       padding: 0 0 0;
-       a{
-           color: #000;
-           &:hover{
-                color: #9a715b;
-            }
-       }
-   }
+  // Προσθήκη καλύτερου spacing για responsive
+  @include a.breakpoint-down(sm) {
+    padding: 8px 0;
+    font-size: a.rem(12);
+  }
+  
+  span {
+    padding: 0;
+    
+    a {
+      color: var(--clr-text, #000);
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: var(--clr-primary, #9a715b);
+      }
+    }
+  }
+  
+  // Προσθήκη styling για τον διαχωριστή
+  .separator {
+    margin: 0 5px;
+    color: var(--clr-gray-400);
+  }
+  
+  // Τρέχουσα σελίδα
+  .current {
+    color: var(--clr-primary);
+  }
 }

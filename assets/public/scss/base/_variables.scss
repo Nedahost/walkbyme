@@ -41,18 +41,18 @@
   --clr-link-hover: #{a.color('link-hover')};
   
   // Fonts
-  --f-primary: 'Open Sans', sans-serif; // Αντικατέστησε με τη δική σου γραμματοσειρά
+  --f-primary: 'Noto Sans', sans-serif; 
   --f-secondary: 'Roboto', sans-serif;  // Αντικατέστησε με τη δική σου γραμματοσειρά
   
   // Spacing
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 1rem;
-  --space-4: 1.5rem;
-  --space-5: 2rem;
-  --space-6: 3rem;
-  --space-7: 4rem;
-  --space-8: 5rem;
+  --space-1: 0.25rem;  // περίπου 4px
+  --space-2: 0.5rem;   // περίπου 8px
+  --space-3: 1rem;     // περίπου 16px
+  --space-4: 1.5rem;   // περίπου 24px
+  --space-5: 2rem;     // περίπου 32px
+  --space-6: 3rem;     // περίπου 48px
+  --space-7: 4rem;     // περίπου 64px
+  --space-8: 5rem;     // περίπου 80px
   
   // Borders
   --border-radius-sm: 0.125rem;
@@ -86,6 +86,25 @@
   --z-popover: 200;
   --z-tooltip: 300;
   --z-overlay: 400;
+
+  // pixels
+  --px-1: 1px;
+  --px-2: 2px;
+  --px-3: 3px;
+  --px-4: 4px;
+  --px-5: 5px;
+  --px-8: 8px;
+  --px-10: 10px;
+  --px-12: 12px;
+  --px-15: 15px;
+  --px-16: 16px;
+  --px-20: 20px;
+  --px-24: 24px;
+  --px-30: 30px;
+  --px-32: 32px;
+  --px-40: 40px;
+  --px-48: 48px;
+
 }
 
 // Dark theme (προσθήκη μελλοντικής υποστήριξης dark mode)

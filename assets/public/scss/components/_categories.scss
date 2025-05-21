@@ -1,42 +1,98 @@
-.outercategories{
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    background-position: center right;
-    background-repeat: no-repeat;
-    background-size: cover;
+@use '../abstracts' as a;
 
-    .row{
-        .outerpageinfo{
-            .pageinfo{
-                width: 100%;
-                max-width: 660px;
-                .page-title{
-                    font-weight: 300;
-                    font-size: 22px;
-                }
-                p{
-                    font-size: .956rem;
-                }
-            }
+.outercategories {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: a.rem(30) 0;
+  
+  @include a.breakpoint-down(md) {
+    padding: a.rem(20) 0;
+    background-position: center; // Καλύτερη θέση εικόνας για κινητά
+  }
+  
+  .row {
+    width: 100%;
+    
+    .outerpageinfo {
+      .pageinfo {
+        width: 100%;
+        max-width: 660px;
+        padding: a.rem(20);
+        background-color: rgba(255, 255, 255, 0.85); // Προσθήκη ημιδιαφανούς φόντου για καλύτερη αναγνωσιμότητα
+        border-radius: var(--border-radius);
+        
+        @include a.breakpoint-down(md) {
+          max-width: 100%;
+          margin: 0 auto;
         }
+        
+        .page-title {
+          font-weight: 300;
+          font-size: a.rem(22);
+          margin-top: 0;
+          margin-bottom: a.rem(15);
+          color: var(--clr-text);
+          
+          @include a.breakpoint-down(md) {
+            font-size: a.rem(20);
+            text-align: center;
+          }
+        }
+        
+        p {
+          font-size: a.rem(15);
+          line-height: 1.6;
+          color: var(--clr-text);
+          margin-bottom: 0;
+          
+          @include a.breakpoint-down(md) {
+            font-size: a.rem(14);
+            text-align: center;
+          }
+        }
+      }
     }
+  }
 }
 
-
-#outerimageeshop{
-    width: 100%;
-    max-width: 430px;
-    h1{
-        margin: 0px;
-        padding: 0px;
-        color: var(--clr-gold);
+#outerimageeshop {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  
+  h1 {
+    margin: 0;
+    padding: 0;
+    color: var(--clr-gold, goldenrod);
+    text-align: center;
+    
+    @include a.breakpoint-down(md) {
+      font-size: a.rem(28);
     }
+    
+    @include a.breakpoint-down(sm) {
+      font-size: a.rem(24);
+    }
+  }
 }
 
-.discount-percentage-badge{
-    font-size: 14px;
-    padding-top: 3px;
-    color: #9a715b;
+.discount-percentage-badge {
+  font-size: a.rem(14);
+  padding-top: 3px;
+  color: var(--clr-primary, #9a715b);
+  display: inline-block;
+  font-weight: bold;
+  
+  // Προσθήκη πιο εμφανούς badge
+  &--featured {
+    background-color: var(--clr-primary, #9a715b);
+    color: var(--clr-white);
+    padding: 3px 8px;
+    border-radius: var(--border-radius);
+  }
 }

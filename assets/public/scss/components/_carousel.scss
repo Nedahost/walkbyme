@@ -27,13 +27,12 @@
       figure {
         margin: 0;
         padding: 0;
-        filter: brightness(97%);
-        transition: filter var(--transition-normal) var(--transition-ease);
+       
         border-radius: var(--border-radius);
         overflow: hidden; // Για να βεβαιωθούμε ότι το border-radius εφαρμόζεται και στην εικόνα
         
         &:hover {
-          filter: brightness(100%);
+       
         }
         
         img {

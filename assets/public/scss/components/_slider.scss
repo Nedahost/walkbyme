@@ -1,66 +1,189 @@
+@use '../abstracts' as a;
+
 .outerslider {
-    position: relative;
-    margin: 0;
+  position: relative;
+  margin: 0;
+  overflow: hidden;
 }
 
-
 .sliderimages {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 figure {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-
-figure img {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  
+  img {
     width: 100%;
+    height: auto;
+    display: block;
+  }
 }
 
 .slick-initialized {
-    figure img {
-        opacity: 1;
-    }
+  figure img {
+    opacity: 1;
+  }
 }
 
 .slider-caption {
-    position: absolute;
-    top: 50%;
-    right: 5%;
-    transform: translateY(-50%);
-    color: white;
-    text-align: right;
-    max-width: 40%;
-    background: rgba(0, 0, 0, 0.5); /* Optional: Add background for better readability */
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.slider-caption h2 {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  transform: translateY(-50%);
+  color: var(--clr-white);
+  text-align: right;
+  max-width: 40%;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  
+  // Responsive styling
+  @include a.breakpoint-down(md) {
+    max-width: 60%;
+    right: 3%;
+  }
+  
+  @include a.breakpoint-down(sm) {
+    max-width: 80%;
+    padding: 8px;
+    top: auto;
+    bottom: 10%;
+    right: 50%;
+    transform: translateX(50%);
+    text-align: center;
+  }
+  
+  h2 {
     margin: 0 0 10px;
-    font-size: 24px;
-}
-
-.slider-caption p {
+    font-size: a.rem(24);
+    
+    @include a.breakpoint-down(md) {
+      font-size: a.rem(20);
+      margin-bottom: 5px;
+    }
+    
+    @include a.breakpoint-down(sm) {
+      font-size: a.rem(18);
+    }
+  }
+  
+  p {
     margin: 0 0 10px;
-    font-size: 16px;
+    font-size: a.rem(16);
+    
+    @include a.breakpoint-down(md) {
+      font-size: a.rem(14);
+    }
+    
+    @include a.breakpoint-down(sm) {
+      display: none; // Απόκρυψη περιγραφής σε πολύ μικρές οθόνες
+    }
+  }
 }
 
 .cta-button {
-    display: inline-block;
-    padding: 10px 20px; 
-    background-color: #f39c12;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--clr-primary, #f39c12);
+  color: var(--clr-white);
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: var(--clr-primary-dark, #e67e22);
+  }
+  
+  @include a.breakpoint-down(sm) {
+    padding: 8px 15px;
+    font-size: a.rem(14);
+  }
 }
 
-.cta-button:hover {
-    background-color: #e67e22;
+// Προσθήκη custom navigation arrows
+.slider-nav {
+  button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    
+    &:hover {
+      background-color: var(--clr-white);
+    }
+    
+    &.prev {
+      left: 20px;
+    }
+    
+    &.next {
+      right: 20px;
+    }
+    
+    @include a.breakpoint-down(sm) {
+      width: 30px;
+      height: 30px;
+      
+      &.prev {
+        left: 10px;
+      }
+      
+      &.next {
+        right: 10px;
+      }
+    }
+  }
+}
+
+// Προσθήκη custom dots navigation
+.slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  
+  button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.3s ease;
+    
+    &.active, &:hover {
+      background-color: var(--clr-white);
+    }
+  }
+  
+  @include a.breakpoint-down(sm) {
+    bottom: 10px;
+    
+    button {
+      width: 8px;
+      height: 8px;
+    }
+  }
 }

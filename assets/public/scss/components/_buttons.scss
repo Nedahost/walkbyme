@@ -1,32 +1,88 @@
-.outerbuttons{
-    display: flex;
-    width: 100%;
-    max-width: 270px;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    margin: 40px auto 0;
+@use '../abstracts' as a;
+
+// Container για κουμπιά
+.outerbuttons {
+  display: flex;
+  width: 100%;
+  max-width: 270px;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  margin: 40px auto 0;
+  
+  @include a.breakpoint-down(sm) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
 }
 
-.buttons{
-    color: var(--clr-primary);
-    flex: 0 17%;
+// Μεμονωμένο κουμπί
+.buttons {
+  color: var(--clr-primary);
+  flex: 0 17%;
+  
+  @include a.breakpoint-down(sm) {
+    flex: 0 0 auto;
+  }
+}
+
+// Βασικό στυλ κουμπιού
+.buttonstyle {
+  border: 1px solid var(--clr-text, #231f20);
+  color: var(--clr-primary);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: var(--fs-sl, a.rem(14));
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--f-second, inherit);
+  font-style: italic;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: var(--clr-roz-opacity, rgba(154, 113, 91, 0.1));
+  }
+  
+  // Προσθήκη παραλλαγών για διαφορετικά στυλ κουμπιών
+  &--primary {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+    border-color: var(--clr-primary);
     
-}
-
-.buttonstyle{
-    border: 1px solid #231f20;
-    color: var(--clr-primary);
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: var(-fs-sl);
-    cursor: pointer;
-    width: 100%;
-    font-family: var(--f-second);
-    font-style: italic;
-    transition: 0.3s;
-    &:hover{
-        background-color: var(--clr-roz-opacity);
+    &:hover {
+      background-color: var(--clr-primary-dark);
+      border-color: var(--clr-primary-dark);
     }
+  }
+  
+  &--outline {
+    background-color: transparent;
+    border: 1px solid var(--clr-primary);
+    color: var(--clr-primary);
+    
+    &:hover {
+      background-color: var(--clr-primary);
+      color: var(--clr-white);
+    }
+  }
+  
+  // Προσθήκη μεγεθών
+  &--small {
+    padding: 8px 20px;
+    font-size: a.rem(12);
+  }
+  
+  &--large {
+    padding: 18px 40px;
+    font-size: a.rem(16);
+  }
+  
+  // Προσθήκη καταστάσεων
+  &:disabled, &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }

@@ -1,128 +1,199 @@
-.outermap{
-    iframe{
-        width: 100%;
-    }
+@use '../abstracts' as a;
+
+// Map section
+.outermap {
+  width: 100%;
+  margin-bottom: 30px;
+  
+  iframe {
+    width: 100%;
+    height: 400px; // Προσθήκη σταθερού ύψους
+    border: none;
+  }
 }
 
-#outercontact{
-        padding: 40px 0;
-        h1{
-            margin: 0px;
-            padding: 0px;
-            font-size: var(--fs-xxl);
-            font-family: var(--f-second);
-            text-align: center;
-        }
-        
-        
-
-        .contactform{
-            .topContact ul { 
-                margin: 0px; 
-                padding: 0px; 
-                li { 
-                    
-                        width: 48%; 
-                        float: left;
-                    
-                    
-                    margin-right: 30px;
-                    margin-bottom: 30px;
-                    &:last-child , &:nth-child(2) { 
-                        margin-right: 0px; 
-                    }
-                    span.wpcf7-form-control-wrap > input{
-                        border-bottom: 1px solid #1d1d1b;
-                        border-top: none;
-                        border-left: none;
-                        border-right: none;
-                        outline: none; 
-                        padding: 2px 5px; 
-                        font-size: 0.75rem; 
-                        width: 97%;
-                    }
-                }
-            }
-            .bottomContact { 
-                clear: both; 
-                textarea { 
-                    width: 98.6%; 
-                    border: 1px solid #1d1d1b; 
-                    outline: none; 
-                    padding: 5px; 
-                    margin-top: 5px; 
-                }
-            }
-            .btnSend input { 
-                border: 0px; 
-                background-color: #1d1d1b;
-                width: 285px;
-                height: 55px;
-                color: #fff;
-                float: right;
-                clear: both;
-                margin-top: 25px;
-            }
-        }
-    }
-
-
- /* Στυλ για τη φόρμα επικοινωνίας σε κινητές συσκευές */
-.contactform {
+// Contact form section
+#outercontact {
+  padding: 40px 0;
+  
+  @include a.breakpoint-down(md) {
+    padding: 30px 0;
+  }
+  
+  h1 {
     margin: 0;
     padding: 0;
-    list-style: none;
+    font-size: var(--fs-xxl, a.rem(24));
+    font-family: var(--f-second, inherit);
+    text-align: center;
+    margin-bottom: 30px;
     
-    li {
-        margin-bottom: 20px;
+    @include a.breakpoint-down(sm) {
+      font-size: a.rem(20);
+      margin-bottom: 20px;
+    }
+  }
+  
+  .contactform {
+    max-width: 800px;
+    margin: 0 auto;
+    
+    // Top part of the form with name and email fields
+    .topContact ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      list-style: none;
+      
+      @include a.breakpoint-down(sm) {
+        gap: 15px;
+      }
+      
+      li {
+        flex: 1 0 calc(50% - 15px);
+        margin-bottom: 30px;
+        
+        @include a.breakpoint-down(sm) {
+          flex: 1 0 100%;
+          margin-bottom: 15px;
+        }
+        
+        span.wpcf7-form-control-wrap > input {
+          border: none;
+          border-bottom: 1px solid var(--clr-text, #1d1d1b);
+          outline: none;
+          padding: 2px 5px;
+          font-size: a.rem(14);
+          width: 100%;
+          transition: border-color 0.3s;
+          
+          &:focus {
+            border-color: var(--clr-primary, #9a715b);
+          }
+        }
+      }
     }
     
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    
-    input[type="text"],
-    input[type="email"],
-    textarea {
+    // Bottom part of the form with textarea
+    .bottomContact {
+      clear: both;
+      
+      textarea {
         width: 100%;
+        border: 1px solid var(--clr-text, #1d1d1b);
+        outline: none;
         padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-        margin-bottom: 10px;
+        margin-top: 5px;
+        min-height: 150px;
+        font-family: inherit;
+        font-size: a.rem(14);
+        transition: border-color 0.3s;
+        
+        &:focus {
+          border-color: var(--clr-primary, #9a715b);
+        }
+      }
     }
     
-    textarea {
-        height: 150px;
-    }
-    
-    .button_send {
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 18px;
+    // Send button
+    .btnSend {
+      margin-top: 25px;
+      text-align: right;
+      
+      @include a.breakpoint-down(sm) {
+        text-align: center;
+      }
+      
+      input {
+        border: 0;
+        background-color: var(--clr-text, #1d1d1b);
+        width: 285px;
+        height: 55px;
+        color: var(--clr-white, #fff);
         cursor: pointer;
+        transition: background-color 0.3s;
+        
+        @include a.breakpoint-down(sm) {
+          width: 100%;
+          height: 45px;
+        }
         
         &:hover {
-            background-color: #0056b3;
+          background-color: var(--clr-primary, #9a715b);
         }
+      }
     }
+  }
 }
 
-/* Στυλ για σφάλματα επικοινωνίας */
+/* Mobile responsive contact form styles */
+.contactform {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  
+  li {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--clr-gray-300, #ccc);
+    border-radius: var(--border-radius, 5px);
+    font-size: a.rem(16);
+    margin-bottom: 10px;
+    transition: border-color 0.3s;
+    
+    &:focus {
+      border-color: var(--clr-primary, #007BFF);
+      outline: none;
+    }
+  }
+  
+  textarea {
+    height: 150px;
+    resize: vertical;
+  }
+  
+  .button_send {
+    background-color: var(--clr-primary, #007BFF);
+    color: var(--clr-white, #fff);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius, 5px);
+    font-size: a.rem(18);
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+    &:hover {
+      background-color: var(--clr-primary-dark, #0056b3);
+    }
+  }
+}
+
+/* Status messages */
 .error_mess {
-    color: #ff0000;
-    font-weight: bold;
-    margin-top: 10px;
+  color: var(--clr-error, #ff0000);
+  font-weight: 600;
+  margin-top: 10px;
 }
 
-/* Στυλ για επιτυχία επικοινωνίας */
 .thanks {
-    color: #009900;
-    font-weight: bold;
-    margin-top: 10px;
+  color: var(--clr-success, #009900);
+  font-weight: 600;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: var(--border-radius, 5px);
+  background-color: rgba(0, 153, 0, 0.1);
 }
