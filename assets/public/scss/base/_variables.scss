@@ -33,6 +33,9 @@
   --clr-error: #{a.color('error')};
   --clr-info: #{a.color('info')};
   
+  //area backgrounds
+  --clr-image-bg:#{a.color('image-bg')};
+
   // Text colors
   --clr-text: #{a.color('body')};
   --clr-text-muted: #{a.color('muted')};
@@ -43,7 +46,65 @@
   // Fonts
   --f-primary: 'Noto Sans', sans-serif; 
   --f-secondary: 'Roboto', sans-serif;  // Αντικατέστησε με τη δική σου γραμματοσειρά
-  
+
+
+ // Basic Typography Scale
+ --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);      // 12px → 14px
+ --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);        // 14px → 16px  
+ --font-size-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);        // 16px → 18px
+ --font-size-md: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);       // 18px → 20px
+ --font-size-lg: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);        // 20px → 24px
+ --font-size-xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);              // 24px → 32px
+ --font-size-2xl: clamp(1.875rem, 1.5rem + 1.875vw, 2.5rem);     // 30px → 40px
+ --font-size-3xl: clamp(2.25rem, 1.875rem + 1.875vw, 3rem);      // 36px → 48px
+ 
+ // Semantic Headings (H1-H6)
+ --font-size-h1: clamp(1.875rem, 1.5rem + 1.875vw, 2.5rem);      // 30px → 40px
+ --font-size-h2: clamp(1.5625rem, 1.25rem + 1.563vw, 2.1875rem); // 25px → 35px
+ --font-size-h3: clamp(1.375rem, 1.125rem + 1.25vw, 1.75rem);    // 22px → 28px
+ --font-size-h4: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);          // 20px → 24px
+ --font-size-h5: clamp(1.125rem, 0.875rem + 1.25vw, 1.25rem);    // 18px → 20px
+ --font-size-h6: clamp(1rem, 0.875rem + 0.625vw, 1.125rem);      // 16px → 18px
+ 
+ // Body Text
+ --font-size-body: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);      // 14px → 16px
+ --font-size-body-large: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);  // 16px → 18px
+ --font-size-small: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);   // 12px → 14px
+ 
+ // Component-Specific Typography
+ --font-size-hero-title: clamp(2.5rem, 2rem + 2.5vw, 4rem);          // 40px → 64px
+ --font-size-section-title: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);   // 24px → 32px
+ --font-size-carousel-title: clamp(1.375rem, 1.2rem + 0.875vw, 1.5625rem); // 22px → 25px
+ --font-size-card-title: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);   // 18px → 20px
+ --font-size-article-title: clamp(1rem, 0.875rem + 0.625vw, 1.125rem); // 16px → 18px
+ --font-size-product-title: clamp(1.125rem, 1rem + 0.625vw, 1.25rem); // 18px → 20px
+ --font-size-product-price: clamp(1.25rem, 1.125rem + 0.625vw, 1.375rem); // 20px → 22px
+ 
+ // UI Elements
+ --font-size-button: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);     // 14px → 16px
+ --font-size-button-small: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem); // 12px → 14px
+ --font-size-button-large: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);     // 16px → 18px
+ --font-size-breadcrumb: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);  // 12px → 13px
+ --font-size-navigation: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);     // 14px → 16px
+ --font-size-footer: clamp(0.8125rem, 0.75rem + 0.3125vw, 0.875rem); // 13px → 14px
+ 
+ // Form Elements
+ --font-size-input: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);      // 14px → 16px
+ --font-size-label: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);      // 14px → 16px
+ --font-size-placeholder: clamp(0.8125rem, 0.75rem + 0.3125vw, 0.875rem); // 13px → 14px
+ 
+ // E-commerce Specific
+ --font-size-price-main: clamp(1.25rem, 1.125rem + 0.625vw, 1.375rem);   // 20px → 22px
+ --font-size-price-old: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);           // 16px → 18px
+ --font-size-discount: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);        // 12px → 14px
+ --font-size-rating: clamp(0.8125rem, 0.75rem + 0.3125vw, 0.875rem);     // 13px → 14px
+ --font-size-badge: clamp(0.6875rem, 0.625rem + 0.3125vw, 0.75rem);      // 11px → 12px
+ 
+ // Content Typography  
+ --font-size-caption: clamp(0.6875rem, 0.625rem + 0.3125vw, 0.75rem);    // 11px → 12px
+ --font-size-quote: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);            // 18px → 20px
+
+
   // Spacing
   --space-1: 0.25rem;  // περίπου 4px
   --space-2: 0.5rem;   // περίπου 8px
@@ -53,6 +114,13 @@
   --space-6: 3rem;     // περίπου 48px
   --space-7: 4rem;     // περίπου 64px
   --space-8: 5rem;     // περίπου 80px
+
+  --space-1-5: 0.375rem;  // 6px  (μεταξύ 1 και 2)
+  --space-2-5: 0.625rem;  // 10px (μεταξύ 2 και 3)
+  --space-3-5: 0.875rem;  // 14px (μεταξύ 3 και 4)
+  --space-4-5: 1.75rem;   // 28px (μεταξύ 4 και 5)
+  --space-5-5: 2.5rem;    // 40px (μεταξύ 5 και 6)
+  --space-6-5: 3.5rem;    // 56px (μεταξύ 6 και 7) 
   
   // Borders
   --border-radius-sm: 0.125rem;
@@ -62,6 +130,21 @@
   --border-radius-xl: 1rem;
   --border-radius-full: 9999px;
   
+  // Component-specific spacing
+  --space-button: 0.75rem;      // 12px - button padding
+  --space-card: 1.25rem;        // 20px - card padding
+  --space-section: 2.5rem;      // 40px - section gaps
+  --space-input: 0.875rem;      // 14px - input padding
+
+
+  //borders
+  --border-radius-sm: 0.125rem;
+  --border-radius: 0.25rem;
+  --border-radius-md: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 1rem;
+  --border-radius-full: 9999px;
+
   // Shadows
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);

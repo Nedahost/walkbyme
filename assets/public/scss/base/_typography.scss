@@ -1,17 +1,5 @@
 @use '../abstracts' as a;
 
-// Font sizes
-$font-size-body: 1rem;
-$font-size-small: 0.875rem;
-$font-size-xsmall: 0.75rem;
-
-$font-size-h1: 2.5rem;
-$font-size-h2: 2rem;
-$font-size-h3: 1.75rem;
-$font-size-h4: 1.5rem;
-$font-size-h5: 1.25rem;
-$font-size-h6: 1.125rem;
-
 // Line heights
 $line-height-tight: 1.2;
 $line-height-base: 1.5;
@@ -32,41 +20,12 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   margin-bottom: 0.5em;
 }
 
-h1, .h1 {
-  font-size: $font-size-h1;
-  
-  @include a.fluid-type(a.rem(30), a.rem(40));
-}
-
-h2, .h2 {
-  font-size: $font-size-h2;
-  
-  @include a.fluid-type(a.rem(25), a.rem(35));
-}
-
-h3, .h3 {
-  font-size: $font-size-h3;
-  
-  @include a.fluid-type(a.rem(22), a.rem(28));
-}
-
-h4, .h4 {
-  font-size: $font-size-h4;
-  
-  @include a.fluid-type(a.rem(20), a.rem(24));
-}
-
-h5, .h5 {
-  font-size: $font-size-h5;
-  
-  @include a.fluid-type(a.rem(18), a.rem(20));
-}
-
-h6, .h6 {
-  font-size: $font-size-h6;
-  
-  @include a.fluid-type(a.rem(16), a.rem(18));
-}
+h1, .h1 { font-size: var(--font-size-h1); }
+h2, .h2 { font-size: var(--font-size-h2); }
+h3, .h3 { font-size: var(--font-size-h3); }
+h4, .h4 { font-size: var(--font-size-h4); }
+h5, .h5 { font-size: var(--font-size-h5); }
+h6, .h6 { font-size: var(--font-size-h6); }
 
 // Paragraph styles
 p {
@@ -131,7 +90,7 @@ em, i {
 
 // Small
 small {
-  font-size: $font-size-small;
+  font-size: var(--font-size-small);
 }
 
 // Blockquote
@@ -171,46 +130,22 @@ pre {
 hr {
   border: 0;
   border-top: 1px solid var(--clr-gray-200);
-  margin: 2rem 0;
+  margin: var(--space-5) 0;
 }
 
 // Text utilities
-.text-center {
-  text-align: center;
-}
+// Text Alignment
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
 
-.text-right {
-  text-align: right;
-}
+// Text Transform
+.text-uppercase { text-transform: uppercase; }
+.text-capitalize { text-transform: capitalize; }
 
-.text-left {
-  text-align: left;
-}
-
-.text-uppercase {
-  text-transform: uppercase;
-}
-
-.text-capitalize {
-  text-transform: capitalize;
-}
-
-.text-muted {
-  color: var(--clr-text-muted);
-}
-
-.text-primary {
-  color: var(--clr-primary);
-}
-
-.text-success {
-  color: var(--clr-success);
-}
-
-.text-warning {
-  color: var(--clr-warning);
-}
-
-.text-error {
-  color: var(--clr-error);
-}
+// Colors
+.text-muted { color: var(--clr-text-muted); }
+.text-primary { color: var(--clr-primary); }
+.text-success { color: var(--clr-success); }
+.text-warning { color: var(--clr-warning); }
+.text-error { color: var(--clr-error); }

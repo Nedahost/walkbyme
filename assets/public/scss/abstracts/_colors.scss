@@ -8,6 +8,13 @@ $primary-colors: (
   "accent": hsl(30, 100%, 50%)
 );
 
+//Χρώματα για συγκεκριμένες περιοχές του site
+$area-colors: (
+  "footer-bg": hsl(0, 0%, 97%),
+  "copyright-bg": hsl(0, 0%, 88%),
+  "image-bg": hsl(0, 0%, 98%),
+);
+
 // Color variations and shades
 $color-variants: (
   "primary-light": hsl(210, 100%, 65%),
@@ -36,7 +43,7 @@ $semantic-colors: (
 );
 
 // Merge all color maps
-$colors: map-merge($primary-colors, map-merge($color-variants, $semantic-colors));
+$colors: map-merge($primary-colors, map-merge($color-variants, map-merge($semantic-colors, $area-colors)));
 
 // Text-specific colors
 $text-colors: (
