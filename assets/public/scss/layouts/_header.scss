@@ -103,7 +103,6 @@ header {
                         &:before {
                             font-family: "FontAwesome";
                             content: "\f007";
-                            margin-right: 0.3em;
                         }
                         
                         @include a.breakpoint-down(md) {
@@ -123,7 +122,6 @@ header {
                         &:before {
                             font-family: "FontAwesome";
                             content: "\f08b";
-                            margin-right: 0.3em;
                         }
                         
                         @include a.breakpoint-down(md) {
@@ -143,7 +141,6 @@ header {
                         &:before {
                             font-family: "FontAwesome";
                             content: "\f291";
-                            margin-right: 0.3em;
                         }
                     }
                 }

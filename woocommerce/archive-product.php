@@ -90,7 +90,6 @@ if ( woocommerce_product_loop() ) {
 }
 
 
-    custom_pagination();
     
     
    ?>

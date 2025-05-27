@@ -97,16 +97,20 @@ jQuery(document).ready(function($) {
 
 
 
+// Αντικατέστησε το accordion code με αυτό:
 jQuery(document).ready(function($) {
-  $('.accordion-title').click(function() {
-      if ($(this).hasClass('active')) {
-          $(this).removeClass('active');
-          $(this).siblings('.accordion-content').slideUp(300);
-      } else {
-          $('.accordion-title').removeClass('active');
-          $('.accordion-content').slideUp(300);
-          $(this).addClass('active');
-          $(this).siblings('.accordion-content').slideDown(300);
-      }
-  });
+    $('.accordion-title').click(function() {
+        var $content = $(this).siblings('.accordion-content');
+        var $currentAccordion = $(this).closest('.accordion-item'); // ή το container σου
+        
+        if ($(this).hasClass('active')) {
+            // Κλείσε μόνο αυτό το accordion
+            $(this).removeClass('active');
+            $content.slideUp(300);
+        } else {
+            // Άνοιξε αυτό το accordion χωρίς να κλείσεις τα άλλα
+            $(this).addClass('active');
+            $content.slideDown(300);
+        }
+    });
 });

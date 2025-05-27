@@ -1,18 +1,23 @@
 @use '../abstracts' as a;
 
-// Line heights
+// ==================================================
+// TYPOGRAPHY SYSTEM - SEMANTIC & DISPLAY ONLY
+// ==================================================
+
+// SCSS Variables (για internal use)
 $line-height-tight: 1.2;
 $line-height-base: 1.5;
 $line-height-loose: 1.8;
 
-// Font weights
 $font-weight-light: 300;
 $font-weight-normal: 400;
 $font-weight-medium: 500;
 $font-weight-semibold: 600;
 $font-weight-bold: 700;
 
-// Heading styles
+// ==================================================
+// SEMANTIC HEADINGS (Default behavior)
+// ==================================================
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   font-family: var(--f-primary);
   font-weight: $font-weight-bold;
@@ -20,66 +25,219 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   margin-bottom: 0.5em;
 }
 
-h1, .h1 { font-size: var(--font-size-h1); }
-h2, .h2 { font-size: var(--font-size-h2); }
-h3, .h3 { font-size: var(--font-size-h3); }
-h4, .h4 { font-size: var(--font-size-h4); }
-h5, .h5 { font-size: var(--font-size-h5); }
-h6, .h6 { font-size: var(--font-size-h6); }
+h1, .h1 { font-size: var(--font-size-h1); }  // 30px → 40px
+h2, .h2 { font-size: var(--font-size-h2); }  // 25px → 35px
+h3, .h3 { font-size: var(--font-size-h3); }  // 22px → 28px
+h4, .h4 { font-size: var(--font-size-h4); }  // 20px → 24px
+h5, .h5 { font-size: var(--font-size-h5); }  // 18px → 20px
+h6, .h6 { font-size: var(--font-size-h6); }  // 16px → 18px
 
-// Paragraph styles
-p {
-  margin-bottom: 1.5rem;
+
+.generic-titles{
+  h2{
+    font-size: var(--font-size-h3);
+    font-weight: 400;
+    text-align: center;
+  }
+}
+
+
+// ==================================================
+// DISPLAY TYPOGRAPHY (Google Material Design)
+// ==================================================
+
+// Display classes - για hero sections, banners κτλ
+.display-1 {
+  font-size: var(--font-size-hero-title);     // 40px → 64px
+  font-weight: $font-weight-bold;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.display-2 {
+  font-size: var(--font-size-3xl);           // 36px → 48px
+  font-weight: $font-weight-bold;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.display-3 {
+  font-size: var(--font-size-2xl);           // 30px → 40px
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+}
+
+.display-4 {
+  font-size: var(--font-size-xl);            // 24px → 32px
+  font-weight: $font-weight-semibold;
+  line-height: 1.25;
+}
+
+// Title classes - για section titles
+.title-large {
+  font-size: var(--font-size-section-title); // 24px → 32px
+  font-weight: $font-weight-semibold;
+  line-height: 1.3;
+}
+
+.title-medium {
+  font-size: var(--font-size-lg);            // 20px → 24px
+  font-weight: $font-weight-medium;
+  line-height: 1.4;
+}
+
+.title-small {
+  font-size: var(--font-size-md);            // 18px → 20px
+  font-weight: $font-weight-medium;
+  line-height: 1.4;
+}
+
+// Body text classes
+.body-large {
+  font-size: var(--font-size-body-large);    // 16px → 18px
+  line-height: $line-height-loose;
+}
+
+.body-medium {
+  font-size: var(--font-size-body);          // 14px → 16px
+  line-height: $line-height-base;
+}
+
+.body-small {
+  font-size: var(--font-size-small);         // 12px → 14px
+  line-height: 1.4;
+}
+
+// Label text
+.label-large {
+  font-size: var(--font-size-sm);            // 14px → 16px
+  font-weight: $font-weight-medium;
+  line-height: 1.4;
+}
+
+.label-medium {
+  font-size: var(--font-size-xs);            // 12px → 14px
+  font-weight: $font-weight-medium;
+  line-height: 1.3;
+}
+
+.label-small {
+  font-size: var(--font-size-caption);       // 11px → 12px
+  font-weight: $font-weight-medium;
+  line-height: 1.3;
+}
+
+// ==================================================
+// COMPONENT-SPECIFIC OVERRIDES (Google approach)
+// ==================================================
+
+// Hero/Banner sections get special treatment
+.hero-section,
+.banner-section,
+.outerimagelarge {
+  h1 {
+    font-size: var(--font-size-hero-title);  // Override default h1
+    font-weight: $font-weight-bold;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
   
+  h2 {
+    font-size: var(--font-size-section-title); // Override default h2
+    font-weight: $font-weight-semibold;
+    line-height: 1.2;
+  }
+  
+  .lead {
+    font-size: var(--font-size-body-large);
+    line-height: $line-height-loose;
+  }
+}
+
+// Product sections
+.product-section {
+  h2 {
+    font-size: var(--font-size-section-title);
+  }
+  
+  h3 {
+    font-size: var(--font-size-lg);
+  }
+}
+
+// Card components
+.card {
+  h3 {
+    font-size: var(--font-size-md);
+  }
+  
+  h4 {
+    font-size: var(--font-size-base);
+  }
+}
+
+// ==================================================
+// BODY TEXT & PARAGRAPHS
+// ==================================================
+p {
+  font-size: var(--font-size-body);
+  line-height: $line-height-base;
+  margin-bottom: var(--space-4);
+  color: var(--clr-text);
+ 
   &:last-child {
     margin-bottom: 0;
   }
-}
-
-// Link styles
-a {
-  color: var(--clr-primary);
-  transition: color 0.2s ease-in-out;
   
-  &:hover, &:focus {
-    color: var(--clr-primary-dark);
+  // Large paragraph variant
+  &.lead {
+    font-size: var(--font-size-body-large);
+    line-height: $line-height-loose;
   }
 }
 
+// ==================================================
+// LINKS
+// ==================================================
+a {
+  color: var(--clr-link);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--transition-ease);
+ 
+  &:hover, &:focus {
+    color: var(--clr-link-hover);
+  }
+}
 
+// ==================================================
+// LISTS
+// ==================================================
 ul, ol {
   margin: 0;
   padding: 0;
-  list-style: none; // Βεβαιωνόμαστε ότι όλες οι λίστες δεν έχουν bullets εξ ορισμού
+  list-style: none; // Reset default styling
 }
 
-// Lists
+// Styled lists
 .list {
-  padding-left: 1.5rem;
-  margin-bottom: 1.5rem;
-  
+  padding-left: var(--space-4);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-body);
+  line-height: $line-height-base;
+ 
   li {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-2);
   }
-  
-  &--disc {
-    list-style-type: disc;
-  }
-  
-  &--decimal {
-    list-style-type: decimal;
-  }
-  
-  &--circle {
-    list-style-type: circle;
-  }
-  
-  &--square {
-    list-style-type: square;
-  }
+ 
+  &--disc { list-style-type: disc; }
+  &--decimal { list-style-type: decimal; }
+  &--circle { list-style-type: circle; }
+  &--square { list-style-type: square; }
 }
 
-// Emphasis
+// ==================================================
+// TEXT EMPHASIS
+// ==================================================
 strong, b {
   font-weight: $font-weight-bold;
 }
@@ -88,64 +246,58 @@ em, i {
   font-style: italic;
 }
 
-// Small
 small {
   font-size: var(--font-size-small);
 }
 
-// Blockquote
+// ==================================================
+// BLOCKQUOTE
+// ==================================================
 blockquote {
   border-left: 4px solid var(--clr-primary);
-  padding-left: 1rem;
+  padding-left: var(--space-3);
   margin-left: 0;
   margin-right: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-4);
   font-style: italic;
+  font-size: var(--font-size-quote);
+  line-height: $line-height-loose;
   color: var(--clr-text-muted);
 }
 
-// Code
+// ==================================================
+// CODE
+// ==================================================
 code, pre {
-  font-family: monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   background-color: var(--clr-gray-100);
-  border-radius: 3px;
+  border-radius: var(--border-radius);
+  font-size: 0.9em;
 }
 
 code {
-  padding: 0.2em 0.4em;
+  padding: var(--space-1) var(--space-2);
+  color: var(--clr-text);
 }
 
 pre {
-  padding: 1rem;
+  padding: var(--space-3);
   overflow-x: auto;
-  margin-bottom: 1.5rem;
-  
+  margin-bottom: var(--space-4);
+  line-height: $line-height-base;
+ 
   code {
     padding: 0;
     background-color: transparent;
+    border-radius: 0;
   }
 }
 
-// Horizontal rule
+// ==================================================
+// HORIZONTAL RULE
+// ==================================================
 hr {
   border: 0;
   border-top: 1px solid var(--clr-gray-200);
-  margin: var(--space-5) 0;
+  margin: var(--space-6) 0;
 }
-
-// Text utilities
-// Text Alignment
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.text-left { text-align: left; }
-
-// Text Transform
-.text-uppercase { text-transform: uppercase; }
-.text-capitalize { text-transform: capitalize; }
-
-// Colors
-.text-muted { color: var(--clr-text-muted); }
-.text-primary { color: var(--clr-primary); }
-.text-success { color: var(--clr-success); }
-.text-warning { color: var(--clr-warning); }
-.text-error { color: var(--clr-error); }

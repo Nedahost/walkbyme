@@ -61,7 +61,8 @@
                     object-fit: cover;
                     border: 0;
                     vertical-align: bottom;
-                    transition: transform var(--transition-normal) var(--transition-ease);                    
+                    transition: transform var(--transition-normal) var(--transition-ease);
+                    background-color: var(--clr-image-bg);             
                     &:hover{
                         -webkit-transform: scale(1.05);
                         -moz-transform: scale(1.05);
@@ -206,7 +207,11 @@
 
             .productContent {
                 line-height: 22px;
-                padding: var(--space-1-5) 0;
+                padding: var(--space-3) 0;
+                font-size: var(--font-size-sm);
+                p{
+                    margin-bottom: 1rem;
+                }
                 ul {
                     margin-left: 20px;
                     list-style: circle;
@@ -261,18 +266,19 @@
 .accordion-title {
     cursor: pointer;
     padding: 10px;
-    background-color: #f1f1f1;
+    //background-color: var(--clr-accordion-title);
+    border-bottom: 1px solid var( --clr-gray-700);
     position: relative;
     font-weight: 500;
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
 }
   
 .accordion-content {
     display: none;
     padding: 10px;
-    background-color: #fff;
+    font-size: var(--font-size-sm);
     a{
-        color: hsl(40, 58%, 44%);
+        color: #b0852e;
         &:hover{
             color: #9a715b;
         }
@@ -326,22 +332,30 @@
 
     ul {
         display: grid;
-        gap: 8px;
-        grid-template-columns: repeat(4, 1fr);
+        grid-gap: var(--space-2);
         margin: 0;
         padding: 0;
 
-        @include a.breakpoint-down(lg) {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        @include a.breakpoint-down(md) {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        @include a.breakpoint-down(sm) {
-            grid-template-columns: 2fr;
-        }
+         // Mobile first: 2 columns για όλα τα μικρά μεγέθη
+         grid-template-columns: repeat(2, 1fr);
+         
+         // Tablet: 3 columns (προαιρετικό)
+         @include a.breakpoint-up(md) {
+             grid-template-columns: repeat(3, 1fr);
+             gap: var(--space-3);  // 16px - περισσότερο χώρο σε μεγαλύτερες οθόνες
+         }
+ 
+         // Desktop: 4 columns
+         @include a.breakpoint-up(lg) {
+             grid-template-columns: repeat(4, 1fr);
+             gap: var(--space-4);  // 24px - ακόμα περισσότερος χώρος
+         }
+ 
+         // Extra large: μπορείς να κρατήσεις 4 ή να πας σε 5
+         @include a.breakpoint-up(xl) {
+             grid-template-columns: repeat(4, 1fr);  // ή repeat(5, 1fr) αν θέλεις
+             gap: var(--space-5);  // 32px
+         }
 
         li {
             text-align: center;

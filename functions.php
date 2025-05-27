@@ -4,6 +4,7 @@ require_once (get_template_directory() . '/inc/details-product.php');
 
 // Load all required files
 $required_files = [
+    'functions/analytics.php',
     'functions/core.php',         // WordPress core customizations
     'functions/assets.php',       // Scripts and styles
     'functions/theme-setup.php',  // Theme setup
