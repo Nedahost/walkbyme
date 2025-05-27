@@ -71,6 +71,13 @@ function walkbyme_load_js() {
         true
     );
     
+    wp_enqueue_script(
+        'walkbyme-parallax-js',
+        get_template_directory_uri() . '/assets/js/parallax.js',
+        $theme_version,
+        true
+    );
+
     // Localize script for AJAX and theme data
     wp_localize_script('walkbyme-main-js', 'walkbyme_ajax', array(
         'ajax_url' => admin_url('admin-ajax.php'),

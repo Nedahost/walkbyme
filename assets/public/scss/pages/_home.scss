@@ -95,7 +95,7 @@
   }
 }
 
-// Large image banner
+// Large image banner with iOS-compatible parallax
 .outerimagelarge {
   position: relative;
   display: flex;
@@ -105,46 +105,109 @@
   text-align: center;
   background-size: cover;
   background-position: center;
-  min-height: 550px;
+  min-height: 700px;
   width: 100%;
   overflow: hidden;
   
+  // Tablet breakpoint
   @include a.breakpoint-down(md) {
-    min-height: 400px;
+    min-height: 500px; // Αυξημένο από 400px
   }
   
+  // Mobile breakpoint - χρησιμοποιούμε viewport units
   @include a.breakpoint-down(sm) {
-    min-height: 300px;
+    min-height: 100vh; // 70% του viewport height αντί για fixed 300px
+    min-height: clamp(400px, 70vh, 600px); // Με fallback limits
   }
   
+  // Για πολύ μικρές οθόνες (landscape mode στο κινητό)
+  @media (max-width: 576px) and (max-height: 400px) {
+    min-height: 90vh; // Σχεδόν όλη η οθόνη σε landscape
+  }
+  
+  // Για portrait orientation στα κινητά
+  @media (max-width: 576px) and (orientation: portrait) {
+    min-height: 100vh; // 60% του ύψους σε portrait
+    min-height: clamp(450px, 60vh, 700px);
+  }
+  
+  // Για landscape orientation στα κινητά
+  @media (max-width: 896px) and (orientation: landscape) and (max-height: 500px) {
+    min-height: 100vh; // Περισσότερο χώρο σε landscape
+  }
+
   .imagewrapper {
-    background-image: url(/wp-content/themes/walkbyme/assets/images/photo.webp);
+    background-image: url(/wp-content/themes/walkbyme/assets/images/parallax.webp);
     position: absolute;
-    top: 0;
+    top: -20%;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 120%; // Μεγαλύτερο ύψος για το parallax effect
     background-size: cover;
-    background-position: center;
+    background-position: center center;
+    background-repeat: no-repeat;
     filter: brightness(70%);
+    will-change: transform; // Βελτιστοποίηση για animations
+    transform: translate3d(0, 0, 0); // Ενεργοποιεί hardware acceleration
+    
+    // iOS-specific optimizations
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    
+    // Fallback για συσκευές που δεν υποστηρίζουν parallax
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+      top: 0;
+      height: 100%;
+    }
+    
+    // Για tablet - μειωμένο parallax effect
+    @include a.breakpoint-down(md) {
+      top: -10%;
+      height: 110%;
+    }
+    
+    // Για κινητά - ακόμα πιο μειωμένο effect
+    @include a.breakpoint-down(sm) {
+      top: -5%;
+      height: 105%;
+      // Αλλά όχι εντελώς απενεργοποιημένο για να δουλεύει το effect
+    }
+    
+    // Μόνο για πολύ μικρές οθόνες απενεργοποιούμε εντελώς
+    @media (max-width: 480px) {
+      top: 0;
+      height: 100%;
+      transform: none;
+    }
   }
-  
+
   .imagecontent {
     color: var(--clr-white, #ffffff);
     position: relative;
     flex-grow: 0;
     padding: 0 15px;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+    z-index: 2; // Σιγουρεύουμε ότι το content είναι πάνω από την εικόνα
     
     @include a.breakpoint-down(md) {
       flex-basis: 100%;
       max-width: 600px;
-    }
-
-    h1{
-      font-size: var(--font-size-h3);
+      padding: 0 20px; // Περισσότερο padding στα tablets
     }
     
+    @include a.breakpoint-down(sm) {
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: var(--font-size-h3);
+      
+      @include a.breakpoint-down(sm) {
+        font-size: var(--font-size-h4);
+      }
+    }
+
     h2 {
       font-size: var(--font-size-h3);
       margin-bottom: 20px;
@@ -154,16 +217,22 @@
       }
       
       @include a.breakpoint-down(sm) {
-        font-size: var(--font-size-h3);
+        font-size: var(--font-size-h4);
         margin-bottom: 15px;
       }
     }
     
+    h3, h4 {
+      @include a.breakpoint-down(sm) {
+        font-size: var(--font-size-h5);
+      }
+    }
+
     p {
       line-height: 2;
       font-size: a.rem(18);
       margin-bottom: 20px;
-      color:var(--clr-white, #ffffff);
+      color: var(--clr-white, #ffffff);
       
       @include a.breakpoint-down(md) {
         font-size: a.rem(16);
@@ -171,10 +240,11 @@
       }
       
       @include a.breakpoint-down(sm) {
-        font-size: a.rem(14);
-        line-height: 1.6;
+        font-size: a.rem(15); // Ελαφρά μεγαλύτερο για καλύτερη αναγνωσιμότητα
+        line-height: 1.7;
+        margin-bottom: 15px;
       }
-      
+
       a {
         color: var(--clr-white, #ffffff);
         text-decoration: underline;
@@ -185,7 +255,7 @@
         }
       }
     }
-    
+
     .cta-button {
       display: inline-block;
       background-color: var(--clr-primary, rgba(255, 255, 255, 0.2));
@@ -202,8 +272,9 @@
       }
       
       @include a.breakpoint-down(sm) {
-        padding: 10px 20px;
-        font-size: a.rem(14);
+        padding: 14px 24px; // Ελαφρά μεγαλύτερο για touch
+        font-size: a.rem(15);
+        margin-top: 25px;
       }
     }
   }
