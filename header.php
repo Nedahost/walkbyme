@@ -25,7 +25,7 @@
 <header>
     <div class="topeader"><!-- top header start -->
         <div class="wrapper"><!-- wrapper start -->
-            ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΣΕ ΟΛΗ ΤΗΝ ΕΛΛΑΔΑ! | ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ΣΕ ΠΑΡΑΓΓΕΛΙΕΣ ΑΝΩ ΤΩΝ 40€
+            ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΣΕ ΟΛΗ ΤΗΝ ΕΛΛΑΔΑ | ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ΣΕ ΠΑΡΑΓΓΕΛΙΕΣ ΑΝΩ ΤΩΝ 40€
         </div><!-- wrapper end -->
     </div><!-- top header end -->
     
@@ -88,6 +88,11 @@
                                 $cart_count = WC()->cart->get_cart_contents_count();
                                 $cart_total = WC()->cart->get_cart_total();
                                 echo wp_kses_post($cart_total . ' (' . $cart_count . ')');
+                                
+                                // Προσθήκη του κόκκινου σημαδιού
+                                if ($cart_count > 0) {
+                                    echo '<span class="cart-badge">' . $cart_count . '</span>';
+                                }
                                 ?>
                             </a>
                         <?php } else { ?>
