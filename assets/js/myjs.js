@@ -46,6 +46,25 @@ jQuery(document).ready(function($) {
     $(".slideshow, .carousel").on('init', function(event, slick){
       $(this).addClass('slick-initialized');
     });
+
+    
+    $('.search-trigger').click(function() {
+        $('.search-overlay').addClass('active');
+        setTimeout(function() {
+            $('.search-field').focus();
+        }, 300);
+    });
+
+    $('.close-search').click(function() {
+        $('.search-overlay').removeClass('active');
+    });
+
+    $(document).keyup(function(e) {
+        if (e.key === "Escape") {
+            $('.search-overlay').removeClass('active');
+        }
+    });
+
   });
   
   //lightbox για τις εικόνες των προϊόντων
