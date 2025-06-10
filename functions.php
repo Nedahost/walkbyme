@@ -12,7 +12,8 @@ $required_files = [
     'functions/seo.php',          // SEO functions
     'functions/sitemaps.php',     // Sitemap generation
     'functions/meta-boxes.php',   // Custom meta boxes
-    'functions/custom-post-types.php' // Custom post types
+    'functions/custom-post-types.php', // Custom post types
+    'functions/badges.php'
 ];
 
 foreach ($required_files as $file) {
@@ -21,7 +22,9 @@ foreach ($required_files as $file) {
     }
 }
 
-
+add_action('after_setup_theme', function() {
+    WC_Product_Badges_System::get_instance();
+});
 
 
 

@@ -8,7 +8,6 @@
         list-style: none;
         margin: 0;
         padding: 0;
-
         // Mobile first: 2 columns για όλα τα μικρά μεγέθη
         grid-template-columns: repeat(2, 1fr);
          
@@ -17,29 +16,87 @@
             grid-template-columns: repeat(3, 1fr);
             gap: var(--space-3);  // 16px - περισσότερο χώρο σε μεγαλύτερες οθόνες
         }
-
         // Desktop: 4 columns
         @include a.breakpoint-up(lg) {
             grid-template-columns: repeat(4, 1fr);
             gap: var(--space-4);  // 24px - ακόμα περισσότερος χώρος
         }
-
         // Extra large: μπορείς να κρατήσεις 4 ή να πας σε 5
         @include a.breakpoint-up(xl) {
             grid-template-columns: repeat(4, 1fr);  // ή repeat(5, 1fr) αν θέλεις
             gap: var(--space-5);  // 32px
         }
-
         li{
             text-align: center;
             position: relative;
             overflow: hidden;
+            
+            // ===========================================
+            // PRODUCT BADGES - ΝΕΟ ΚΟΜΜΑΤΙ
+            // ===========================================
+            .product-badges {
+                position: absolute;
+                top: var(--space-2); // 8px από την κορυφή
+                right: var(--space-2); // 8px από τα δεξιά
+                z-index: 10;
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-1); // 4px μεταξύ των badges
+                
+                .product-badge {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    font-size: 0.75rem; // 12px
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    border-radius: 3px;
+                    white-space: nowrap;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+                    transition: transform 0.2s ease;
+                    
+                    // Hover effect
+                    &:hover {
+                        transform: scale(1.05);
+                    }
+                    
+                    // Position variants
+                    &.badge-top-left {
+                        // Αυτό θα το χειριστούμε με position absolute αν χρειαστεί
+                    }
+                    
+                    &.badge-top-right {
+                        // Default position (ήδη στο container)
+                    }
+                    
+                    &.badge-bottom-left,
+                    &.badge-bottom-right {
+                        // Για bottom badges, θα χρειαστεί διαφορετικό positioning
+                    }
+                }
+            }
+            
+            // Alternative positioning για bottom badges
+            &:has(.badge-bottom-left) .product-badges,
+            &:has(.badge-bottom-right) .product-badges {
+                top: auto;
+                bottom: var(--space-2);
+            }
+            
+            &:has(.badge-bottom-left) .product-badges {
+                right: auto;
+                left: var(--space-2);
+            }
+            // ===========================================
+            // ΤΕΛΟΣ BADGES STYLING
+            // ===========================================
+            
             .product-image-link {
                 position: relative;
                 display: block;
                 aspect-ratio: 1 / 1;
                 overflow: hidden;
-                
+               
                 .hover-image {
                     position: absolute;
                     top: 0;
@@ -47,7 +104,7 @@
                     opacity: 0;
                     transition: opacity 0.3s ease;
                 }
-                
+               
                 &:hover .hover-image {
                     opacity: 1;
                 }
@@ -62,7 +119,7 @@
                     border: 0;
                     vertical-align: bottom;
                     transition: transform var(--transition-normal) var(--transition-ease);
-                    background-color: var(--clr-image-bg);             
+                    background-color: var(--clr-image-bg);            
                     &:hover{
                         -webkit-transform: scale(1.05);
                         -moz-transform: scale(1.05);
