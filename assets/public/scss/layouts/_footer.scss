@@ -1,5 +1,9 @@
 @use '../abstracts' as a;
 
+.outermarketing{
+  background: var(--clr-white);
+}
+
 // Newsletter section styling
 .outer_newsletter {
   background-color: var(--clr-gray-100, #f8f8f8);

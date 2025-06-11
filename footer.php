@@ -8,53 +8,56 @@
  */
 ?>
 
-    <?php if (!is_checkout() && !is_product() && !is_cart()) { ?>
-        <div class="wrapper"><!-- wrapper start -->
-            <section class="outer_newsletter" aria-labelledby="newsletter-heading">
-                <h4 id="newsletter-heading">
-                    <?php esc_html_e('Εγγραφή στο Newsletter', 'walkbyme'); ?>
-                </h4>
-                <p>
-                    <?php esc_html_e('Κάνε εγγραφή τώρα για να μαθαίνεις πρώτος τις προσφορές μας, τα συναρπαστικά σχέδια, τις καινούργιες αφίξεις και πολλά άλλα.', 'walkbyme'); ?>
-                </p>
-                <div class="klaviyo-form-S7Kwjh"></div>
-            </section><!-- outer newsletter end -->
-            
-            <section id="outerexperiences" aria-labelledby="experiences-heading">
-                <h2 id="experiences-heading" class="visually-hidden">
-                    <?php esc_html_e('Οι Υπηρεσίες μας', 'walkbyme'); ?>
-                </h2>
-                <ul class="experience-list">
-                    <li class="experience-item">
-                        <h4><?php esc_html_e('Επιδιόρθωση και συντήρηση των κοσμημάτων', 'walkbyme'); ?></h4>
-                        <p>
-                            <?php esc_html_e('Επιδιόρθωση και συντήρηση των κοσμημάτων για τη διατήρηση της ποιότητας τους και την επίλυση προβλημάτων.', 'walkbyme'); ?>
-                        </p>
-                    </li>
-                    <li class="experience-item">
-                        <h4><?php esc_html_e('Εγγύηση ποιότητας', 'walkbyme'); ?></h4>
-                        <p>
-                            <?php esc_html_e('Αν υπάρχει υποιοδήποτε πρόβλημα με το κόσμημα εντός ενός συγκεκριμένου χρονικό διάστημα μπορείτε να το επιστρέψετε για επισκευή ή αντικατάσταση.', 'walkbyme'); ?>
-                        </p>
-                    </li>
-                    <li class="experience-item">
-                        <h4><?php esc_html_e('Συμβουλές για στυλ και τάσεις', 'walkbyme'); ?></h4>
-                        <p>
-                            <?php esc_html_e('Σας παρέχουμε συμβουλές για το πώς μπορείτε να φορέσετε και να συνδιάσετε ώστε να επιλέξετε τα κατάλληλα κοσμήματα για κάθε περίπτωση.', 'walkbyme'); ?>
-                        </p>
-                    </li>
-                    <li class="experience-item">
-                        <h4><?php esc_html_e('Εξυπηρέτηση πελατών υψηλής ποιότητας', 'walkbyme'); ?></h4>
-                        <p>
-                           <?php esc_html_e('Απαντάμε σε ερωτήσεις και επιλύουμε προβλήματα που μπορεί να προκύψουν μετά την αγορά του κοσμήματος.', 'walkbyme'); ?>
-                        </p>
-                    </li>
-                </ul>
-            </section><!-- outer experience end -->
-        </div><!-- wrapper end -->
-    <?php } ?>
-    </main><!-- End of main content -->
     
+    </main><!-- End of main content -->
+
+    <?php if (!is_checkout() && !is_product() && !is_cart()) { ?>
+    <div class="outermarketing"><!-- outer marketing start -->
+        <div class="wrapper"><!-- wrapper start -->
+        <section class="outer_newsletter" aria-labelledby="newsletter-heading">
+            <h4 id="newsletter-heading">
+                <?php esc_html_e('Εγγραφή στο Newsletter', 'walkbyme'); ?>
+            </h4>
+            <p>
+                <?php esc_html_e('Κάνε εγγραφή τώρα για να μαθαίνεις πρώτος τις προσφορές μας, τα συναρπαστικά σχέδια, τις καινούργιες αφίξεις και πολλά άλλα.', 'walkbyme'); ?>
+            </p>
+            <div class="klaviyo-form-S7Kwjh"></div>
+        </section><!-- outer newsletter end -->
+        
+        <section id="outerexperiences" aria-labelledby="experiences-heading">
+            <h2 id="experiences-heading" class="visually-hidden">
+                <?php esc_html_e('Οι Υπηρεσίες μας', 'walkbyme'); ?>
+            </h2>
+            <ul class="experience-list">
+                <li class="experience-item">
+                    <h4><?php esc_html_e('Επιδιόρθωση και συντήρηση των κοσμημάτων', 'walkbyme'); ?></h4>
+                    <p>
+                        <?php esc_html_e('Επιδιόρθωση και συντήρηση των κοσμημάτων για τη διατήρηση της ποιότητας τους και την επίλυση προβλημάτων.', 'walkbyme'); ?>
+                    </p>
+                </li>
+                <li class="experience-item">
+                    <h4><?php esc_html_e('Εγγύηση ποιότητας', 'walkbyme'); ?></h4>
+                    <p>
+                        <?php esc_html_e('Αν υπάρχει υποιοδήποτε πρόβλημα με το κόσμημα εντός ενός συγκεκριμένου χρονικό διάστημα μπορείτε να το επιστρέψετε για επισκευή ή αντικατάσταση.', 'walkbyme'); ?>
+                    </p>
+                </li>
+                <li class="experience-item">
+                    <h4><?php esc_html_e('Συμβουλές για στυλ και τάσεις', 'walkbyme'); ?></h4>
+                    <p>
+                        <?php esc_html_e('Σας παρέχουμε συμβουλές για το πώς μπορείτε να φορέσετε και να συνδιάσετε ώστε να επιλέξετε τα κατάλληλα κοσμήματα για κάθε περίπτωση.', 'walkbyme'); ?>
+                    </p>
+                </li>
+                <li class="experience-item">
+                    <h4><?php esc_html_e('Εξυπηρέτηση πελατών υψηλής ποιότητας', 'walkbyme'); ?></h4>
+                    <p>
+                        <?php esc_html_e('Απαντάμε σε ερωτήσεις και επιλύουμε προβλήματα που μπορεί να προκύψουν μετά την αγορά του κοσμήματος.', 'walkbyme'); ?>
+                    </p>
+                </li>
+            </ul>
+        </section><!-- outer experience end -->
+        </div><!-- wrapper end -->
+    </div><!-- outer marketing end -->
+    <?php } ?>
     <footer class="site-footer">
         <div class="wrapper"><!-- wrapper start -->
             <div class="footer_details">
