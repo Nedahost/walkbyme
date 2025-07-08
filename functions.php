@@ -104,375 +104,605 @@ function is_product_excluded_from_facebook_feed($product_id) {
 
 
 
-// Δημιουργία κουπονιού για δωρεάν αντικαταβολή για συγκεκριμένο πελάτη
-function create_free_cod_coupon_for_customer($customer_email, $expiry_days = 7) {
-    // Δημιουργία μοναδικού κωδικού κουπονιού
-    $coupon_code = 'FREE-COD-' . wp_generate_password(8, false);
-    
-    // Δημιουργία νέου κουπονιού
-    $coupon = array(
-        'post_title' => $coupon_code,
-        'post_content' => '',
-        'post_status' => 'publish',
-        'post_author' => 1,
-        'post_type' => 'shop_coupon'
-    );
-    
-    // Εισαγωγή του κουπονιού στη βάση
-    $coupon_id = wp_insert_post($coupon);
-    
-    // Ορισμός των ιδιοτήτων του κουπονιού - Το κάνουμε fixed_cart με 0 ποσό
-    // γιατί θα χειριστούμε την αντικαταβολή ξεχωριστά
-    update_post_meta($coupon_id, 'discount_type', 'fixed_cart');
-    update_post_meta($coupon_id, 'coupon_amount', '0'); // Μηδενικό ποσό, δεν θέλουμε να κάνει έκπτωση
-    update_post_meta($coupon_id, 'individual_use', 'no');
-    update_post_meta($coupon_id, 'usage_limit', '1');
-    update_post_meta($coupon_id, 'expiry_date', date('Y-m-d', strtotime("+{$expiry_days} days")));
-    update_post_meta($coupon_id, 'apply_before_tax', 'yes');
-    update_post_meta($coupon_id, 'customer_email', array($customer_email));
-    
-    // Προσθέτουμε ένα ειδικό πεδίο που θα χρησιμοποιήσουμε για να αναγνωρίσουμε
-    // ότι είναι κουπόνι δωρεάν αντικαταβολής
-    update_post_meta($coupon_id, 'free_cod_coupon', 'yes');
-    
-    return $coupon_code;
-}
 
-// Αποστολή email με το κουπόνι για δωρεάν αντικαταβολή
-function send_free_cod_email($customer_email, $coupon_code, $gender = '', $customer_name = '') {
-    // Ανάκτηση της τιμής της αντικαταβολής από τις ρυθμίσεις
-    $cod_fee = get_option('cash_on_delivery_fee', 2.5);
-    
-    // Προσαρμογή προσφώνησης ανάλογα με το φύλο και το όνομα
-    $greeting = 'Αγαπητέ/ή πελάτη';
-    if (!empty($customer_name)) {
-        if ($gender === 'male') {
-            $greeting = 'Αγαπητέ ' . $customer_name;
-        } elseif ($gender === 'female') {
-            $greeting = 'Αγαπητή ' . $customer_name;
-        } else {
-            $greeting = 'Αγαπητέ/ή ' . $customer_name;
-        }
-    } else {
-        if ($gender === 'male') {
-            $greeting = 'Αγαπητέ πελάτη';
-        } elseif ($gender === 'female') {
-            $greeting = 'Αγαπητή πελάτισσα';
-        }
+
+
+//popup cart
+
+// ΔΙΟΡΘΩΜΕΝΟΣ ΠΛΗΡΗΣ ΚΩΔΙΚΑΣ POPUP - ΜΟΝΟ ΕΚΠΤΩΣΕΙΣ
+
+// 1. Βοηθητική συνάρτηση για έλεγχο αν ο χρήστης έχει αγοράσει στο παρελθόν
+function user_has_purchased() {
+    // Για logged in χρήστες
+    if (is_user_logged_in()) {
+        $user_id = get_current_user_id();
+        $orders = wc_get_orders(array(
+            'customer_id' => $user_id,
+            'status' => array('completed', 'processing'),
+            'limit' => 1
+        ));
+        return !empty($orders);
     }
     
-    $subject = 'Ειδική προσφορά για εσάς: Δωρεάν αντικαταβολή!';
-    
-    // Δημιουργία του πλαισίου κουπονιού με CSS
-    $coupon_style = '
-    <div style="border: 2px dashed #ddd; padding: 15px; margin: 15px 0; text-align: center; background-color: #f9f9f9;">
-        <span style="font-size: 20px; font-weight: bold; color: #0066cc;">' . $coupon_code . '</span>
-    </div>';
-    
-    $message = '
-    <html>
-    <body style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <p>' . $greeting . ',</p>
-        
-        <p>Παρατηρήσαμε ότι έχετε προϊόντα στο καλάθι σας. Θα θέλαμε να σας προσφέρουμε <strong>ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ</strong> ειδικά για εσάς!</p>
-
-        <p><strong>Για να επωφεληθείτε από αυτήν την προσφορά:</strong></p>
-        <ol>
-            <li>Επιστρέψτε στο ηλεκτρονικό μας κατάστημα</li>
-            <li>Χρησιμοποιήστε τον παρακάτω κωδικό κουπονιού:</li>
-        </ol>
-        
-        ' . $coupon_style . '
-        
-        <ol start="3">
-            <li>Επιλέξτε ως τρόπο πληρωμής την "<strong>Αντικαταβολή</strong>"</li>
-        </ol>
-
-        <p>Το κόστος της αντικαταβολής (' . $cod_fee . '€) θα αφαιρεθεί αυτόματα από τη συνολική τιμή της παραγγελίας σας!</p>
-
-        <p>Η προσφορά ισχύει για 7 ημέρες. Μην χάσετε αυτήν την ευκαιρία!</p>
-
-        <p>Με εκτίμηση,<br>
-        Η ομάδα του ' . get_bloginfo('name') . '</p>
-    </body>
-    </html>';
-    
-    // Ρύθμιση επικεφαλίδων για HTML email
-    $headers = array('Content-Type: text/html; charset=UTF-8');
-    
-    // Αποστολή του email
-    wp_mail($customer_email, $subject, $message, $headers);
+    // Εναλλακτικά, έλεγχος με cookie αν έχει ολοκληρώσει παραγγελία
+    return isset($_COOKIE['has_purchased']);
 }
 
-// Λειτουργία για χειροκίνητη αποστολή email σε συγκεκριμένο πελάτη
-function send_free_cod_to_specific_customer($customer_email, $gender = '', $customer_name = '') {
-    // Δημιουργία κουπονιού
-    $coupon_code = create_free_cod_coupon_for_customer($customer_email);
+// 2. Δημιουργία popup στη σελίδα cart για ΝΕΟΥΣ ΠΕΛΑΤΕΣ
+add_action('wp_footer', 'add_cart_discount_popup');
+function add_cart_discount_popup() {
+    // Μόνο στη σελίδα cart
+    if (!is_cart()) return;
     
-    // Αποστολή email
-    if ($coupon_code) {
-        send_free_cod_email($customer_email, $coupon_code, $gender, $customer_name);
-        return true;
-    }
+    // Έλεγχος αν έχει ήδη εμφανιστεί το popup
+    if (isset($_COOKIE['discount_popup_shown'])) return;
     
-    return false;
-}
-
-// Έλεγχος αν ένα κουπόνι είναι κουπόνι δωρεάν αντικαταβολής
-function is_free_cod_coupon($coupon_code) {
-    $coupon = new WC_Coupon($coupon_code);
-    return (get_post_meta($coupon->get_id(), 'free_cod_coupon', true) === 'yes');
-}
-
-// Έλεγχος αν το καλάθι έχει κουπόνι δωρεάν αντικαταβολής
-function cart_has_free_cod_coupon() {
-    if (!isset(WC()->cart) || WC()->cart->is_empty()) {
-        return false;
-    }
+    // Έλεγχος αν έχει ήδη πάρει την προσφορά (ΠΟΤΕ ξανά)
+    if (isset($_COOKIE['discount_taken_forever'])) return;
     
-    $applied_coupons = WC()->cart->get_applied_coupons();
+    // Έλεγχος αν είναι η δεύτερη φορά που λήγει (ΠΟΤΕ ξανά)
+    if (isset($_COOKIE['discount_expired_twice'])) return;
     
-    if (empty($applied_coupons)) {
-        return false;
-    }
+    // Έλεγχος αν έχει πει "όχι" δύο φορές (ΠΟΤΕ ξανά)
+    if (isset($_COOKIE['discount_declined_twice'])) return;
     
-    foreach ($applied_coupons as $coupon_code) {
-        if (is_free_cod_coupon($coupon_code)) {
-            return true;
-        }
-    }
+    // Έλεγχος αν υπάρχουν προϊόντα στο καλάθι
+    if (WC()->cart->is_empty()) return;
     
-    return false;
-}
-
-// Τροποποίηση της συνάρτησης add_cash_on_delivery_fee για να υποστηρίζει δωρεάν αντικαταβολή
-function override_add_cash_on_delivery_fee() {
-    if (!is_checkout()) {
-        return;
-    }
-
-    // Ανάκτηση του ποσού αντικαταβολής
-    $cash_on_delivery_fee = get_option('cash_on_delivery_fee', 2.5);
-
-    // Έλεγχος αν το καλάθι έχει προϊόντα με ενεργοποιημένη αντικαταβολή
-    if (cart_has_cash_on_delivery() && WC()->session->get('chosen_payment_method') === 'cod') {
-        // Έλεγχος αν υπάρχει κουπόνι δωρεάν αντικαταβολής
-        if (cart_has_free_cod_coupon()) {
-            // Προσθήκη μηδενικού τέλους αντικαταβολής με ετικέτα "Δωρεάν"
-            WC()->cart->add_fee(__('Αντικαταβολή (Δωρεάν)', 'your_plugin_textdomain'), 0);
-        } else {
-            // Προσθήκη κανονικού τέλους αντικαταβολής
-            WC()->cart->add_fee(__('Αντικαταβολή', 'your_plugin_textdomain'), $cash_on_delivery_fee);
-        }
-    }
-}
-
-// Αφαίρεση του αρχικού hook για το τέλος αντικαταβολής
-remove_action('woocommerce_cart_calculate_fees', 'add_cash_on_delivery_fee');
-
-// Προσθήκη του τροποποιημένου hook
-add_action('woocommerce_cart_calculate_fees', 'override_add_cash_on_delivery_fee');
-
-// Τροποποίηση του τίτλου της μεθόδου πληρωμής αντικαταβολής
-add_filter('woocommerce_gateway_title', 'modify_cod_gateway_title', 10, 2);
-function modify_cod_gateway_title($title, $payment_id) {
-    if ($payment_id === 'cod' && cart_has_free_cod_coupon()) {
-        $cod_fee = get_option('cash_on_delivery_fee', 2.5);
-        return 'Αντικαταβολή (Δωρεάν - Εξοικονομείτε ' . $cod_fee . '€)';
-    }
+    // Αν ο χρήστης έχει ήδη παραγγείλει, δεν εμφανίζουμε popup
+    if (user_has_purchased()) return;
     
-    return $title;
-}
-
-// Προσθήκη ειδικών μηνυμάτων στο καλάθι όταν είναι ενεργό το κουπόνι δωρεάν αντικαταβολής
-add_action('woocommerce_before_cart_totals', 'add_free_cod_message_in_cart');
-function add_free_cod_message_in_cart() {
-    if (cart_has_free_cod_coupon()) {
-        $cod_fee = get_option('cash_on_delivery_fee', 2.5);
-        echo '<div class="woocommerce-info">Έχετε εφαρμόσει το κουπόνι δωρεάν αντικαταβολής. Επιλέξτε αντικαταβολή ως τρόπο πληρωμής για να μην χρεωθείτε το τέλος των ' . $cod_fee . '€.</div>';
-    }
-}
-
-// Προσθήκη ειδικού μηνύματος στη σελίδα checkout
-add_action('woocommerce_before_checkout_form', 'add_free_cod_message_in_checkout');
-function add_free_cod_message_in_checkout() {
-    if (cart_has_free_cod_coupon()) {
-        $cod_fee = get_option('cash_on_delivery_fee', 2.5);
-        echo '<div class="woocommerce-info">Έχετε εφαρμόσει το κουπόνι δωρεάν αντικαταβολής. Επιλέξτε αντικαταβολή ως τρόπο πληρωμής για να μην χρεωθείτε το τέλος των ' . $cod_fee . '€.</div>';
-    }
-}
-
-// ΝΕΟΣ ΚΩΔΙΚΑΣ: Παρακολούθηση αλλαγών στη μέθοδο πληρωμής
-add_action('woocommerce_checkout_update_order_review', 'check_payment_method_for_cod_coupon');
-function check_payment_method_for_cod_coupon($post_data) {
-    parse_str($post_data, $output);
-    
-    // Έλεγχος αν το καλάθι έχει κουπόνι δωρεάν αντικαταβολής
-    if (cart_has_free_cod_coupon()) {
-        // Έλεγχος αν η επιλεγμένη μέθοδος πληρωμής ΔΕΝ είναι η αντικαταβολή
-        if (isset($output['payment_method']) && $output['payment_method'] !== 'cod') {
-            // Αποθήκευση του κουπονιού για να μπορούμε να το επαναφέρουμε αργότερα
-            $free_cod_coupon = '';
-            foreach (WC()->cart->get_applied_coupons() as $coupon_code) {
-                if (is_free_cod_coupon($coupon_code)) {
-                    $free_cod_coupon = $coupon_code;
-                    break;
-                }
-            }
-            
-            // Αποθήκευση του κουπονιού στη συνεδρία για πιθανή επαναφορά
-            if (!empty($free_cod_coupon)) {
-                WC()->session->set('saved_free_cod_coupon', $free_cod_coupon);
-                // Αφαίρεση του κουπονιού όταν η μέθοδος πληρωμής δεν είναι αντικαταβολή
-                WC()->cart->remove_coupon($free_cod_coupon);
-                
-                // Προσθήκη μηνύματος
-                wc_add_notice('Το κουπόνι δωρεάν αντικαταβολής αφαιρέθηκε επειδή επιλέξατε διαφορετικό τρόπο πληρωμής.', 'notice');
-            }
-        } 
-    } else if (isset($output['payment_method']) && $output['payment_method'] === 'cod') {
-        // Έλεγχος αν υπάρχει αποθηκευμένο κουπόνι στη συνεδρία και αν η μέθοδος πληρωμής είναι αντικαταβολή
-        $saved_coupon = WC()->session->get('saved_free_cod_coupon');
-        if (!empty($saved_coupon)) {
-            // Επαναφορά του κουπονιού
-            WC()->cart->apply_coupon($saved_coupon);
-            WC()->session->set('saved_free_cod_coupon', '');
-            
-            // Προσθήκη μηνύματος
-            wc_add_notice('Το κουπόνι δωρεάν αντικαταβολής εφαρμόστηκε ξανά.', 'success');
-        }
-    }
-}
-
-// ΝΕΟΣ ΚΩΔΙΚΑΣ: Έλεγχος εφαρμογής κουπονιού σε σχέση με τη μέθοδο πληρωμής
-add_filter('woocommerce_coupon_is_valid', 'validate_free_cod_coupon', 10, 3);
-function validate_free_cod_coupon($is_valid, $coupon, $discount) {
-    // Έλεγχος αν είναι κουπόνι δωρεάν αντικαταβολής
-    if (get_post_meta($coupon->get_id(), 'free_cod_coupon', true) === 'yes') {
-        // Έλεγχος αν η επιλεγμένη μέθοδος πληρωμής είναι αντικαταβολή
-        $chosen_payment_method = WC()->session->get('chosen_payment_method');
-        
-        if ($chosen_payment_method !== 'cod') {
-            // Προσθήκη μηνύματος σφάλματος
-            if (is_checkout()) {
-                wc_add_notice('Το κουπόνι δωρεάν αντικαταβολής μπορεί να χρησιμοποιηθεί μόνο με τη μέθοδο πληρωμής "Αντικαταβολή".', 'error');
-            }
-            return false;
-        }
-    }
-    
-    return $is_valid;
-}
-
-// ΝΕΟΣ ΚΩΔΙΚΑΣ: Ενημέρωση του καλαθιού όταν αλλάζει η μέθοδος πληρωμής
-add_action('woocommerce_review_order_before_payment', 'add_payment_method_script');
-function add_payment_method_script() {
-    if (cart_has_free_cod_coupon() || WC()->session->get('saved_free_cod_coupon')) {
-        ?>
-        <script type="text/javascript">
-            jQuery(function($) {
-                $('form.checkout').on('change', 'input[name="payment_method"]', function() {
-                    // Ενημέρωση του καλαθιού όταν αλλάζει η μέθοδος πληρωμής
-                    $('body').trigger('update_checkout');
-                });
-            });
-        </script>
-        <?php
-    }
-}
-
-// Προσθήκη σελίδας διαχειριστή για αποστολή προσαρμοσμένων emails
-function custom_admin_menu() {
-    add_menu_page(
-        'Αποστολή Προσφοράς',
-        'Προσφορά Αντικαταβολής',
-        'manage_options',
-        'custom-offer-sender',
-        'custom_offer_sender_page',
-        'dashicons-email',
-        99
-    );
-}
-add_action('admin_menu', 'custom_admin_menu');
-
-// Περιεχόμενο της σελίδας διαχειριστή
-function custom_offer_sender_page() {
     ?>
-    <div class="wrap">
-        <h1>Αποστολή Προσφοράς Δωρεάν Αντικαταβολής</h1>
-        
-        <?php
-        // Έλεγχος αν υποβλήθηκε η φόρμα
-        if (isset($_POST['submit_offer'])) {
-            $customer_email = sanitize_email($_POST['customer_email']);
-            $gender = isset($_POST['customer_gender']) ? sanitize_text_field($_POST['customer_gender']) : '';
-            $customer_name = isset($_POST['customer_name']) ? sanitize_text_field($_POST['customer_name']) : '';
-            
-            if (!empty($customer_email) && is_email($customer_email)) {
-                $result = send_free_cod_to_specific_customer($customer_email, $gender, $customer_name);
-                
-                if ($result) {
-                    echo '<div class="notice notice-success"><p>Το email με το κουπόνι δωρεάν αντικαταβολής εστάλη επιτυχώς στο ' . $customer_email . '!</p></div>';
-                } else {
-                    echo '<div class="notice notice-error"><p>Υπήρξε πρόβλημα κατά την αποστολή του email.</p></div>';
-                }
-            } else {
-                echo '<div class="notice notice-error"><p>Παρακαλώ εισάγετε ένα έγκυρο email.</p></div>';
-            }
-        }
-        ?>
-        
-        <form method="post" action="">
-            <table class="form-table">
-                <tr>
-                    <th scope="row"><label for="customer_email">Email Πελάτη</label></th>
-                    <td>
-                        <input type="email" name="customer_email" id="customer_email" class="regular-text" required>
-                        <p class="description">Εισάγετε το email του πελάτη στον οποίο θέλετε να στείλετε την προσφορά δωρεάν αντικαταβολής.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="customer_name">Όνομα Πελάτη</label></th>
-                    <td>
-                        <input type="text" name="customer_name" id="customer_name" class="regular-text">
-                        <p class="description">Εισάγετε το όνομα του πελάτη για προσωποποιημένη προσφώνηση (π.χ. "Αγαπητέ Γιώργο").</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="customer_gender">Φύλο Πελάτη</label></th>
-                    <td>
-                        <select name="customer_gender" id="customer_gender" class="regular-text">
-                            <option value="">-- Επιλέξτε φύλο --</option>
-                            <option value="male">Άνδρας</option>
-                            <option value="female">Γυναίκα</option>
-                        </select>
-                        <p class="description">Επιλέξτε το φύλο του πελάτη για σωστή προσφώνηση στο email.</p>
-                    </td>
-                </tr>
-            </table>
-            
-            <?php submit_button('Αποστολή Προσφοράς', 'primary', 'submit_offer'); ?>
-        </form>
-        
-        <div class="card" style="max-width: 600px; margin-top: 20px;">
-            <h2>Προεπισκόπηση Email</h2>
-            <div style="border: 1px solid #ddd; padding: 15px; background-color: #fff;">
-                <p><strong>Παράδειγμα προσφώνησης:</strong></p>
-                <ul>
-                    <li>Με όνομα: "Αγαπητέ Γιώργο," ή "Αγαπητή Μαρία,"</li>
-                    <li>Χωρίς όνομα: "Αγαπητέ πελάτη," ή "Αγαπητή πελάτισσα,"</li>
-                </ul>
-                <p><strong>Παράδειγμα μορφοποίησης κουπονιού:</strong></p>
-                <div style="border: 2px dashed #ddd; padding: 15px; margin: 15px 0; text-align: center; background-color: #f9f9f9;">
-                    <span style="font-size: 20px; font-weight: bold; color: #0066cc;">FREE-COD-XXXXXXXX</span>
+    <div id="discount-popup" style="display:none;">
+        <div class="popup-overlay">
+            <div class="popup-content">
+                <span class="popup-close">&times;</span>
+                <h3>🎉 Καλωσόρισες – 20% σήμερα!</h3>
+                <div class="offer-details">
+                    <div class="main-offer">
+                        <span class="discount-badge">Ο κωδικός WELCOME20 μπήκε στο καλάθι σου</span>
+                    </div>
+                    <div class="bonus-offer">
+                        <p>✅ Δωρεάν αποστολή πανελλαδικά</p>
+                        <p>✅ Άμεση παράδοση</p>
+                        <p>✅ 100% ασφαλείς πληρωμές</p>
+                    </div>
+                    <div class="urgency-timer">
+                        <p><strong>⏰ Ισχύει για τα επόμενα:</strong></p>
+                        <div id="countdown-timer">
+                            <span id="minutes">15</span>:<span id="seconds">00</span>
+                        </div>
+                    </div>
                 </div>
-                <p>Το κουπόνι θα εμφανίζεται με αυτή τη μορφή στο email που θα σταλεί στον πελάτη.</p>
+                <button id="apply-discount-btn" class="btn-primary">Θέλω το -20%</button>
+                <button id="close-popup-btn" class="btn-secondary">Όχι, δεν θέλω έκπτωση 😞</button>
             </div>
         </div>
     </div>
     <?php
 }
 
+// 3. Popup για ΕΠΙΣΤΡΕΦΟΝΤΕΣ ΠΕΛΑΤΕΣ
+add_action('wp_footer', 'add_returning_customer_popup');
+function add_returning_customer_popup() {
+    if (!is_cart() || !user_has_purchased()) return;
+    if (isset($_COOKIE['returning_popup_shown'])) return;
+    if (WC()->cart->is_empty()) return;
+    
+    ?>
+    <div id="returning-customer-popup" style="display:none;">
+        <div class="popup-overlay">
+            <div class="popup-content">
+                <span class="popup-close">&times;</span>
+                <h3>🙏 Καλώς ήρθες πίσω!</h3>
+                <p><strong>Ειδική προσφορά</strong> για πιστούς πελάτες:</p>
+                <div class="returning-offer">
+                    <p>✅ <strong>10% έκπτωση</strong> στην παραγγελία σου</p>
+                    <p>✅ Δωρεάν μεταφορικά (πάντα δωρεάν!)</p>
+                    <p>✅ Προτεραιότητα στην εξυπηρέτηση</p>
+                </div>
+                <button id="apply-returning-discount-btn" class="btn-primary">Εφαρμογή Έκπτωσης</button>
+                <button class="popup-close btn-secondary">Όχι, ευχαριστώ</button>
+            </div>
+        </div>
+    </div>
+    <?php
+}
 
+// 4. CSS και JavaScript για τα popups
+add_action('wp_footer', 'add_popup_scripts_and_styles');
+function add_popup_scripts_and_styles() {
+    if (!is_cart()) return;
+    ?>
+    <style>
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .popup-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        position: relative;
+        animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+        from { transform: scale(0.7); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #999;
+    }
+    .btn-primary, .btn-secondary {
+        padding: 12px 24px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .btn-primary {
+        background: #e74c3c;
+        color: white;
+    }
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+    .offer-details {
+        text-align: left;
+        margin: 20px 0;
+    }
+    .main-offer {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .discount-badge {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+    }
+    .urgency-timer {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 15px;
+    }
+    .urgency-timer p {
+        margin: 0 0 10px 0;
+        color: #856404;
+        font-weight: bold;
+    }
+    #countdown-timer {
+        font-size: 24px;
+        font-weight: bold;
+        color: #dc3545;
+        font-family: 'Courier New', monospace;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    .bonus-offer {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #27ae60;
+    }
+    .bonus-offer p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    .returning-offer {
+        background: #f0f8ff;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+    .returning-offer p {
+        margin: 8px 0;
+        font-size: 14px;
+    }
+    .btn-primary:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+        background: #7f8c8d;
+        transition: all 0.3s ease;
+    }
+    @media (max-width: 768px) {
+        .popup-content {
+            margin: 20px;
+            padding: 20px;
+            max-width: calc(100% - 40px);
+        }
+    }
+    </style>
 
+    <script>
+    jQuery(document).ready(function($) {
+        // Helper function για ανάγνωση cookies
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
 
+        // Έλεγχος αν πρέπει να εμφανιστεί popup (από session)
+        <?php if (WC()->session && WC()->session->get('show_discount_popup')): ?>
+            setTimeout(function() {
+                // Εμφάνιση του κατάλληλου popup
+                if ($('#discount-popup').length) {
+                    $('#discount-popup').fadeIn();
+                    startCountdown();
+                } else if ($('#returning-customer-popup').length) {
+                    $('#returning-customer-popup').fadeIn();
+                }
+            }, 1000);
+            
+            // Καθαρισμός flag από session
+            <?php WC()->session->set('show_discount_popup', false); ?>
+        <?php endif; ?>
+        
+        // Countdown timer function
+        function startCountdown() {
+            var timeLeft = 15 * 60; // 15 λεπτά σε δευτερόλεπτα
+            
+            var countdownInterval = setInterval(function() {
+                var minutes = Math.floor(timeLeft / 60);
+                var seconds = timeLeft % 60;
+                
+                // Προσθήκη leading zero
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                
+                $('#minutes').text(minutes);
+                $('#seconds').text(seconds);
+                
+                timeLeft--;
+                
+                // Όταν τελειώσει ο χρόνος
+                if (timeLeft < 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Αφαίρεση του κουπονιού αν υπάρχει στο καλάθι
+                    $.ajax({
+                        url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                        type: 'POST',
+                        data: {
+                            action: 'expire_discount_coupon',
+                            nonce: '<?php echo wp_create_nonce("expire_coupon_nonce"); ?>'
+                        },
+                        success: function(response) {
+                            $('#discount-popup').fadeOut();
+                            
+                            // Έληξε για ΠΡΩΤΗ φορά - δεύτερη ευκαιρία σε 24 ώρες
+                            if (!getCookie('discount_expired_once')) {
+                                document.cookie = "discount_popup_shown=1; path=/; max-age=86400"; // 24 ώρες
+                                document.cookie = "discount_expired_once=1; path=/; max-age=31536000"; // Μαρκάρισμα ότι έληξε μια φορά
+                                alert('⏰ Ο χρόνος για την έκπτωση έληξε! Το κουπόνι αφαιρέθηκε από το καλάθι σου. Θα έχεις μια ακόμα ευκαιρία αύριο!');
+                            } else {
+                                // Έληξε για ΔΕΥΤΕΡΗ φορά - ΠΟΤΕ ξανά
+                                document.cookie = "discount_expired_twice=1; path=/; max-age=31536000"; // 1 χρόνος
+                                alert('⏰ Ο χρόνος για την έκπτωση έληξε οριστικά! Το κουπόνι αφαιρέθηκε από το καλάθι σου.');
+                            }
+                            
+                            if (response.success && response.data.removed) {
+                                location.reload();
+                            }
+                        }
+                    });
+                }
+                
+                // Χρωματισμός για urgency (τελευταία 2 λεπτά)
+                if (timeLeft <= 120) {
+                    $('#countdown-timer').css('color', '#dc3545');
+                    $('.urgency-timer').css('animation', 'pulse 1s infinite');
+                }
+            }, 1000);
+        }
+
+        // Κλείσιμο popup νέων πελατών (ΔΕΝ ΘΕΛΕΙ ΕΚΠΤΩΣΗ)
+        $(document).on('click', '#discount-popup .popup-close, #close-popup-btn', function() {
+            $('#discount-popup').fadeOut();
+            
+            // Έλεγχος αν είναι πρώτη φορά που λέει "όχι"
+            if (!getCookie('discount_declined_once')) {
+                // ΠΡΩΤΗ φορά "όχι" - δεύτερη ευκαιρία σε 5 μέρες
+                document.cookie = "discount_popup_shown=1; path=/; max-age=432000"; // 5 μέρες (5 * 24 * 60 * 60)
+                document.cookie = "discount_declined_once=1; path=/; max-age=31536000"; // Μαρκάρισμα ότι είπε όχι μια φορά
+            } else {
+                // ΔΕΥΤΕΡΗ φορά "όχι" - ΠΟΤΕ ξανά
+                document.cookie = "discount_declined_twice=1; path=/; max-age=31536000"; // 1 χρόνος
+            }
+        });
+
+        // Κλείσιμο popup επιστρεφόντων πελατών
+        $(document).on('click', '#returning-customer-popup .popup-close', function() {
+            $('#returning-customer-popup').fadeOut();
+            document.cookie = "returning_popup_shown=1; path=/; max-age=2592000"; // 30 μέρες
+        });
+
+        // Εφαρμογή έκπτωσης νέων πελατών
+        $(document).on('click', '#apply-discount-btn', function() {
+            $(this).text('Εφαρμόζεται...');
+            
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'apply_auto_discount',
+                    nonce: '<?php echo wp_create_nonce("auto_discount_nonce"); ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#discount-popup').fadeOut();
+                        // ΠΗΡΕ ΤΗΝ ΕΚΠΤΩΣΗ - ΠΟΤΕ ξανά popup
+                        document.cookie = "discount_taken_forever=1; path=/; max-age=31536000"; // 1 χρόνος
+                        location.reload();
+                    } else {
+                        alert('Σφάλμα: ' + (response.data || 'Άγνωστο σφάλμα'));
+                        $('#apply-discount-btn').text('Θέλω το -20%');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Σφάλμα σύνδεσης: ' + error);
+                    $('#apply-discount-btn').text('Θέλω το -20%');
+                }
+            });
+        });
+
+        // Εφαρμογή έκπτωσης επιστρεφόντων πελατών
+        $(document).on('click', '#apply-returning-discount-btn', function() {
+            $(this).text('Εφαρμόζεται...');
+            
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'apply_returning_discount',
+                    nonce: '<?php echo wp_create_nonce("returning_discount_nonce"); ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#returning-customer-popup').fadeOut();
+                        document.cookie = "returning_popup_shown=1; path=/; max-age=2592000";
+                        location.reload();
+                    } else {
+                        alert('Σφάλμα: ' + (response.data || 'Άγνωστο σφάλμα'));
+                        $('#apply-returning-discount-btn').text('Εφαρμογή Έκπτωσης');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Σφάλμα σύνδεσης: ' + error);
+                    $('#apply-returning-discount-btn').text('Εφαρμογή Έκπτωσης');
+                }
+            });
+        });
+    });
+    </script>
+    <?php
+}
+
+// 5. AJAX handler για εφαρμογή έκπτωσης νέων πελατών
+add_action('wp_ajax_apply_auto_discount', 'handle_auto_discount');
+add_action('wp_ajax_nopriv_apply_auto_discount', 'handle_auto_discount');
+
+function handle_auto_discount() {
+    if (!wp_verify_nonce($_POST['nonce'], 'auto_discount_nonce')) {
+        wp_send_json_error('Μη έγκυρο αίτημα');
+        return;
+    }
+
+    if (!WC()->cart || WC()->cart->is_empty()) {
+        wp_send_json_error('Το καλάθι είναι άδειο');
+        return;
+    }
+
+    $coupon_code = 'AUTO20_' . time() . '_' . wp_rand(100, 999);
+    
+    try {
+        $coupon = new WC_Coupon();
+        $coupon->set_code($coupon_code);
+        $coupon->set_discount_type('percent');
+        $coupon->set_amount(20);
+        $coupon->set_individual_use(true);
+        $coupon->set_usage_limit(1);
+        $coupon->set_usage_limit_per_user(1);
+        $coupon->set_date_expires(time() + (15 * 60)); // Λήγει σε 15 λεπτά
+        $coupon->set_description('Αυτόματη έκπτωση 20% - Λήγει σε 15 λεπτά');
+        
+        $coupon_id = $coupon->save();
+        
+        if ($coupon_id) {
+            $result = WC()->cart->apply_coupon($coupon_code);
+            
+            if ($result) {
+                WC()->session->set('auto_discount_applied', $coupon_code);
+                
+                wp_send_json_success(array(
+                    'message' => 'Η έκπτωση εφαρμόστηκε επιτυχώς!',
+                    'coupon_code' => $coupon_code
+                ));
+            } else {
+                wp_send_json_error('Αποτυχία εφαρμογής κουπονιού στο καλάθι');
+            }
+        } else {
+            wp_send_json_error('Αποτυχία δημιουργίας κουπονιού');
+        }
+    } catch (Exception $e) {
+        wp_send_json_error('Σφάλμα: ' . $e->getMessage());
+    }
+}
+
+// 6. AJAX handler για επιστρέφοντες πελάτες
+add_action('wp_ajax_apply_returning_discount', 'handle_returning_discount');
+add_action('wp_ajax_nopriv_apply_returning_discount', 'handle_returning_discount');
+
+function handle_returning_discount() {
+    if (!wp_verify_nonce($_POST['nonce'], 'returning_discount_nonce')) {
+        wp_send_json_error('Μη έγκυρο αίτημα');
+        return;
+    }
+
+    if (!WC()->cart || WC()->cart->is_empty()) {
+        wp_send_json_error('Το καλάθι είναι άδειο');
+        return;
+    }
+
+    $coupon_code = 'RETURN10_' . time() . '_' . wp_rand(100, 999);
+    
+    try {
+        $coupon = new WC_Coupon();
+        $coupon->set_code($coupon_code);
+        $coupon->set_discount_type('percent');
+        $coupon->set_amount(10);
+        $coupon->set_individual_use(true);
+        $coupon->set_usage_limit(1);
+        $coupon->set_usage_limit_per_user(1);
+        $coupon->set_date_expires(time() + (48 * 60 * 60)); // 48 ώρες
+        $coupon->set_description('Έκπτωση 10% για επιστρέφοντες πελάτες');
+        
+        $coupon_id = $coupon->save();
+        
+        if ($coupon_id) {
+            $result = WC()->cart->apply_coupon($coupon_code);
+            
+            if ($result) {
+                WC()->session->set('returning_discount_applied', $coupon_code);
+                
+                wp_send_json_success(array(
+                    'message' => 'Η έκπτωση 10% εφαρμόστηκε!',
+                    'coupon_code' => $coupon_code
+                ));
+            } else {
+                wp_send_json_error('Αποτυχία εφαρμογής κουπονιού στο καλάθι');
+            }
+        } else {
+            wp_send_json_error('Αποτυχία δημιουργίας κουπονιού');
+        }
+    } catch (Exception $e) {
+        wp_send_json_error('Σφάλμα: ' . $e->getMessage());
+    }
+}
+
+// 7. AJAX handler για λήξη κουπονιού
+add_action('wp_ajax_expire_discount_coupon', 'handle_expire_discount_coupon');
+add_action('wp_ajax_nopriv_expire_discount_coupon', 'handle_expire_discount_coupon');
+
+function handle_expire_discount_coupon() {
+    if (!wp_verify_nonce($_POST['nonce'], 'expire_coupon_nonce')) {
+        wp_send_json_error('Μη έγκυρο αίτημα');
+        return;
+    }
+
+    $removed = false;
+    
+    if (WC()->cart && !WC()->cart->is_empty()) {
+        $applied_coupons = WC()->cart->get_applied_coupons();
+        
+        foreach ($applied_coupons as $coupon_code) {
+            if (strpos($coupon_code, 'AUTO20_') === 0) {
+                WC()->cart->remove_coupon($coupon_code);
+                $removed = true;
+            }
+        }
+        
+        if ($removed) {
+            WC()->cart->calculate_totals();
+        }
+    }
+    
+    wp_send_json_success(array(
+        'message' => $removed ? 'Το κουπόνι αφαιρέθηκε' : 'Δεν βρέθηκε κουπόνι',
+        'removed' => $removed
+    ));
+}
+
+// 8. Ορισμός flag όταν προστίθεται προϊόν στο καλάθι
+add_action('woocommerce_add_to_cart', 'set_popup_flag');
+function set_popup_flag() {
+    WC()->session->set('show_discount_popup', true);
+}
+
+// 9. Ορισμός cookie όταν ολοκληρώνεται παραγγελία
+add_action('woocommerce_thankyou', 'set_purchase_cookie');
+function set_purchase_cookie($order_id) {
+    setcookie('has_purchased', '1', time() + (365 * 24 * 60 * 60), '/');
+}
+
+// 10. Τροποποίηση εμφάνισης κουπονιού στο cart/checkout
+add_filter('woocommerce_cart_totals_coupon_label', 'custom_coupon_label', 10, 2);
+function custom_coupon_label($label, $coupon) {
+    if (strpos($coupon->get_code(), 'AUTO20_') === 0) {
+        return 'WELCOME20 - Έκπτωση 20%';
+    } elseif (strpos($coupon->get_code(), 'RETURN10_') === 0) {
+        return 'Έκπτωση 10% (Πιστός πελάτης)';
+    }
+    return $label;
+}
+
+// 11. Τροποποίηση της εμφάνισης στον πίνακα κουπονιών
+add_filter('woocommerce_cart_totals_coupon_html', 'custom_coupon_html', 10, 3);
+function custom_coupon_html($coupon_html, $coupon, $discount_amount_html) {
+    $code = $coupon->get_code();
+    
+    if (strpos($code, 'AUTO20_') === 0) {
+        $custom_html = 'WELCOME20 - Έκπτωση 20% <span style="color: #27ae60; font-weight: bold;">' . $discount_amount_html . '</span>';
+        $custom_html .= ' <a href="' . esc_url(add_query_arg('remove_coupon', urlencode($code), wc_get_cart_url())) . '" class="woocommerce-remove-coupon" data-coupon="' . esc_attr($code) . '">Αφαίρεση</a>';
+        return $custom_html;
+    } elseif (strpos($code, 'RETURN10_') === 0) {
+        $custom_html = 'Έκπτωση 10% <span style="color: #3498db; font-weight: bold;">' . $discount_amount_html . '</span>';
+        $custom_html .= ' <a href="' . esc_url(add_query_arg('remove_coupon', urlencode($code), wc_get_cart_url())) . '" class="woocommerce-remove-coupon" data-coupon="' . esc_attr($code) . '">Αφαίρεση</a>';
+        return $custom_html;
+    }
+    
+    return $coupon_html;
+}
+
+// 12. Καθαρισμός ληγμένων κουπονιών
+add_action('wp_scheduled_delete', 'cleanup_expired_auto_coupons');
+function cleanup_expired_auto_coupons() {
+    global $wpdb;
+    
+    $expired_coupons = $wpdb->get_results("
+        SELECT ID FROM {$wpdb->posts} 
+        WHERE post_type = 'shop_coupon' 
+        AND (post_title LIKE 'AUTO20_%' OR post_title LIKE 'RETURN10_%')
+        AND post_date < DATE_SUB(NOW(), INTERVAL 7 DAY)
+    ");
+    
+    foreach ($expired_coupons as $coupon) {
+        wp_delete_post($coupon->ID, true);
+    }
+}
+?>
