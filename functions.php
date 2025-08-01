@@ -1,6 +1,8 @@
 <?php
 
 require_once (get_template_directory() . '/inc/details-product.php');
+require_once (get_template_directory() . '/popup-builder/popup-builder.php');
+
 
 // Load all required files
 $required_files = [
