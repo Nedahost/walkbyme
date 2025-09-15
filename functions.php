@@ -483,3 +483,4 @@ function add_promotional_banner() {
     </script>
     <?php
 }
+
