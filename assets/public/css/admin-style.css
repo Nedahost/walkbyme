@@ -1,0 +1,33 @@
+#product-image-container {
+    position: relative;
+}
+#product-image {
+    display: block;
+}
+.product-image-point {
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    cursor: grab;
+    transform: translate(-50%, -50%);
+}
+.product-image-point:active {
+    cursor: grabbing;
+}
+.point-number {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    color: #333;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    pointer-events: none;
+}

@@ -484,3 +484,575 @@ function add_promotional_banner() {
     <?php
 }
 
+
+
+
+
+
+
+
+
+
+// Εμφάνιση των image points στο frontend
+function display_product_image_points() {
+    global $product;
+    
+    if (!$product) return;
+    
+    $image_points = get_post_meta($product->get_id(), 'image_points', true);
+    
+    if (empty($image_points)) return;
+    
+    ?>
+    <style>
+    .woocommerce-product-gallery__wrapper,
+    .woocommerce-product-gallery__image {
+        position: relative !important;
+    }
+    .frontend-image-point {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background-color: red;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        z-index: 9999 !important;
+        pointer-events: auto;
+        box-shadow: 0 0 0 3px white, 0 0 10px rgba(0,0,0,0.3);
+    }
+    #frontend-image-points {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9998 !important;
+    }
+    .point-tooltip {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 10000;
+        opacity: 0;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .point-tooltip:after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.9);
+    }
+    .frontend-image-point:hover .point-tooltip {
+        opacity: 1;
+    }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Περίμενε για το WooCommerce gallery
+        setTimeout(function() {
+            addImagePoints();
+        }, 1000);
+        
+        function addImagePoints() {
+            // Δοκίμασε διάφορους selectors για να βρεις την κύρια εικόνα
+            var productImage = document.querySelector('.woocommerce-product-gallery__image img') ||
+                              document.querySelector('.product-image img') ||
+                              document.querySelector('.woocommerce-product-gallery img');
+            
+            if (!productImage) {
+                console.log('Image not found, trying again...');
+                setTimeout(addImagePoints, 500);
+                return;
+            }
+            
+            var imagePoints = <?php echo json_encode($image_points); ?>;
+            
+            // Βρες το σωστό container - το πρώτο div που περιέχει την εικόνα
+            var imageContainer = productImage.closest('.woocommerce-product-gallery__image') ||
+                                productImage.closest('.product-image') ||
+                                productImage.parentElement;
+            
+            if (!imageContainer) {
+                console.log('Container not found');
+                return;
+            }
+            
+            // Βεβαιώσου ότι το container είναι relative
+            imageContainer.style.position = 'relative';
+            
+            // Αφαίρεσε παλιά points αν υπάρχουν
+            var oldPoints = imageContainer.querySelector('#frontend-image-points');
+            if (oldPoints) {
+                oldPoints.remove();
+            }
+            
+            // Δημιούργησε container για τα points που να ταιριάζει ακριβώς με την εικόνα
+            var pointsContainer = document.createElement('div');
+            pointsContainer.id = 'frontend-image-points';
+            
+            // Κάνε το container να έχει το ίδιο μέγεθος με την εικόνα
+            pointsContainer.style.width = productImage.offsetWidth + 'px';
+            pointsContainer.style.height = productImage.offsetHeight + 'px';
+            
+            imageContainer.appendChild(pointsContainer);
+            
+            console.log('Image dimensions:', productImage.offsetWidth, 'x', productImage.offsetHeight);
+            console.log('Container:', imageContainer);
+            console.log('Image points:', imagePoints);
+            
+            // Πρόσθεσε κάθε σημείο
+            imagePoints.forEach(function(point, index) {
+                var pointEl = document.createElement('div');
+                pointEl.className = 'frontend-image-point';
+                pointEl.style.left = point.x + '%';
+                pointEl.style.top = point.y + '%';
+                
+                // Απενεργοποίηση zoom όταν περνάς από πάνω από το point
+                pointEl.addEventListener('mouseenter', function(e) {
+                    e.stopPropagation();
+                    // Απενεργοποίηση zoom
+                    var img = productImage;
+                    if (img && img.classList) {
+                        img.style.pointerEvents = 'none';
+                    }
+                });
+                
+                pointEl.addEventListener('mouseleave', function(e) {
+                    // Επανενεργοποίηση zoom
+                    var img = productImage;
+                    if (img && img.classList) {
+                        setTimeout(function() {
+                            img.style.pointerEvents = '';
+                        }, 100);
+                    }
+                });
+                
+                // Αποτροπή zoom click
+                pointEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                
+                // Custom Tooltip με το κείμενο
+                if (point.text && point.text.trim() !== '') {
+                    var tooltip = document.createElement('div');
+                    tooltip.className = 'point-tooltip';
+                    tooltip.textContent = point.text;
+                    pointEl.appendChild(tooltip);
+                }
+                
+                console.log('Point ' + (index + 1) + ' at:', point.x.toFixed(2) + '%, ' + point.y.toFixed(2) + '%', '- text:', point.text);
+                
+                pointsContainer.appendChild(pointEl);
+            });
+        }
+        
+        // Ξανά-τοποθέτησε τα points αν αλλάξει το μέγεθος
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                addImagePoints();
+            }, 250);
+        });
+        
+        // Παρακολούθησε αν αλλάξει η εικόνα (για galleries με πολλές εικόνες)
+        var observer = new MutationObserver(function() {
+            setTimeout(addImagePoints, 300);
+        });
+        
+        var gallery = document.querySelector('.woocommerce-product-gallery');
+        if (gallery) {
+            observer.observe(gallery, { 
+                childList: true, 
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+    });
+    </script>
+    <?php
+}
+add_action('woocommerce_before_single_product', 'display_product_image_points');
+
+
+
+
+
+
+//image point 
+function add_custom_image_point_meta_box() {
+    add_meta_box(
+        'custom_image_point_meta_box',
+        __('Image Points', 'woocommerce'),
+        'display_custom_image_point_meta_box',
+        'product',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_custom_image_point_meta_box');
+
+function display_custom_image_point_meta_box($post) {
+    $image_points = get_post_meta($post->ID, 'image_points', true);
+    $image_src = has_post_thumbnail($post->ID) ? wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'full') : '';
+
+    // Print Product Image
+    if ($image_src) {
+        echo '<div id="product-image-container" style="position: relative; width: 800px; height: 800px; overflow: hidden;">'; 
+        echo '<img id="product-image" src="' . esc_url($image_src[0]) . '" alt="' . esc_attr(get_the_title($post->ID)) . '" style="width: 100%; height: auto;" />';
+        
+        // Print Image Points
+        echo '<div id="product-image-points">';
+        if (!empty($image_points)) {
+            foreach ($image_points as $index => $point) {
+                echo '<div class="product-image-point" data-index="' . $index . '" data-text="' . esc_attr($point['text']) . '" style="position: absolute; left: ' . $point['x'] . '%; top: ' . $point['y'] . '%;"></div>';
+            }
+        }
+        echo '</div></div>';
+    }
+    
+    // Print Form Fields
+    echo '<p><label for="image_point_x">' . __('Image Point X Coordinate (%):', 'woocommerce') . '</label>';
+    echo '<input type="text" id="image_point_x" name="image_point_x" value="" /></p>';
+    echo '<p><label for="image_point_y">' . __('Image Point Y Coordinate (%):', 'woocommerce') . '</label>';
+    echo '<input type="text" id="image_point_y" name="image_point_y" value="" /></p>';
+    echo '<p><label for="image_point_text">' . __('Additional Text:', 'woocommerce') . '</label>  <br />';
+    echo '<textarea id="image_point_text" name="image_point_text"></textarea></p>';
+
+    echo '<input type="hidden" id="points_data" name="points_data" value="" />';
+    echo '<input type="hidden" id="editing_index" name="editing_index" value="" />';
+    echo '<button type="button" id="add-point-btn">' . __('Add Point', 'woocommerce') . '</button>';
+    echo '<button type="button" id="update-point-btn" style="display:none;">' . __('Update Point', 'woocommerce') . '</button>';
+    echo '<button type="button" id="cancel-edit-btn" style="display:none;">' . __('Cancel', 'woocommerce') . '</button>';
+
+    // Print Coordinates List
+    echo '<p><strong>' . __('Coordinates of Selected Points:', 'woocommerce') . '</strong></p>';
+    echo '<ul id="points-list" style="list-style: none; padding: 0;">';
+    if (!empty($image_points)) {
+        foreach ($image_points as $index => $point) {
+            echo '<li data-index="' . $index . '" style="margin-bottom: 10px; padding: 10px; background: #f5f5f5; border-radius: 4px;">';
+            echo '<span>X: ' . number_format($point['x'], 2) . '%, Y: ' . number_format($point['y'], 2) . '%, text: ' . esc_html($point['text']) . '</span> ';
+            echo '<button type="button" class="edit-point-list-btn" data-index="' . $index . '" style="margin-left: 10px;">Edit</button> ';
+            echo '<button type="button" class="delete-point-list-btn" data-index="' . $index . '" style="margin-left: 5px;">Delete</button>';
+            echo '</li>';
+        }
+    }
+    echo '</ul>';
+
+    // JavaScript
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var imagePointXInput = document.getElementById('image_point_x');
+        var imagePointYInput = document.getElementById('image_point_y');
+        var imagePointTextInput = document.getElementById('image_point_text');
+        var pointsDataInput = document.getElementById('points_data');
+        var editingIndexInput = document.getElementById('editing_index');
+        var addPointBtn = document.getElementById('add-point-btn');
+        var updatePointBtn = document.getElementById('update-point-btn');
+        var cancelEditBtn = document.getElementById('cancel-edit-btn');
+        var productImage = document.getElementById('product-image');
+        var productImagePoints = document.getElementById('product-image-points');
+        var pointsList = document.getElementById('points-list');
+        
+        var allPoints = [];
+        var isDragging = false;
+        var currentDragPoint = null;
+        var isEditMode = false;
+
+        // Φόρτωση υπαρχόντων σημείων
+        document.querySelectorAll('.product-image-point').forEach(function(point) {
+            var index = parseInt(point.getAttribute('data-index'));
+            var x = parseFloat(point.style.left);
+            var y = parseFloat(point.style.top);
+            var text = point.getAttribute('data-text');
+            allPoints[index] = { x: x, y: y, text: text };
+        });
+
+        // Drag & Drop functionality
+        function makeDraggable(point) {
+            point.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                currentDragPoint = point;
+                point.style.cursor = 'grabbing';
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging && currentDragPoint) {
+                var container = productImage.getBoundingClientRect();
+                var x = e.clientX - container.left;
+                var y = e.clientY - container.top;
+                
+                var imageWidth = productImage.offsetWidth;
+                var imageHeight = productImage.offsetHeight;
+                
+                var xPercent = (x / imageWidth) * 100;
+                var yPercent = (y / imageHeight) * 100;
+                
+                // Περιορισμός εντός ορίων
+                xPercent = Math.max(0, Math.min(100, xPercent));
+                yPercent = Math.max(0, Math.min(100, yPercent));
+                
+                currentDragPoint.style.left = xPercent + '%';
+                currentDragPoint.style.top = yPercent + '%';
+                
+                // Ενημέρωση στον πίνακα
+                var index = parseInt(currentDragPoint.getAttribute('data-index'));
+                if (allPoints[index]) {
+                    allPoints[index].x = xPercent;
+                    allPoints[index].y = yPercent;
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isDragging && currentDragPoint) {
+                currentDragPoint.style.cursor = 'grab';
+                isDragging = false;
+                currentDragPoint = null;
+                updatePointsList();
+            }
+        });
+
+        // Κάνε όλα τα υπάρχοντα σημεία draggable
+        document.querySelectorAll('.product-image-point').forEach(makeDraggable);
+
+        // Add Click Event to Product Image - μόνο αν δεν κάνουμε drag
+        productImage.addEventListener('click', function(event) {
+            if (isEditMode || isDragging) return;
+            
+            var imageWidth = this.offsetWidth;
+            var imageHeight = this.offsetHeight;
+            
+            var xPercent = (event.offsetX / imageWidth) * 100;
+            var yPercent = (event.offsetY / imageHeight) * 100;
+            
+            // Δημιουργία νέου σημείου
+            var newIndex = allPoints.length;
+            var point = document.createElement('div');
+            point.className = 'product-image-point';
+            point.setAttribute('data-index', newIndex);
+            point.setAttribute('data-text', '');
+            point.style.left = xPercent + '%';
+            point.style.top = yPercent + '%';
+            point.style.cursor = 'grab';
+            
+            var pointNumber = document.createElement('span');
+            pointNumber.className = 'point-number';
+            pointNumber.textContent = (newIndex + 1) + '.';
+            point.appendChild(pointNumber);
+            
+            productImagePoints.appendChild(point);
+            makeDraggable(point);
+            
+            allPoints.push({ x: xPercent, y: yPercent, text: '' });
+            
+            imagePointXInput.value = xPercent.toFixed(2);
+            imagePointYInput.value = yPercent.toFixed(2);
+            
+            updatePointsList();
+        });
+
+        // Add Point Button
+        addPointBtn.addEventListener('click', function() {
+            var xValue = parseFloat(imagePointXInput.value);
+            var yValue = parseFloat(imagePointYInput.value);
+            var textValue = imagePointTextInput.value;
+            
+            if (!isNaN(xValue) && !isNaN(yValue)) {
+                var newIndex = allPoints.length;
+                var point = document.createElement('div');
+                point.className = 'product-image-point';
+                point.setAttribute('data-index', newIndex);
+                point.setAttribute('data-text', textValue);
+                point.style.left = xValue + '%';
+                point.style.top = yValue + '%';
+                point.style.cursor = 'grab';
+                
+                var pointNumber = document.createElement('span');
+                pointNumber.className = 'point-number';
+                pointNumber.textContent = (newIndex + 1) + '.';
+                point.appendChild(pointNumber);
+                
+                productImagePoints.appendChild(point);
+                makeDraggable(point);
+                
+                allPoints.push({ x: xValue, y: yValue, text: textValue });
+                
+                imagePointXInput.value = '';
+                imagePointYInput.value = '';
+                imagePointTextInput.value = '';
+                
+                updatePointsList();
+            }
+        });
+
+        // Edit Point από τη λίστα
+        pointsList.addEventListener('click', function(event) {
+            if (event.target && event.target.classList.contains('edit-point-list-btn')) {
+                var index = parseInt(event.target.getAttribute('data-index'));
+                var pointData = allPoints[index];
+                
+                if (pointData) {
+                    imagePointXInput.value = pointData.x.toFixed(2);
+                    imagePointYInput.value = pointData.y.toFixed(2);
+                    imagePointTextInput.value = pointData.text;
+                    editingIndexInput.value = index;
+                    
+                    isEditMode = true;
+                    addPointBtn.style.display = 'none';
+                    updatePointBtn.style.display = 'inline-block';
+                    cancelEditBtn.style.display = 'inline-block';
+                    
+                    // Highlight το σημείο
+                    var point = document.querySelector('.product-image-point[data-index="' + index + '"]');
+                    if (point) {
+                        point.style.backgroundColor = 'blue';
+                    }
+                }
+            }
+            
+            // Delete Point από τη λίστα
+            if (event.target && event.target.classList.contains('delete-point-list-btn')) {
+                var index = parseInt(event.target.getAttribute('data-index'));
+                
+                var point = document.querySelector('.product-image-point[data-index="' + index + '"]');
+                if (point) {
+                    point.remove();
+                }
+                
+                delete allPoints[index];
+                updatePointsList();
+            }
+        });
+
+        // Update Point Button
+        updatePointBtn.addEventListener('click', function() {
+            var index = parseInt(editingIndexInput.value);
+            var xValue = parseFloat(imagePointXInput.value);
+            var yValue = parseFloat(imagePointYInput.value);
+            var textValue = imagePointTextInput.value;
+            
+            if (!isNaN(index) && !isNaN(xValue) && !isNaN(yValue)) {
+                allPoints[index] = { x: xValue, y: yValue, text: textValue };
+                
+                var point = document.querySelector('.product-image-point[data-index="' + index + '"]');
+                if (point) {
+                    point.style.left = xValue + '%';
+                    point.style.top = yValue + '%';
+                    point.setAttribute('data-text', textValue);
+                    point.style.backgroundColor = '';
+                }
+                
+                cancelEdit();
+                updatePointsList();
+            }
+        });
+
+        // Cancel Edit Button
+        cancelEditBtn.addEventListener('click', function() {
+            cancelEdit();
+        });
+
+        function cancelEdit() {
+            imagePointXInput.value = '';
+            imagePointYInput.value = '';
+            imagePointTextInput.value = '';
+            editingIndexInput.value = '';
+            
+            isEditMode = false;
+            addPointBtn.style.display = 'inline-block';
+            updatePointBtn.style.display = 'none';
+            cancelEditBtn.style.display = 'none';
+            
+            // Αφαίρεση highlight από όλα τα σημεία
+            document.querySelectorAll('.product-image-point').forEach(function(p) {
+                p.style.backgroundColor = '';
+            });
+        }
+
+        function updatePointsList() {
+            pointsList.innerHTML = '';
+            allPoints.forEach(function(point, index) {
+                if (point) {
+                    var li = document.createElement('li');
+                    li.setAttribute('data-index', index);
+                    li.style.marginBottom = '10px';
+                    li.style.padding = '10px';
+                    li.style.background = '#f5f5f5';
+                    li.style.borderRadius = '4px';
+                    
+                    var span = document.createElement('span');
+                    span.textContent = 'X: ' + point.x.toFixed(2) + '%, Y: ' + point.y.toFixed(2) + '%, text: ' + point.text;
+                    
+                    var editBtn = document.createElement('button');
+                    editBtn.type = 'button';
+                    editBtn.className = 'edit-point-list-btn';
+                    editBtn.setAttribute('data-index', index);
+                    editBtn.textContent = 'Edit';
+                    editBtn.style.marginLeft = '10px';
+                    
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.type = 'button';
+                    deleteBtn.className = 'delete-point-list-btn';
+                    deleteBtn.setAttribute('data-index', index);
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.style.marginLeft = '5px';
+                    
+                    li.appendChild(span);
+                    li.appendChild(editBtn);
+                    li.appendChild(deleteBtn);
+                    pointsList.appendChild(li);
+                }
+            });
+        }
+
+        // Πριν το submit, αποθήκευσε όλα τα σημεία
+        var form = document.querySelector('#post');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                var validPoints = allPoints.filter(function(p) { return p !== undefined; });
+                pointsDataInput.value = JSON.stringify(validPoints);
+            });
+        }
+    });
+    </script>
+    <?php
+}
+
+function save_custom_image_point_meta_box($post_id) {
+    if (isset($_POST['points_data']) && !empty($_POST['points_data'])) {
+        $points_data = json_decode(stripslashes($_POST['points_data']), true);
+        
+        if (is_array($points_data)) {
+            $image_points = [];
+            foreach ($points_data as $point) {
+                $image_points[] = [
+                    'x' => floatval($point['x']),
+                    'y' => floatval($point['y']),
+                    'text' => sanitize_text_field($point['text']),
+                ];
+            }
+            update_post_meta($post_id, 'image_points', $image_points);
+        }
+    }
+}
+add_action('save_post_product', 'save_custom_image_point_meta_box');
+?>

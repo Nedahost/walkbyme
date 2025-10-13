@@ -24,10 +24,18 @@ function walkbyme_load_css() {
         array(),
         '6.4.0'
     );
+
+    
     
 
 }
 add_action('wp_enqueue_scripts', 'walkbyme_load_css');
+
+
+function custom_admin_styles() {
+    wp_enqueue_style( 'custom-admin-style', get_template_directory_uri() . '/assets/public/css/admin-style.css' ); // Αντικατέστεσε το 'admin-style.css' με το όνομα του αρχείου CSS που θέλεις να χρησιμοποιήσεις
+}
+add_action( 'admin_enqueue_scripts', 'custom_admin_styles' );
 
 // Enhanced JS Loading with proper dependencies and optimization
 function walkbyme_load_js() {
