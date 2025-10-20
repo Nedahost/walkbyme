@@ -16,9 +16,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
     
-
-    
-
     <?php wp_head(); ?>
 </head>
 
@@ -81,29 +78,30 @@
                         </li>
                     <?php } ?>
                     <li>
-                    <div class="search-container">
-                        <div class="search-trigger">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <div class="search-overlay">
-                            <div class="search-overlay-content">
-                                <div class="close-search">×</div>
-                                <form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url(home_url('/')); ?>">
-                                    <input type="search" 
-                                        class="search-field" 
-                                        placeholder="Αναζήτηση προϊόντων..." 
-                                        value="<?php echo get_search_query(); ?>" 
-                                        name="s" 
-                                        autocomplete="off" />
-                                    <input type="hidden" name="post_type" value="product" />
-                                </form>
+                        <div class="search-container">
+                            <div class="search-trigger">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="search-overlay">
+                                <div class="search-overlay-content">
+                                    <div class="close-search">×</div>
+                                    <form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url(home_url('/')); ?>">
+                                        <input type="search" 
+                                            class="search-field" 
+                                            placeholder="Αναζήτηση προϊόντων..." 
+                                            value="<?php echo get_search_query(); ?>" 
+                                            name="s" 
+                                            autocomplete="off" />
+                                        <input type="hidden" name="post_type" value="product" />
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </li>
                     <li class="headercart">
                         <?php if (function_exists('WC') && WC()->cart) { ?>
-                            <a class="cart-customlocation" 
+                            <a id="walkbyme-cart-trigger" 
+                               class="cart-customlocation" 
                                href="<?php echo function_exists('wc_get_cart_url') ? esc_url(wc_get_cart_url()) : '#'; ?>" 
                                title="<?php esc_attr_e('View your shopping cart', 'walkbyme'); ?>"
                                aria-label="<?php esc_attr_e('Shopping Cart', 'walkbyme'); ?>">
@@ -112,14 +110,16 @@
                                 $cart_total = WC()->cart->get_cart_total();
                                 echo wp_kses_post($cart_total . ' (' . $cart_count . ')');
                                 
-                                // Προσθήκη του κόκκινου σημαδιού
+                                // Κόκκινο σημάδι με αριθμό προϊόντων
                                 if ($cart_count > 0) {
                                     echo '<span class="cart-badge">' . $cart_count . '</span>';
                                 }
                                 ?>
                             </a>
                         <?php } else { ?>
-                            <a class="cart-customlocation" href="#" 
+                            <a id="walkbyme-cart-trigger" 
+                               class="cart-customlocation" 
+                               href="#" 
                                title="<?php esc_attr_e('Shopping Cart', 'walkbyme'); ?>">
                                <?php esc_html_e('Cart', 'walkbyme'); ?>
                             </a>
@@ -132,3 +132,4 @@
 </header>
 
 <main>
+
