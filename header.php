@@ -25,7 +25,7 @@
 <header>
     <div class="topeader"><!-- top header start -->
         <div class="wrapper"><!-- wrapper start -->
-            ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΣΕ ΟΛΗ ΤΗΝ ΕΛΛΑΔΑ | ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ΣΕ ΠΑΡΑΓΓΕΛΙΕΣ ΑΝΩ ΤΩΝ 40€
+            ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΜΕ ΑΓΟΡΕΣ ΑΝΩ ΤΩΝ 50€ | ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ΣΕ ΠΑΡΑΓΓΕΛΙΕΣ ΑΝΩ ΤΩΝ 40€
         </div><!-- wrapper end -->
     </div><!-- top header end -->
     
