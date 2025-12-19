@@ -34,19 +34,10 @@ function walkbyme_setup() {
 
     // 5. Menu Registration
     register_nav_menus(array(
-        'primary'     => __('Primary Navigation', 'walkbyme'),
-        'footermenu1' => __('Second Navigation', 'walkbyme'),
-        'footermenu2' => __('Footer Navigation', 'walkbyme')
+        'primary'     => __('Primary Navigation', 'walkbyme')
     )); 
     
-    // 6. Custom Header Support (Legacy - prefer Custom Logo if possible, but kept as requested)
-    $args = array(
-        'width'         => 300,
-        'height'        => 55,
-        'default-image' => get_template_directory_uri() . '/assets/images/walkbyme_logo_site300pxls.svg',
-        'uploads'       => true,
-    );
-    add_theme_support('custom-header', $args);
+
 }
 add_action('after_setup_theme', 'walkbyme_setup');
 
@@ -57,24 +48,13 @@ add_action('after_setup_theme', 'walkbyme_setup');
  */
 function walkbyme_widgets_init() {
     
-    // Footer Sidebars Loop
-    // Note: We keep the names exactly as you had them to preserve widget assignments
-    $footersidebars = array(
-        'Footer first',
-        'Footer second',
-        'Footer third', // Corrected typo 'three' to 'third' to match footer.php checks
-        'Footer fourth', // Corrected typo 'four' to 'fourth' to match footer.php checks
-        'Footer five'
-    );
-
-    foreach ($footersidebars as $footersidebar) {
-        // We create a slug for ID from the name (e.g., "footer-first")
-        $id_slug = sanitize_title($footersidebar);
-        
+    $footer_columns = 4; 
+    
+    for ($i = 1; $i <= $footer_columns; $i++) {
         register_sidebar(array(
-            'name'          => $footersidebar,
-            'id'            => $id_slug, // Explicit ID is better for performance
-            'description'   => __('Widget area for the footer', 'walkbyme'),
+            'name'          => sprintf(__('Footer %s', 'walkbyme'), $i), // Footer 1, Footer 2...
+            'id'            => 'footer-' . $i, // ID: footer-1
+            'description'   => sprintf(__('Widget area for footer column %s', 'walkbyme'), $i),
             'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="widgettitle">',
@@ -82,16 +62,6 @@ function walkbyme_widgets_init() {
         ));
     }
     
-    // Newsletter Sidebar
-    register_sidebar(array(
-        'name'          => 'newsletter',
-        'id'            => 'newsletter',
-        'description'   => 'Είναι η περιοχή που εμφανίζεται αριστερά στις κατηγορίες',
-        'before_widget' => '<div id="%1$s" class="module_cat %2$s">',
-        'after_widget'  => '</div>',
-        'before_title'  => '<h3 class="widgettitle">',
-        'after_title'   => '</h3>'
-    ));
 
     // Jewelry Sidebar
     register_sidebar( array(

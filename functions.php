@@ -17,6 +17,7 @@ $includes = [
     'functions/assets.php',       // Scripts and styles enqueuing
     
     // Functionality
+    'inc/cart-slide.php',
     'inc/details-product.php',          // Product specific details
     'popup-builder/popup-builder.php',  // Custom popup builder
     'functions/analytics.php',          // Analytics tracking

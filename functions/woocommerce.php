@@ -351,3 +351,24 @@ function clear_walkbyme_product_cache($post_id) {
 }
 add_action('save_post_product', 'clear_walkbyme_product_cache');
 add_action('woocommerce_product_set_visibility', 'clear_walkbyme_product_cache');
+
+
+/**
+ * Redirect Cart Page to Checkout
+ * Καταργεί τη σελίδα καλαθιού και στέλνει απευθείας στο Ταμείο.
+ */
+function walkbyme_redirect_cart_to_checkout() {
+    if ( is_cart() && WC()->cart->get_cart_contents_count() > 0 ) {
+        wp_safe_redirect( wc_get_checkout_url() );
+        exit;
+    }
+}
+add_action( 'template_redirect', 'walkbyme_redirect_cart_to_checkout' );
+
+/**
+ * Change Add to Cart URL to always open Slide Cart (optional safeguard)
+ */
+function walkbyme_change_cart_url() {
+    return wc_get_checkout_url();
+}
+add_filter( 'woocommerce_get_cart_url', 'walkbyme_change_cart_url' );

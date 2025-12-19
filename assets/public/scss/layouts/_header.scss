@@ -134,14 +134,31 @@ header {
                 
                 // Cart icon
                 .headercart {
+                    /* Cart Icon Styling */
                     a {
-                        display: inline-flex;
+                        text-decoration: none;
+                        color: #333; /* Χρώμα εικονιδίου */
+                        display: flex;
                         align-items: center;
-                        
-                        &:before {
-                            font-family: "FontAwesome";
-                            content: "\f291";
-                        }
+                    }
+
+                    .cart-icon-wrapper {
+                        position: relative;
+                        display: inline-block;
+                        line-height: 1;
+                    }
+
+                    /* Red Dot Styling */
+                    .cart-dot {
+                        position: absolute;
+                        top: -2px;      /* Ρύθμισε το ύψος */
+                        right: -3px;    /* Ρύθμισε τη θέση δεξιά */
+                        width: 8px;     /* Μέγεθος τελείας */
+                        height: 8px;
+                        background-color: #e74c3c; /* Το κόκκινο χρώμα της φωτογραφίας σου */
+                        border-radius: 50%; /* Κάνει το σχήμα κύκλο */
+                        border: 1px solid #fff; /* Λευκό περίγραμμα για να ξεχωρίζει (προαιρετικό) */
+                        pointer-events: none;
                     }
                 }
             }
