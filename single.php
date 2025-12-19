@@ -1,52 +1,74 @@
-<?php get_header(); ?>
+<?php 
+/**
+ * The template for displaying all single posts
+ */
+get_header(); 
+?>
 
-<?php if (!is_home()) { ?>
-    <div class="outerbreadcrumb">
-        <div class="wrapper">
-            <?php
-            if (function_exists('bcn_display')) {
-                bcn_display();
-            }
-            ?>
-        </div>
+<div class="outerbreadcrumb">
+    <div class="wrapper">
+        <?php
+        if ( function_exists('bcn_display') ) {
+            bcn_display();
+        }
+        ?>
     </div>
-<?php } ?>
+</div>
 
 <div class="wrapper">
     <div class="container">
         <div class="row">
-            <!-- Main content area (70%) -->
-            <div class="col-main">
-                <?php while (have_posts()) : the_post(); ?>
+            <main class="col-main">
+                <?php 
+                while ( have_posts() ) : 
+                    the_post(); 
+                ?>
                     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                        <div class="main-article"><!-- main article start -->
+                        <div class="main-article"><header class="entry-header">
+                                <h1 class="article-title"><?php the_title(); ?></h1>
+                            </header>
 
-                            <h1 class="article-title"><?php the_title(); ?></h1>
-
-                            <?php if (has_post_thumbnail()) : ?>
-                                <div class="article-image"><!-- article image start -->
-                                    <figure>
-                                        <?php the_post_thumbnail('large'); ?>
+                            <?php if ( has_post_thumbnail() ) : ?>
+                                <div class="article-image"><figure>
+                                        <?php 
+                                        the_post_thumbnail('large', array(
+                                            'loading' => 'lazy',
+                                            'class'   => 'img-responsive'
+                                        )); 
+                                        ?>
                                     </figure>
-                                </div><!-- article image start -->
-                            <?php endif; ?>
+                                </div><?php endif; ?>
 
-                            <div class="article-content"><!-- article content start -->
+                            <div class="article-content"><?php 
+                                the_content(); 
                                 
-                                <?php the_content(); ?>
-                            </div><!-- article content end -->
-                        </div><!-- main article end -->
+                                // Υποστήριξη για άρθρα χωρισμένα σε σελίδες ()
+                                wp_link_pages( array(
+                                    'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'walkbyme' ),
+                                    'after'  => '</div>',
+                                ) );
+                                ?>
+                            </div><footer class="entry-footer">
+                                <?php
+                                // Εδώ μπορείς μελλοντικά να προσθέσεις tags ή categories
+                                // edit_post_link( __('Edit', 'walkbyme'), '<span class="edit-link">', '</span>' );
+                                ?>
+                            </footer>
+                        </div><?php
+                        // Εμφάνιση σχολίων αν είναι ενεργά
+                        if ( comments_open() || get_comments_number() ) :
+                            comments_template();
+                        endif;
+                        ?>
+
                     </article>
 
-                
-
                 <?php endwhile; ?>
-            </div>
+            </main>
 
-            <!-- Sidebar (30%) -->
-            <div class="col-sidebar">
+            <aside class="col-sidebar">
                 <?php get_sidebar('jewelry'); ?>
-            </div>
+            </aside>
         </div>
     </div>
 </div>

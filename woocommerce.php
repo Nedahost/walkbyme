@@ -1,62 +1,58 @@
 <?php get_header(); ?>
+
 <?php 
-    if(is_product_category(135)){ ?>
-        <img src="<?php echo get_stylesheet_directory_uri() ?>/assets/images/headerjpg.jpg" alt=""  />
-  <?php  }
-?>
+// Έλεγχος για συγκεκριμένη κατηγορία (ID: 135)
+// Tip: Αν μπορείς, χρησιμοποίησε slug αντί για ID (π.χ. is_product_category('prosfores')) για σταθερότητα.
+if ( is_product_category(135) ) { ?>
+    <div class="category-header-banner">
+        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/headerjpg.jpg' ); ?>" 
+             alt="<?php echo esc_attr( single_term_title('', false) ); ?>" 
+             width="100%" 
+             height="auto" 
+             loading="lazy" />
+    </div>
+<?php } ?>
+
 <div class="wrapper">
-    <?php if (is_product_category()) {
-        global $wp_query;
-        // get the query object
-        $cat = $wp_query->get_queried_object();
-        // get the thumbnail id using the queried category term_id
-        $thumbnail_id = get_term_meta($cat->term_id, 'thumbnail_id', true);
-        // get the image URL
-        $image = wp_get_attachment_url($thumbnail_id);
-        // print the IMG HTML
-        // echo "<img src='{$image}' alt='' width='100%' height='auto' />";
-        // background-image:url(<?php echo $image; );
-    ?>
+    <?php if ( is_product_category() ) : ?>
         <div class="outercategories">
-            <div class="row"><!-- row start -->
-                <div class="outerpageinfo">
-                    <div class="pageinfo"><!-- page info start -->
-                        <h1 class="page-title">
+            <div class="row"><div class="outerpageinfo">
+                    <div class="pageinfo"><h1 class="page-title">
                             <?php woocommerce_page_title(); ?>
                         </h1>
 
                         <?php 
-                        $category_description = category_description();
-                        if (!empty($category_description)) {
-                            echo '<p>' . $category_description . '</p>';
+                        // Χρήση της term_description που είναι πιο συμβατή με WooCommerce
+                        $desc = term_description();
+                        if ( ! empty( $desc ) ) {
+                            echo '<div class="term-description">' . $desc . '</div>';
                         }
                         ?>
-                    </div><!-- page info end -->
-                </div>
-            </div><!-- row end -->
-        </div>
-    <?php
-    }
+                    </div></div>
+            </div></div>
+    <?php endif; ?>
 
-    /* */ ?>
-
-    <?php if (!is_home()) { ?>
-        <div class="outerbreadcrumb"><!-- outer breadcrumb start -->
-            <?php if (function_exists('bcn_display')) {
+    <?php if ( ! is_home() && ! is_front_page() ) : ?>
+        <div class="outerbreadcrumb"><?php 
+            if ( function_exists('bcn_display') ) {
                 bcn_display();
-            } ?>
-        </div><!-- outer breadcrumb end -->
-    <?php } ?>
-    <div class="woocommerce"><!-- woocommerce start -->
-        <?php
-        if (have_posts()) : if (is_singular('product')) {
+            } elseif ( function_exists('woocommerce_breadcrumb') ) {
+                // Fallback στα native breadcrumbs του Woo αν λείπει το plugin
+                woocommerce_breadcrumb();
+            }
+            ?>
+        </div><?php endif; ?>
+
+    <div class="woocommerce"><?php
+        if ( have_posts() ) : 
+            if ( is_singular('product') ) {
                 woocommerce_content();
             } else {
+                // Φόρτωση του archive template
                 woocommerce_get_template('archive-product.php');
             }
         endif;
         ?>
-    </div><!-- woocommerce end -->
-</div>
+    </div></div>
 
 <?php get_footer(); ?>
