@@ -13,6 +13,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
     
     <?php wp_head(); ?>
+
+   <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleSwitch = document.querySelector('#theme-checkbox');
+    const body = document.body;
+
+    if (!toggleSwitch) {
+        console.error('Toggle switch not found!');
+        return;
+    }
+
+    function applyTheme(isDark) {
+        if (isDark) {
+            body.classList.add('dark-mode');
+            toggleSwitch.checked = true;
+        } else {
+            body.classList.remove('dark-mode');
+            toggleSwitch.checked = false;
+        }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme) {
+        applyTheme(savedTheme === 'dark');
+    } else {
+        applyTheme(prefersDark);
+    }
+
+    // ✅ Polling fallback (για περίπτωση που το event δεν πυροδοτείται)
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    let lastPreference = darkModeMediaQuery.matches;
+    
+    // Check every 2 seconds
+    setInterval(() => {
+        const currentPreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (!localStorage.getItem('theme') && currentPreference !== lastPreference) {
+            console.log('System theme detected change via polling:', currentPreference ? 'dark' : 'light');
+            applyTheme(currentPreference);
+            lastPreference = currentPreference;
+        }
+    }, 2000);
+
+    // Event listener (primary method)
+    darkModeMediaQuery.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            console.log('System theme changed via event:', e.matches ? 'dark' : 'light');
+            applyTheme(e.matches);
+            lastPreference = e.matches;
+        }
+    });
+
+    toggleSwitch.addEventListener('change', (e) => {
+        const isDark = e.target.checked;
+        applyTheme(isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+});
+</script>
 </head>
 
 <body <?php body_class(); ?>>
@@ -130,6 +191,13 @@
                             </span>
                         </a>
                     </li>
+
+                   <li class="header-theme-toggle">
+    <label class="theme-switch" for="theme-checkbox">
+        <input type="checkbox" id="theme-checkbox" />
+        <div class="theme-slider"></div>
+    </label>
+</li>
                 </ul>
             </div>
         </div>

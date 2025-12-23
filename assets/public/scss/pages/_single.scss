@@ -90,7 +90,7 @@
               transition: color 0.3s;
               
               &:hover {
-                color: var(--clr-primary-dark, darken(#9a715b, 10%));
+                color: var(--clr-primary-dark);
               }
             }
           }
@@ -116,7 +116,7 @@
                 transition: color 0.3s;
                 
                 &:hover {
-                  color: var(--clr-primary-dark, darken(#9a715b, 10%));
+                  color: var(--clr-primary-dark );
                 }
               }
             }

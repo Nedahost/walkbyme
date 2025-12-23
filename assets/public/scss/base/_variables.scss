@@ -6,6 +6,8 @@
   --clr-white: #{a.color('white')};
   --clr-black: #{a.color('black')};
   
+  --clr-card-bg: hsl(from var(--clr-background) h s calc(l - 5%));
+
   --clr-primary: #{a.color('primary')};
   --clr-primary-light: #{a.color('primary-light')};
   --clr-primary-dark: #{a.color('primary-dark')};
@@ -189,6 +191,16 @@
   --px-40: 40px;
   --px-48: 48px;
 
+}
+
+body.dark-mode {
+  /* Αλλάζεις ΜΟΝΟ τις βασικές μεταβλητές */
+  --clr-background: #{a.color('gray-900')}; /* hsl(0, 0%, 15%) */
+  --clr-text: #{a.color('gray-100')};       /* hsl(0, 0%, 95%) */
+
+  /* ΑΥΤΟΜΑΤΑ: 
+     Η --clr-card-bg θα γίνει τώρα hsl(from 15% h s calc(l + 5%)) 
+     δηλαδή θα ανοίξει λίγο το μαύρο, χωρίς να γράψεις κώδικα! */
 }
 
 // Dark theme (προσθήκη μελλοντικής υποστήριξης dark mode)

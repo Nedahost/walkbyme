@@ -59,7 +59,7 @@
         right: 20px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: rem(24);
+        font-size: a.rem(24);
         cursor: pointer;
         color: var(--clr-a);
         
@@ -69,7 +69,7 @@
         
         @include a.breakpoint-down(sm) {
             right: 15px;
-            font-size: rem(20);
+            font-size: a.rem(20);
         }
     }
     
@@ -78,7 +78,7 @@
         padding: 10px 40px 10px 10px;
         border: none;
         border-bottom: 2px solid var(--clr-a);
-        font-size: rem(18);
+        font-size: a.rem(18);
         background: transparent;
         color: var(--clr-a);
         
@@ -92,7 +92,7 @@
         }
         
         @include a.breakpoint-down(sm) {
-            font-size: rem(16);
+            font-size: a.rem(16);
             padding: 8px 35px 8px 8px;
         }
     }
