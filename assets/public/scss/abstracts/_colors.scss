@@ -1,27 +1,26 @@
-// Base color palette
+// Δεν χρειάζεται @use 'sass:map' εδώ, χρησιμοποιούμε global functions για ασφάλεια.
+
+// -----------------------------------------------------------------------------
+// 1. PRIMARY PALETTE
+// -----------------------------------------------------------------------------
+// Χρησιμοποιούμε $ αντί για $_ για να είμαστε σίγουροι ότι είναι ορατά παντού
 $primary-colors: (
-  "main": hsl(0, 0%, 99%),
-  "white": hsl(0, 0%, 100%),
-  "black": hsl(0, 0%, 0%),
-  "primary": hsl(0, 0%, 20%), //333333
+  "main":      hsl(0, 0%, 99%),
+  "white":     hsl(0, 0%, 100%),
+  "black":     hsl(0, 0%, 0%),
+  "primary":   hsl(0, 0%, 20%),
   "secondary": hsl(280, 80%, 60%),
-  "accent": hsl(30, 100%, 50%)
+  "accent":    hsl(30, 100%, 50%)
 );
 
-//Χρώματα για συγκεκριμένες περιοχές του site
-$area-colors: (
-  "footer-bg": hsl(0, 0%, 97%),
-  "copyright-bg": hsl(0, 0%, 88%),
-  "image-bg": hsl(0, 0%, 98%),
-  "accordion-title": hsl(0, 0%, 95%), //f1f1f1
-);
-
-// Color variations and shades
-$color-variants: (
-  "primary-light": hsl(210, 100%, 65%),
-  "primary-dark": hsl(210, 100%, 35%),
+// -----------------------------------------------------------------------------
+// 2. VARIATIONS
+// -----------------------------------------------------------------------------
+$variations: (
+  "primary-light":   hsl(210, 100%, 65%),
+  "primary-dark":    hsl(210, 100%, 35%),
   "secondary-light": hsl(280, 80%, 75%),
-  "secondary-dark": hsl(280, 80%, 45%),
+  "secondary-dark":  hsl(280, 80%, 45%),
   
   // Gray scale
   "gray-100": hsl(0, 0%, 95%),
@@ -35,51 +34,50 @@ $color-variants: (
   "gray-900": hsl(0, 0%, 15%)
 );
 
-// Semantic purpose colors
-$semantic-colors: (
+// -----------------------------------------------------------------------------
+// 3. SEMANTIC COLORS
+// -----------------------------------------------------------------------------
+$semantic: (
   "success": hsl(120, 60%, 50%),
   "warning": hsl(40, 100%, 50%),
-  "error": hsl(0, 100%, 50%),
-  "info": hsl(200, 80%, 60%)
+  "error":   hsl(0, 100%, 50%),
+  "info":    hsl(200, 80%, 60%)
 );
 
-// Merge all color maps
-$colors: map-merge($primary-colors, map-merge($color-variants, map-merge($semantic-colors, $area-colors)));
-
-// Text-specific colors
-$text-colors: (
-  "body": hsl(0, 0%, 20%),
-  "muted": hsl(0, 0%, 45%),
-  "light": hsl(0, 0%, 75%),
-  "link": map-get($primary-colors, "primary"),
-  "link-hover": map-get($color-variants, "primary-dark")
+// -----------------------------------------------------------------------------
+// 4. AREA COLORS
+// -----------------------------------------------------------------------------
+$areas: (
+  "footer-bg":       hsl(0, 0%, 97%),
+  "copyright-bg":    hsl(0, 0%, 88%),
+  "image-bg":        hsl(0, 0%, 98%),
+  "accordion-title": hsl(0, 0%, 95%)
 );
 
-// Access a color from any map
-@function color($name) {
-  @if map-has-key($colors, $name) {
-    @return map-get($colors, $name);
-  } @else if map-has-key($text-colors, $name) {
-    @return map-get($text-colors, $name);
-  } @else {
-    @error "Color '#{$name}' doesn't exist in the color maps.";
-  }
-}
+// -----------------------------------------------------------------------------
+// 5. TEXT COLORS
+// -----------------------------------------------------------------------------
+$text: (
+  "body":       hsl(0, 0%, 20%),
+  "muted":      hsl(0, 0%, 45%),
+  "light":      hsl(0, 0%, 75%),
+  // Χρησιμοποιούμε map-get (χωρίς τελεία)
+  "link":       map-get($primary-colors, "primary"),
+  "link-hover": map-get($variations, "primary-dark")
+);
 
-// Create rgba from an existing color
-@function color-alpha($name, $opacity) {
-  $color: color($name);
-  @return rgba($color, $opacity);
-}
-
-// Get a lighter shade of a color
-@function lighten-color($name, $percentage) {
-  $color: color($name);
-  @return lighten($color, $percentage);
-}
-
-// Get a darker shade of a color
-@function darken-color($name, $percentage) {
-  $color: color($name);
-  @return darken($color, $percentage);
-}
+// -----------------------------------------------------------------------------
+// MERGE ALL TO MASTER MAP
+// Ενώνουμε όλα τα maps σε ένα τελικό $colors.
+// Κάνουμε nesting τα map-merge γιατί το Sass δέχεται μόνο 2 ορίσματα κάθε φορά.
+// -----------------------------------------------------------------------------
+$colors: map-merge(
+  $primary-colors,
+  map-merge(
+    $variations,
+    map-merge(
+      $semantic,
+      map-merge($areas, $text)
+    )
+  )
+);

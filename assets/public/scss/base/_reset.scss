@@ -1,64 +1,58 @@
-/*====================================== reset.css is here ========================================*/
-*,
-*::before,
-*::after {
+// -----------------------------------------------------------------------------
+// MODERN RESET
+// -----------------------------------------------------------------------------
+
+// 1. Box Sizing (Ο πιο σημαντικός κανόνας)
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-body,
-h1, h2, h3, h4, h5, h6,
-p,
-figure,
-blockquote,
-dl, dd {
-  margin: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  min-height: 100vh;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
-}
-
-address, caption, cite, code, dfn, em, th, var { font-style: normal; font-weight: normal; }
-
-ul, ol {
-  list-style: none;
+// 2. Reset Margins & Paddings
+body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, ul, ol {
   margin: 0;
   padding: 0;
 }
 
-a:not([class]) {
-  text-decoration-skip-ink: auto;
+// 3. List Styles
+ul, ol {
+  list-style: none;
 }
 
-img,
-picture {
-  max-width: 100%;
+// 4. HTML Setup
+html {
+  scroll-behavior: smooth; // Smooth scroll anchor links
+  -webkit-text-size-adjust: 100%; // Prevent font scaling in landscape on iOS
+}
+
+// 5. Body Defaults
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+}
+
+// 6. Media Elements
+img, picture, video, canvas, svg {
   display: block;
+  max-width: 100%;
 }
 
-
-input,
-button,
-textarea,
-select {
-  font: inherit;
+// 7. Forms
+input, button, textarea, select {
+  font: inherit; // Κληρονομούν τη γραμματοσειρά του body
 }
 
+// 8. Tables
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
 
+// 9. Accessibility (Reduced Motion)
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  html:focus-within { scroll-behavior: auto; }
   
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -66,38 +60,7 @@ select {
   }
 }
 
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-fieldset, img {
-  border: 0;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-  outline: 0 none;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-  
-  &:hover {
-    text-decoration: none;
-  }
-}
-
+// 10. Links & Buttons (Touch fix)
 a, area, button, [role="button"], input, label, select, summary, textarea {
   touch-action: manipulation;
-}
-
-
-::selection {
-  color: #fff;
-  background-color: var(--clr-primary, #000);
-}
-
-::-moz-selection {
-  color: #ffffff;
-  background-color: var(--clr-primary, #000);
 }

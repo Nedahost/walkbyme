@@ -1,116 +1,78 @@
-@use './typography' as t;
-@use '../abstracts' as a;
+@use '../abstracts/breakpoints' as b;
+// Δεν χρειάζεται @use colors, χρησιμοποιούμε CSS Variables
 
-html{
-    font-size: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    height: 100%;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
-    @include a.breakpoint-up(md) {
-        font-size: 105%;
-      }
-      
-      @include a.breakpoint-up(lg) {
-        font-size: 110%;
-      }
+// -----------------------------------------------------------------------------
+// GLOBAL BASE STYLES
+// -----------------------------------------------------------------------------
+
+html {
+  font-size: 100%; // Κρατάμε το default (16px συνήθως)
+  height: 100%;
+  
+  // Font Smoothing για πιο καθαρά γράμματα
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 }
 
-*, *::before , *::after{
-    -moz-box-sizing: inherit;
-    -ms-box-sizing: inherit;
-    -webkit-box-sizing: inherit;
-    box-sizing: inherit;
-} 
-
-
-body{
-    min-height: 100vh;
-    margin: 0px;
-    padding: 0px;
-    background: var(--clr-background);
-    color: var(--clr-text);
-    font-family: var(--f-primary);
-    font-weight: 300;
-    font-size: var(--font-size-body);
-    -webkit-tap-highlight-color: transparent;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch
+body {
+  min-height: 100vh;
+  margin: 0;
+  
+  // Χρήση των Variables που φτιάξαμε
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+  font-family: var(--f-primary);
+  font-weight: 300; // Ή var(--fw-light) αν το ορίσουμε
+  font-size: var(--font-size-body);
+  
+  // Sticky Footer Technique
+  display: flex;
+  flex-direction: column;
+  
+  // Mobile fixes
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
-main{
-    flex: 1 0 auto;
-    background: a.color('white');
-    
-    // Βασικό padding στο mobile
-    padding: var(--space-3) 0;
-    
-    @include a.breakpoint-up(md) {
-        padding: var(--space-4) 0;
-    }
-    
-    @include a.breakpoint-up(lg) {
-        padding: var(--space-5) 0;
-    }
-    
+// Sticky Footer: Το main πιάνει όλο τον διαθέσιμο χώρο
+main {
+  flex: 1 0 auto;
+  background-color: var(--clr-white); // Χρήση CSS Variable
+  
+  // Responsive Padding με χρήση των Spacing Variables
+  padding: var(--space-3) 0;
+  
+  @include b.up('md') { padding: var(--space-4) 0; }
+  @include b.up('lg') { padding: var(--space-5) 0; }
 }
 
-.wrapper {
-    margin: 0 auto;
-    width: 100%;
-    
-    // Responsive padding
-    padding-left: var(--space-3);
-    padding-right: var(--space-3);
-    
-    @include a.breakpoint-up(sm) {
-      padding-left: var(--space-4);
-      padding-right: var(--space-4);
-    }
-    
-    @include a.breakpoint-up(md) {
-      padding-left: var(--space-5);
-      padding-right: var(--space-5);
-    }
-    
-    @include a.breakpoint-up(lg) {
-      padding-left: var(--space-5-5);
-      padding-right: var(--space-5-5);
-    }
-    
-    // Max-width για μεγάλες οθόνες
-    @include a.breakpoint-up(xl) {
-      max-width: 100%;
-    }
-  }
+// Selection Color (Όταν μαρκάρεις κείμενο)
+::selection {
+  color: var(--clr-white);
+  background-color: var(--clr-primary);
+}
 
-
-  // Utility classes
+// -----------------------------------------------------------------------------
+// HELPER CLASSES (Visually Hidden)
+// -----------------------------------------------------------------------------
 .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-  
-  // Focus styles για προσβασιμότητα
-  :focus {
-    outline: 2px solid var(--clr-focus, a.color('primary'));
-    outline-offset: 2px;
-  }
-  
-  // Remove focus styles for mouse users
-  :focus:not(:focus-visible) {
-    outline: none;
-  }
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Focus Styles (Accessibility)
+:focus-visible {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}

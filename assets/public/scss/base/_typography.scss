@@ -1,179 +1,73 @@
-@use '../abstracts' as a;
+// Σημείωση: Δεν χρειάζεται @use '../abstracts' εδώ, 
+// γιατί χρησιμοποιούμε CSS Variables (--var) που είναι ήδη φορτωμένες στο browser!
 
 // ==================================================
-// TYPOGRAPHY SYSTEM - SEMANTIC & DISPLAY ONLY
+// TYPOGRAPHY CONFIG (Local Helper Variables)
 // ==================================================
+$lh-tight: 1.2;
+$lh-base:  1.5;
+$lh-loose: 1.8;
 
-// SCSS Variables (για internal use)
-$line-height-tight: 1.2;
-$line-height-base: 1.5;
-$line-height-loose: 1.8;
-
-$font-weight-light: 300;
-$font-weight-normal: 400;
-$font-weight-medium: 500;
-$font-weight-semibold: 600;
-$font-weight-bold: 700;
+$fw-light:    300;
+$fw-normal:   400;
+$fw-medium:   500;
+$fw-semibold: 600;
+$fw-bold:     700;
 
 // ==================================================
-// SEMANTIC HEADINGS (Default behavior)
+// SEMANTIC HEADINGS (h1-h6)
 // ==================================================
+// Κοινά styles για όλα τα headings
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   font-family: var(--f-primary);
-  font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
+  font-weight: $fw-bold;
+  line-height: $lh-tight;
   margin-bottom: 0.5em;
+  color: var(--clr-text); // Explicit color inheritance
 }
 
-h1, .h1 { font-size: var(--font-size-h1); }  // 30px → 40px
-h2, .h2 { font-size: var(--font-size-h2); }  // 25px → 35px
-h3, .h3 { font-size: var(--font-size-h3); }  // 22px → 28px
-h4, .h4 { font-size: var(--font-size-h4); }  // 20px → 24px
-h5, .h5 { font-size: var(--font-size-h5); }  // 18px → 20px
-h6, .h6 { font-size: var(--font-size-h6); }  // 16px → 18px
-
-
-.generic-titles{
-  h2{
-    font-size: var(--font-size-h3);
-    font-weight: 400;
-    text-align: center;
+// Loop για τα μεγέθη (DRY - Don't Repeat Yourself)
+// Αντιστοιχεί το h1 με το --font-size-h1, το h2 με το --font-size-h2 κλπ.
+@for $i from 1 through 6 {
+  h#{$i}, .h#{$i} {
+    font-size: var(--font-size-h#{$i});
   }
 }
 
+// Custom Titles Area
+.generic-titles h2 {
+  font-size: var(--font-size-h3);
+  font-weight: $fw-normal;
+  text-align: center;
+}
 
 // ==================================================
-// DISPLAY TYPOGRAPHY (Google Material Design)
+// DISPLAY TYPOGRAPHY (Material Design Style)
 // ==================================================
-
-// Display classes - για hero sections, banners κτλ
 .display-1 {
-  font-size: var(--font-size-hero-title);     // 40px → 64px
-  font-weight: $font-weight-bold;
+  font-size: var(--font-size-hero-title);
+  font-weight: $fw-bold;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
 .display-2 {
-  font-size: var(--font-size-3xl);           // 36px → 48px
-  font-weight: $font-weight-bold;
+  font-size: var(--font-size-3xl);
+  font-weight: $fw-bold;
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 
 .display-3 {
-  font-size: var(--font-size-2xl);           // 30px → 40px
-  font-weight: $font-weight-semibold;
-  line-height: 1.2;
+  font-size: var(--font-size-2xl);
+  font-weight: $fw-semibold;
+  line-height: $lh-tight;
 }
 
 .display-4 {
-  font-size: var(--font-size-xl);            // 24px → 32px
-  font-weight: $font-weight-semibold;
+  font-size: var(--font-size-xl);
+  font-weight: $fw-semibold;
   line-height: 1.25;
-}
-
-// Title classes - για section titles
-.title-large {
-  font-size: var(--font-size-section-title); // 24px → 32px
-  font-weight: $font-weight-semibold;
-  line-height: 1.3;
-}
-
-.title-medium {
-  font-size: var(--font-size-lg);            // 20px → 24px
-  font-weight: $font-weight-medium;
-  line-height: 1.4;
-}
-
-.title-small {
-  font-size: var(--font-size-md);            // 18px → 20px
-  font-weight: $font-weight-medium;
-  line-height: 1.4;
-}
-
-// Body text classes
-.body-large {
-  font-size: var(--font-size-body-large);    // 16px → 18px
-  line-height: $line-height-loose;
-}
-
-.body-medium {
-  font-size: var(--font-size-body);          // 14px → 16px
-  line-height: $line-height-base;
-}
-
-.body-small {
-  font-size: var(--font-size-small);         // 12px → 14px
-  line-height: 1.4;
-}
-
-// Label text
-.label-large {
-  font-size: var(--font-size-sm);            // 14px → 16px
-  font-weight: $font-weight-medium;
-  line-height: 1.4;
-}
-
-.label-medium {
-  font-size: var(--font-size-xs);            // 12px → 14px
-  font-weight: $font-weight-medium;
-  line-height: 1.3;
-}
-
-.label-small {
-  font-size: var(--font-size-caption);       // 11px → 12px
-  font-weight: $font-weight-medium;
-  line-height: 1.3;
-}
-
-// ==================================================
-// COMPONENT-SPECIFIC OVERRIDES (Google approach)
-// ==================================================
-
-// Hero/Banner sections get special treatment
-.hero-section,
-.banner-section,
-.outerimagelarge {
-  h1 {
-    font-size: var(--font-size-hero-title);  // Override default h1
-    font-weight: $font-weight-bold;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-  
-  h2 {
-    font-size: var(--font-size-section-title); // Override default h2
-    font-weight: $font-weight-semibold;
-    line-height: 1.2;
-  }
-  
-  .lead {
-    font-size: var(--font-size-body-large);
-    line-height: $line-height-loose;
-  }
-}
-
-// Product sections
-.product-section {
-  h2 {
-    font-size: var(--font-size-section-title);
-  }
-  
-  h3 {
-    font-size: var(--font-size-lg);
-  }
-}
-
-// Card components
-.card {
-  h3 {
-    font-size: var(--font-size-md);
-  }
-  
-  h4 {
-    font-size: var(--font-size-base);
-  }
 }
 
 // ==================================================
@@ -181,18 +75,34 @@ h6, .h6 { font-size: var(--font-size-h6); }  // 16px → 18px
 // ==================================================
 p {
   font-size: var(--font-size-body);
-  line-height: $line-height-base;
-  margin-bottom: var(--space-4);
+  line-height: $lh-base;
+  margin-bottom: var(--space-4); // Χρήση του spacing system
   color: var(--clr-text);
- 
-  &:last-child {
-    margin-bottom: 0;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+// Lead Paragraph (Εισαγωγικό κείμενο)
+.lead {
+  font-size: var(--font-size-body-large);
+  line-height: $lh-loose;
+  color: var(--clr-text-muted); // Συχνά θέλουμε το lead λίγο πιο απαλό
+}
+
+// ==================================================
+// COMPONENT-SPECIFIC OVERRIDES
+// ==================================================
+.hero-section,
+.banner-section,
+.outerimagelarge {
+  h1 {
+    font-size: var(--font-size-hero-title);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
   }
-  
-  // Large paragraph variant
-  &.lead {
-    font-size: var(--font-size-body-large);
-    line-height: $line-height-loose;
+  h2 {
+    font-size: var(--font-size-section-title);
+    font-weight: $fw-semibold;
   }
 }
 
@@ -202,102 +112,57 @@ p {
 a {
   color: var(--clr-link);
   text-decoration: none;
-  transition: color var(--transition-fast) var(--transition-ease);
- 
-  &:hover, &:focus {
+  transition: color var(--transition-normal); // Χρήση της global transition
+
+  &:hover, &:focus-visible { // focus-visible για accessibility
     color: var(--clr-link-hover);
+    text-decoration: underline; // Καλό UX για να φαίνεται ότι είναι link
   }
 }
 
 // ==================================================
-// LISTS
+// LISTS (Styled only)
+// Το reset.scss έχει ήδη καθαρίσει τα margins/paddings
 // ==================================================
-ul, ol {
-  margin: 0;
-  padding: 0;
-  list-style: none; // Reset default styling
-}
-
-// Styled lists
 .list {
   padding-left: var(--space-4);
   margin-bottom: var(--space-4);
-  font-size: var(--font-size-body);
-  line-height: $line-height-base;
- 
-  li {
-    margin-bottom: var(--space-2);
-  }
- 
-  &--disc { list-style-type: disc; }
+  
+  li { margin-bottom: var(--space-2); }
+
+  &--disc    { list-style-type: disc; }
   &--decimal { list-style-type: decimal; }
-  &--circle { list-style-type: circle; }
-  &--square { list-style-type: square; }
+  &--check   { list-style: none; /* Εδώ θα έμπαινε icon με ::before */ }
 }
 
 // ==================================================
-// TEXT EMPHASIS
+// MISC ELEMENTS
 // ==================================================
-strong, b {
-  font-weight: $font-weight-bold;
-}
+small { font-size: var(--font-size-small); }
+strong, b { font-weight: $fw-bold; }
+em, i { font-style: italic; }
 
-em, i {
-  font-style: italic;
-}
-
-small {
-  font-size: var(--font-size-small);
-}
-
-// ==================================================
-// BLOCKQUOTE
-// ==================================================
 blockquote {
   border-left: 4px solid var(--clr-primary);
   padding-left: var(--space-3);
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: var(--space-4);
+  margin: var(--space-4) 0;
   font-style: italic;
   font-size: var(--font-size-quote);
-  line-height: $line-height-loose;
   color: var(--clr-text-muted);
 }
 
-// ==================================================
-// CODE
-// ==================================================
-code, pre {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-  background-color: var(--clr-gray-100);
-  border-radius: var(--border-radius);
-  font-size: 0.9em;
-}
-
-code {
-  padding: var(--space-1) var(--space-2);
-  color: var(--clr-text);
-}
-
-pre {
-  padding: var(--space-3);
-  overflow-x: auto;
-  margin-bottom: var(--space-4);
-  line-height: $line-height-base;
- 
-  code {
-    padding: 0;
-    background-color: transparent;
-    border-radius: 0;
-  }
-}
-
-// ==================================================
-// HORIZONTAL RULE
-// ==================================================
 hr {
   border: 0;
   border-top: 1px solid var(--clr-gray-200);
   margin: var(--space-6) 0;
+}
+
+// Code blocks
+code {
+  font-family: monospace; // Ή κάποια Google Font αν έχεις
+  background-color: var(--clr-gray-100);
+  padding: 0.2em 0.4em;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9em;
+  color: var(--clr-text);
 }
