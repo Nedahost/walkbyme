@@ -16,12 +16,12 @@
     text-align: center;
     list-style: none;
     
-    @include a.breakpoint-down(lg) {
+    @include a.down(lg) {
       grid-template-columns: repeat(2, 1fr);
       gap: 30px;
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       gap: 20px;
     }
     
@@ -53,7 +53,7 @@
         padding-top: 15px;
         margin-bottom: 10px;
         
-        @include a.breakpoint-down(sm) {
+        @include a.down(sm) {
           padding-top: 10px;
         }
         
@@ -72,7 +72,7 @@
         margin-top: 0;
         font-size: a.rem(14);
         
-        @include a.breakpoint-down(sm) {
+        @include a.down(sm) {
           font-size: a.rem(13);
         }
       }
@@ -107,11 +107,11 @@
   justify-content: center;
   text-align: center;
 
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     height: 600px;
   }
   
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     height: 500px;
   }
 
@@ -128,12 +128,12 @@
     filter: brightness(70%);
     will-change: transform;
 
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
       top: -35%;
       height: 170%;
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       top: -15%;
       height: 160%;
     }
@@ -160,11 +160,11 @@
     h1 {
       font-size: var(--font-size-h2, 2.5rem);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         font-size: var(--font-size-h3, 2rem);
       }
       
-      @include a.breakpoint-down(sm) {
+      @include a.down(sm) {
         font-size: var(--font-size-h4, 1.75rem);
       }
     }
@@ -172,11 +172,11 @@
     h2 {
       font-size: var(--font-size-h3, 2rem);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         font-size: var(--font-size-h4, 1.75rem);
       }
       
-      @include a.breakpoint-down(sm) {
+      @include a.down(sm) {
         font-size: var(--font-size-h5, 1.5rem);
       }
     }
@@ -187,11 +187,11 @@
       margin-bottom: 20px;
       color: var(--clr-white, #ffffff);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         font-size: a.rem(16);
       }
       
-      @include a.breakpoint-down(sm) {
+      @include a.down(sm) {
         font-size: a.rem(14);
       }
 
@@ -224,7 +224,7 @@
         transform: translateY(-2px);
       }
       
-      @include a.breakpoint-down(sm) {
+      @include a.down(sm) {
         padding: 12px 24px;
         font-size: a.rem(14);
       }

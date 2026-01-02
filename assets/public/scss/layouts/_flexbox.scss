@@ -62,7 +62,7 @@
   
   // Responsive variants
   @each $breakpoint, $width in a.$breakpoints {
-    @include a.breakpoint-up($breakpoint) {
+    @include a.up($breakpoint) {
       &--#{$breakpoint}-row {
         flex-direction: row;
       }

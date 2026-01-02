@@ -8,7 +8,7 @@
   margin: 0;
   
   // Προσθήκη καλύτερου spacing για responsive
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     padding: 8px 0;
     font-size: a.rem(12);
   }

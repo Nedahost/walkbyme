@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     gap: 40px;
     
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
       flex-direction: column;
       gap: 30px;
     }
@@ -15,7 +15,7 @@
     .col-main {
       width: calc(65% - 20px);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         width: 100%;
       }
       
@@ -27,7 +27,7 @@
           color: var(--clr-text, inherit);
           line-height: 1.2;
           
-          @include a.breakpoint-down(sm) {
+          @include a.down(sm) {
             font-size: a.rem(28);
             margin: a.rem(20) 0;
           }
@@ -72,7 +72,7 @@
           word-break: break-word;
           color: var(--clr-text, inherit);
           
-          @include a.breakpoint-down(sm) {
+          @include a.down(sm) {
             font-size: a.rem(16);
             line-height: 1.6;
           }
@@ -99,7 +99,7 @@
             margin-left: a.rem(25);
             margin-bottom: a.rem(20);
             
-            @include a.breakpoint-down(sm) {
+            @include a.down(sm) {
               margin-left: a.rem(20);
             }
             
@@ -217,7 +217,7 @@
     .col-sidebar {
       width: 30%;
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         width: 100%;
       }
       

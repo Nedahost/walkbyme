@@ -45,12 +45,12 @@ figure {
   border-radius: var(--border-radius);
   
   // Responsive styling
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     max-width: 60%;
     right: 3%;
   }
   
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     max-width: 80%;
     padding: 8px;
     top: auto;
@@ -64,12 +64,12 @@ figure {
     margin: 0 0 10px;
     font-size: a.rem(24);
     
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
       font-size: a.rem(20);
       margin-bottom: 5px;
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       font-size: a.rem(18);
     }
   }
@@ -78,11 +78,11 @@ figure {
     margin: 0 0 10px;
     font-size: a.rem(16);
     
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
       font-size: a.rem(14);
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       display: none; // Απόκρυψη περιγραφής σε πολύ μικρές οθόνες
     }
   }
@@ -102,7 +102,7 @@ figure {
     background-color: var(--clr-primary-dark, #e67e22);
   }
   
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     padding: 8px 15px;
     font-size: a.rem(14);
   }
@@ -138,7 +138,7 @@ figure {
       right: 20px;
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       width: 30px;
       height: 30px;
       
@@ -178,7 +178,7 @@ figure {
     }
   }
   
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     bottom: 10px;
     
     button {

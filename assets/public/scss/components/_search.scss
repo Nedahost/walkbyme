@@ -1,11 +1,58 @@
 @use '../abstracts' as a;
 
+.woocommerce-product-search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    margin: 0 auto;
+    
+    input[type="text"],
+    input[type="search"] {
+        flex-grow: 1;
+        padding: 15px;
+        margin-right: 10px;
+        background-color: var(--clr-input-bg, var(--clr-white));
+        color: var(--clr-text);
+        border: 1px solid var(--clr-input-border, var(--clr-gray-300));
+        border-radius: 50px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        
+        &:focus {
+            border-color: var(--clr-primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        &::placeholder {
+            color: var(--clr-text-muted);
+        }
+    }
+    
+    input[type="submit"] {
+        padding: 15px 20px;
+        background-color: var(--clr-primary);
+        color: var(--clr-white);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        
+        &:hover {
+            background-color: var(--clr-primary-dark);
+        }
+    }
+}
+
+
 .search-container {
     position: relative;
     display: flex;
     align-items: center;
     
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
         margin-left: auto;
     }
     
@@ -17,7 +64,7 @@
         i {
             font-size: 15px;
             
-            @include a.breakpoint-down(sm) {
+            @include a.down(sm) {
                 font-size: 15px;
             }
         }
@@ -49,7 +96,7 @@
         padding: 20px;
         position: relative;
         
-        @include a.breakpoint-down(md) {
+        @include a.down(md) {
             padding: 15px;
         }
     }
@@ -67,7 +114,7 @@
             color: var(--clr-hover);
         }
         
-        @include a.breakpoint-down(sm) {
+        @include a.down(sm) {
             right: 15px;
             font-size: a.rem(20);
         }
@@ -91,7 +138,7 @@
             border-color: var(--clr-hover);
         }
         
-        @include a.breakpoint-down(sm) {
+        @include a.down(sm) {
             font-size: a.rem(16);
             padding: 8px 35px 8px 8px;
         }

@@ -12,7 +12,7 @@
   margin: 50px 0;
   border-radius: var(--border-radius, 8px);
   
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     padding: 30px 15px;
     margin: 30px 0;
   }
@@ -23,7 +23,7 @@
     margin-bottom: 15px;
     color: var(--clr-text, inherit);
     
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
       font-size: a.rem(20);
     }
   }
@@ -35,7 +35,7 @@
     color: var(--clr-text-muted, inherit);
     line-height: 1.6;
     
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
       font-size: a.rem(14);
     }
   }
@@ -70,11 +70,11 @@
     padding: 0;
     list-style: none;
     
-    @include a.breakpoint-down(lg) {
+    @include a.down(lg) {
       grid-template-columns: repeat(2, 1fr);
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       grid-template-columns: 1fr;
     }
     
@@ -100,7 +100,7 @@
         margin-bottom: 15px;
         color: var(--clr-text, inherit);
         
-        @include a.breakpoint-down(md) {
+        @include a.down(md) {
           font-size: a.rem(16);
         }
       }
@@ -112,7 +112,7 @@
         margin: 0;
         line-height: 1.6;
         
-        @include a.breakpoint-down(md) {
+        @include a.down(md) {
           font-size: a.rem(13);
         }
       }
@@ -132,12 +132,12 @@ footer {
       grid-template-columns: repeat(4, 1fr);
       gap: 25px;
       
-      @include a.breakpoint-down(lg) {
+      @include a.down(lg) {
         grid-template-columns: repeat(2, 1fr);
         gap: 30px;
       }
       
-      @include a.breakpoint-down(sm) {
+      @include a.down(sm) {
         grid-template-columns: 1fr;
       }
       
@@ -266,7 +266,7 @@ footer {
       padding: 0;
       margin: 0;
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         flex-direction: column;
         text-align: center;
       }

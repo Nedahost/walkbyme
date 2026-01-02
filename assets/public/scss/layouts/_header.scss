@@ -1,77 +1,66 @@
 @use '../abstracts' as a;
 
-header {
-    // Το top header banner
+#masthead {
+    // 1. TOP HEADER
     .topeader {
         background-color: var(--clr-black);
         color: var(--clr-white);
         text-align: center;
         padding: 5px 0;
-        transition: background-color 0.3s ease; // ✅ Smooth transition
+        transition: background-color 0.3s ease;
     }
     
-    // Το κύριο header container
+    // 2. OUTER HEADER GRID
     #outerheader {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         padding: 1rem 2rem;
-        background-color: var(--clr-background); // ✅ Dynamic background
+        background-color: var(--clr-background);
         
-        @include a.breakpoint-up(md) {
+        @include a.up('md') {
             padding: 1rem 2rem;
         }
        
-        @include a.breakpoint-down(md) {
+        @include a.down('md') {
             grid-template-columns: 1fr;
             grid-template-rows: auto auto auto;
             gap: 1rem;
             text-align: center;
         }
         
+        // 3. LOGO POSITION
         #logo {
             justify-self: start;
             
-            @include a.breakpoint-down(md) {
+            @include a.down('md') {
                 justify-self: center;
             }
             
-            // ✅ Dark mode logo filter (προαιρετικό)
             img {
                 transition: filter 0.3s ease;
                 
+                // Dark mode μέσω body class
                 body.dark-mode & {
-                    filter: brightness(1.1); // Ελαφρά φωτεινότερο στο dark mode
+                    filter: brightness(1.1);
                 }
             }
         }
         
+        // 4. NAVIGATION POSITION
+        // (Το styling πήγε στο _navigation.scss, εδώ ορίζουμε μόνο τη θέση στο grid αν χρειαστεί)
         nav {
-            @include a.breakpoint-down(md) {
+            @include a.down('md') {
                 grid-row: 3;
-                width: 100%;
-            }
-            
-            ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                
-                a {
-                    color: var(--clr-text); // ✅ Dynamic text color
-                    
-                    &:hover {
-                        color: var(--clr-primary);
-                    }
-                }
             }
         }
         
+        // 5. SHOP DETAILS (ACTIONS)
         .shopdetails {
             text-align: right;
             padding: 20px 0;
             
-            @include a.breakpoint-down(md) {
+            @include a.down('md') {
                 grid-row: 2;
                 text-align: center;
                 padding: 10px 0;
@@ -85,7 +74,7 @@ header {
                 align-items: center;
                 justify-content: flex-end;
                 
-                @include a.breakpoint-down(sm) {
+                @include a.down('sm') {
                     justify-content: center;
                     flex-wrap: wrap;
                 }
@@ -97,13 +86,16 @@ header {
                     font-size: 14px;
                     font-weight: 300;
                     
-                    @include a.breakpoint-down(sm) {
+                    @include a.down('sm') {
                         padding: 5px;
                     }
                     
+                    // Icons Styling
                     a {
                         color: var(--clr-text);
                         transition: color 0.2s ease;
+                        display: inline-flex; // Fix alignment
+                        align-items: center;
                         
                         &:hover {
                             color: var(--clr-primary);
@@ -111,60 +103,33 @@ header {
                     }
                 }
                 
-                .headeraccount {
-                    a {
-                        display: inline-flex;
-                        align-items: center;
-                        
-                        &:before {
-                            font-family: "FontAwesome";
-                            content: "\f007";
-                            color: var(--clr-text); // ✅ Dynamic color
-                        }
-                        
-                        @include a.breakpoint-down(md) {
-                            span {
-                                display: none;
-                            }
-                        }
+                // FontAwesome Icons
+                .headeraccount a:before {
+                    font-family: "FontAwesome";
+                    content: "\f007";
+                    margin-right: 5px;
+                }
+                
+                .headerlogout a:before {
+                    font-family: "FontAwesome";
+                    content: "\f08b";
+                     margin-right: 5px;
+                }
+                
+                // Κρύψιμο κειμένου στο mobile
+                @include a.down('md') {
+                    .headeraccount span, 
+                    .headerlogout span {
+                        display: none;
                     }
                 }
                 
-                .headerlogout {
-                    a {
-                        display: inline-flex;
-                        align-items: center;
-                        
-                        &:before {
-                            font-family: "FontAwesome";
-                            content: "\f08b";
-                            color: var(--clr-text); // ✅ Dynamic color
-                        }
-                        
-                        @include a.breakpoint-down(md) {
-                            span {
-                                display: none;
-                            }
-                        }
-                    }
-                }
-                
+                // Cart Specifics
                 .headercart {
-                    a {
-                        text-decoration: none;
-                        color: var(--clr-text); // ✅ Dynamic color
-                        display: flex;
-                        align-items: center;
-                    }
-
                     .cart-icon-wrapper {
                         position: relative;
                         display: inline-block;
                         line-height: 1;
-                        
-                        i {
-                            color: var(--clr-text); // ✅ Dynamic color
-                        }
                     }
 
                     .cart-dot {
@@ -173,141 +138,17 @@ header {
                         right: -3px;
                         width: 8px;
                         height: 8px;
-                        background-color: #e74c3c;
+                        background-color: #e74c3c; // Ή var(--clr-error)
                         border-radius: 50%;
-                        border: 1px solid var(--clr-background); // ✅ Dynamic border
+                        border: 1px solid var(--clr-background);
                         pointer-events: none;
                     }
                 }
                 
                 .header-theme-toggle {
-                    display: inline-flex;
-                    align-items: center;
                     padding: 0 10px;
                 }
             }
-        }
-    }
-}
-
-// Theme Toggle Switch
-.theme-switch {
-    display: inline-block;
-    width: 50px;
-    height: 26px;
-    position: relative;
-    vertical-align: middle;
-    
-    input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-        position: absolute;
-    }
-    
-    .theme-slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: 0.4s;
-        border-radius: 34px;
-        
-        &:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        &:after {
-            content: "☀";
-            position: absolute;
-            right: 7px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 13px;
-            color: #f39c12;
-            line-height: 1;
-        }
-    }
-    
-    input:checked + .theme-slider {
-        background-color: #2c3e50;
-        
-        &:before {
-            transform: translateX(24px);
-        }
-        
-        &:after {
-            content: "🌙";
-            left: 7px;
-            right: auto;
-            color: #f1c40f;
-        }
-    }
-    
-    &:hover .theme-slider {
-        background-color: #bbb;
-    }
-    
-    input:checked + .theme-slider:hover {
-        background-color: #34495e;
-    }
-}
-
-// WooCommerce search με dark mode support
-.woocommerce-product-search {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 100%;
-    margin: 0 auto;
-    
-    input[type="text"],
-    input[type="search"] {
-        flex-grow: 1;
-        padding: 15px;
-        margin-right: 10px;
-        background-color: var(--clr-input-bg, var(--clr-white)); // ✅ Dynamic
-        color: var(--clr-text); // ✅ Dynamic
-        border: 1px solid var(--clr-input-border, var(--clr-gray-300)); // ✅ Dynamic
-        border-radius: 50px;
-        font-size: 16px;
-        transition: border-color 0.3s, box-shadow 0.3s;
-        
-        &:focus {
-            border-color: var(--clr-primary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
-        }
-        
-        &::placeholder {
-            color: var(--clr-text-muted); // ✅ Dynamic
-        }
-    }
-    
-    input[type="submit"] {
-        padding: 15px 20px;
-        background-color: var(--clr-primary);
-        color: var(--clr-white);
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s;
-        
-        &:hover {
-            background-color: var(--clr-primary-dark);
         }
     }
 }

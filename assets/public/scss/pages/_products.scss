@@ -12,17 +12,17 @@
         grid-template-columns: repeat(2, 1fr);
          
         // Tablet: 3 columns (προαιρετικό)
-        @include a.breakpoint-up(md) {
+        @include a.up(md) {
             grid-template-columns: repeat(3, 1fr);
             gap: var(--space-3);  // 16px - περισσότερο χώρο σε μεγαλύτερες οθόνες
         }
         // Desktop: 4 columns
-        @include a.breakpoint-up(lg) {
+        @include a.up(lg) {
             grid-template-columns: repeat(4, 1fr);
             gap: var(--space-4);  // 24px - ακόμα περισσότερος χώρος
         }
         // Extra large: μπορείς να κρατήσεις 4 ή να πας σε 5
-        @include a.breakpoint-up(xl) {
+        @include a.up(xl) {
             grid-template-columns: repeat(4, 1fr);  // ή repeat(5, 1fr) αν θέλεις
             gap: var(--space-5);  // 32px
         }
@@ -161,11 +161,11 @@
         grid-template-columns: 1fr;
         gap: 20px;
         
-        @include a.breakpoint-up(md) {
+        @include a.up(md) {
             grid-template-columns: repeat(2, 1fr);
         }
         
-        @include a.breakpoint-down(lg) {
+        @include a.down(lg) {
             grid-template-columns: 1fr;
         }
 
@@ -225,7 +225,7 @@
         .rightdetailsproduct {
             margin: auto 0;
             padding: 0 30px;
-            @include a.breakpoint-down(md) {
+            @include a.down(md) {
                 padding: 0 15px;
             }
 
@@ -299,7 +299,7 @@
                 font-family: var(--f-second);
                 width: 100%;
 
-                @include a.breakpoint-up(md) {
+                @include a.up(md) {
                     width: 100%;
                 }
 
@@ -371,7 +371,7 @@
 .related {
     padding: 90px 0 50px;
 
-    @include a.breakpoint-down(md) {
+    @include a.down(md) {
         padding: 50px 0 30px;
     }
 
@@ -381,7 +381,7 @@
         font-weight: bold;
         margin-bottom: 40px;
 
-        @include a.breakpoint-down(md) {
+        @include a.down(md) {
             font-size: 24px;
             margin-bottom: 30px;
         }
@@ -397,19 +397,19 @@
          grid-template-columns: repeat(2, 1fr);
          
          // Tablet: 3 columns (προαιρετικό)
-         @include a.breakpoint-up(md) {
+         @include a.up(md) {
              grid-template-columns: repeat(3, 1fr);
              gap: var(--space-3);  // 16px - περισσότερο χώρο σε μεγαλύτερες οθόνες
          }
  
          // Desktop: 4 columns
-         @include a.breakpoint-up(lg) {
+         @include a.up(lg) {
              grid-template-columns: repeat(4, 1fr);
              gap: var(--space-4);  // 24px - ακόμα περισσότερος χώρος
          }
  
          // Extra large: μπορείς να κρατήσεις 4 ή να πας σε 5
-         @include a.breakpoint-up(xl) {
+         @include a.up(xl) {
              grid-template-columns: repeat(4, 1fr);  // ή repeat(5, 1fr) αν θέλεις
              gap: var(--space-5);  // 32px
          }
@@ -511,7 +511,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-@include a.breakpoint-down(sm) {
+@include a.down(sm) {
     .product-image {
         padding: 0;
     }
@@ -575,7 +575,7 @@
     flex-wrap: wrap;
     margin-bottom: 20px;
 
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
         flex-direction: column;
     }
 }
@@ -584,7 +584,7 @@
     margin-right: 20px;
     margin-bottom: 10px;
 
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
         margin-right: 0;
     }
 }
@@ -651,7 +651,7 @@
     }
 }
 
-@include a.breakpoint-down(sm) {
+@include a.down(sm) {
     .variations .custom-select {
         width: 100%;
 
@@ -662,7 +662,7 @@
 }
 
 // Προσθήκη responsive styles για μικρότερες οθόνες
-@include a.breakpoint-down(md) {
+@include a.down(md) {
     .contentproducts {
         ul {
             li {
@@ -693,7 +693,7 @@
 }
 
 // Προσθήκη επιπλέον styles για πολύ μικρές οθόνες
-@include a.breakpoint-down(sm) {
+@include a.down(sm) {
     
 
     .bgproducts {

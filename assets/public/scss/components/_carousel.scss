@@ -5,7 +5,7 @@
 .outercarousel {
   padding: var(--space-6) 0;
   
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     padding: var(--space-4) 0;
   }
   
@@ -42,7 +42,7 @@
         font-weight: var(--font-weight-light, 300);
         clear: both;
         
-        @include a.breakpoint-down(sm) {
+        @include a.down(sm) {
           padding: var(--space-3) 0 var(--space-2);
         }
         
@@ -169,7 +169,7 @@
   width: 40px; // Μεγαλύτερα arrows για καλύτερο touch target
   height: 40px;
   
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     width: 30px;
     height: 30px;
   }
@@ -197,7 +197,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       font-size: 24px;
     }
   }
@@ -206,7 +206,7 @@
 .slick-prev {
   left: -25px;
   
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     left: -15px;
   }
   
@@ -227,7 +227,7 @@
 .slick-next {
   right: -25px;
   
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     right: -15px;
   }
   
@@ -336,7 +336,7 @@
       color: var(--clr-primary);
     }
     
-    @include a.breakpoint-down(sm) {
+    @include a.down(sm) {
       width: 30px;
       height: 30px;
     }

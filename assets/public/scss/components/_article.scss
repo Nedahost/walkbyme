@@ -8,17 +8,17 @@
   grid-template-columns: repeat(4, 1fr);
   
   // 3 στήλες για μεσαίες οθόνες
-  @include a.breakpoint-down(lg) {
+  @include a.down(lg) {
     grid-template-columns: repeat(3, 1fr);
   }
   
   // 2 στήλες για μικρές οθόνες
-  @include a.breakpoint-down(md) {
+  @include a.down(md) {
     grid-template-columns: repeat(2, 1fr);
   }
   
   // 1 στήλη για πολύ μικρές οθόνες
-  @include a.breakpoint-down(sm) {
+  @include a.down(sm) {
     grid-template-columns: 1fr;
     gap: a.rem(30); // Αύξηση gap για καλύτερη αναγνωσιμότητα
   }
@@ -55,7 +55,7 @@
     .article-content {
       padding: a.rem(15);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         padding: a.rem(10);
       }
     }
@@ -65,7 +65,7 @@
       margin-top: a.rem(10);
       margin-bottom: a.rem(8);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         font-size: a.rem(16);
       }
       
@@ -86,7 +86,7 @@
       color: var(--clr-text-muted);
       margin-bottom: a.rem(15);
       
-      @include a.breakpoint-down(md) {
+      @include a.down(md) {
         font-size: a.rem(13);
       }
     }
@@ -118,14 +118,14 @@
     grid-template-columns: 1fr;
     
     article {
-      @include a.breakpoint-up(md) {
+      @include a.up(md) {
         display: grid;
         grid-template-columns: 300px 1fr;
         gap: a.rem(20);
       }
       
       figure {
-        @include a.breakpoint-up(md) {
+        @include a.up(md) {
           aspect-ratio: 1 / 1;
         }
       }

@@ -4,7 +4,7 @@
 .section {
   padding: var(--space-6) 0;
   
-  @include a.breakpoint-up(md) {
+  @include a.up(md) {
     padding: var(--space-8) 0;
   }
   
@@ -12,7 +12,7 @@
   &--sm {
     padding: var(--space-4) 0;
     
-    @include a.breakpoint-up(md) {
+    @include a.up(md) {
       padding: var(--space-5) 0;
     }
   }
@@ -20,7 +20,7 @@
   &--lg {
     padding: var(--space-8) 0;
     
-    @include a.breakpoint-up(md) {
+    @include a.up(md) {
       padding: var(--space-8) 0 var(--space-10);
     }
   }

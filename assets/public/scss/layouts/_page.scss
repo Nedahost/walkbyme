@@ -34,7 +34,7 @@
     display: grid;
     gap: var(--space-5);
     
-    @include a.breakpoint-up(lg) {
+    @include a.up(lg) {
       grid-template-columns: 3fr 1fr;
     }
   }
