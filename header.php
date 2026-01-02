@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="profile" href="https://gmpg.org/xfn/11">
     <meta name="format-detection" content="telephone=no">
-    <meta name="p:domain_verify" content="47d2a4d6f4ed2663e7cbd09e076d1c6e">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,79 +13,56 @@
     
     <?php wp_head(); ?>
 
-   <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleSwitch = document.querySelector('#theme-checkbox');
-    const body = document.body;
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleSwitch = document.querySelector('#theme-checkbox');
+        const body = document.body;
 
-    if (!toggleSwitch) {
-        console.error('Toggle switch not found!');
-        return;
-    }
+        if (!toggleSwitch) return;
 
-    function applyTheme(isDark) {
-        if (isDark) {
-            body.classList.add('dark-mode');
-            toggleSwitch.checked = true;
-        } else {
-            body.classList.remove('dark-mode');
-            toggleSwitch.checked = false;
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                toggleSwitch.checked = true;
+            } else {
+                body.classList.remove('dark-mode');
+                toggleSwitch.checked = false;
+            }
         }
-    }
 
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme) {
-        applyTheme(savedTheme === 'dark');
-    } else {
-        applyTheme(prefersDark);
-    }
-
-    // ✅ Polling fallback (για περίπτωση που το event δεν πυροδοτείται)
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    let lastPreference = darkModeMediaQuery.matches;
-    
-    // Check every 2 seconds
-    setInterval(() => {
-        const currentPreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         
-        if (!localStorage.getItem('theme') && currentPreference !== lastPreference) {
-            console.log('System theme detected change via polling:', currentPreference ? 'dark' : 'light');
-            applyTheme(currentPreference);
-            lastPreference = currentPreference;
+        if (savedTheme) {
+            applyTheme(savedTheme === 'dark');
+        } else {
+            applyTheme(prefersDark);
         }
-    }, 2000);
 
-    // Event listener (primary method)
-    darkModeMediaQuery.addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            console.log('System theme changed via event:', e.matches ? 'dark' : 'light');
-            applyTheme(e.matches);
-            lastPreference = e.matches;
-        }
+        // Toggle Event
+        toggleSwitch.addEventListener('change', (e) => {
+            const isDark = e.target.checked;
+            applyTheme(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
     });
-
-    toggleSwitch.addEventListener('change', (e) => {
-        const isDark = e.target.checked;
-        applyTheme(isDark);
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-});
-</script>
+    </script>
 </head>
 
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
 <header id="masthead" class="site-header">
-    <div class="top-header">
-        <div class="wrapper"> <?php esc_html_e('ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΜΕ ΑΓΟΡΕΣ ΑΝΩ ΤΩΝ 50€ | ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ΣΕ ΠΑΡΑΓΓΕΛΙΕΣ ΑΝΩ ΤΩΝ 40€', 'walkbyme'); ?>
+    
+    <div class="topeader"> <div class="wrapper">
+            <?php esc_html_e('ΔΩΡΕΑΝ ΜΕΤΑΦΟΡΙΚΑ ΜΕ ΑΓΟΡΕΣ ΑΝΩ ΤΩΝ 50€ | ΔΩΡΕΑΝ ΑΝΤΙΚΑΤΑΒΟΛΗ ΣΕ ΠΑΡΑΓΓΕΛΙΕΣ ΑΝΩ ΤΩΝ 40€', 'walkbyme'); ?>
         </div>
     </div>
     
     <div class="wrapper">
-        <div class="header-grid"> <div class="site-logo">
+        <div id="outerheader"> 
+            
+            <div id="logo">
                 <?php
                 if ( has_custom_logo() ) {
                     the_custom_logo();
@@ -106,30 +82,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 <?php
                 wp_nav_menu(array(
                     'theme_location' => 'primary',
-                    'menu_class'     => 'dropdown', // Ελπίζω να έχεις CSS για αυτό
+                    'menu_class'     => 'dropdown', 
                     'container'      => false,
                 ));
                 ?>
             </nav>
 
-            <div class="header-actions"> <ul class="header-actions__list">
+            <div class="shopdetails">
+                <ul>
                     
-                    <li class="header-actions__item">
-                         <a href="<?php echo esc_url($account_link); ?>" title="..." aria-label="...">
-                             <i class="fas fa-user"></i> </a>
+                    <li class="headeraccount">
+                         <?php 
+                        $account_link = function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('myaccount')) : wp_login_url();
+                        ?>
+                        <a href="<?php echo esc_url($account_link); ?>" title="<?php esc_attr_e('My Account', 'walkbyme'); ?>">
+                             </a>
                     </li>
+                    
+                    <?php if (is_user_logged_in()) : ?>
+                        <li class="headerlogout">
+                            <a href="<?php echo esc_url(wp_logout_url(home_url())); ?>" title="<?php esc_attr_e('Logout', 'walkbyme'); ?>"></a>
+                        </li>
+                    <?php endif; ?>
 
-                    <li class="header-actions__item">
-                        <button class="search-trigger" aria-label="...">
+                    <li>
+                        <button class="search-trigger" aria-label="<?php esc_attr_e('Search', 'walkbyme'); ?>">
                             <i class="fas fa-search"></i>
                         </button>
                         <?php get_template_part('template-parts/header/search-overlay'); ?> 
                     </li>
                     
-                    <li class="header-actions__item cart-trigger">
-                        <a href="<?php echo esc_url($cart_url); ?>">
+                    <li class="headercart">
+                        <?php 
+                        $cart_url = function_exists('wc_get_cart_url') ? wc_get_cart_url() : '#';
+                        $cart_count = 0;
+                        if (function_exists('WC') && WC()->cart) {
+                            $cart_count = WC()->cart->get_cart_contents_count();
+                        }
+                        ?>
+                        
+                        <a href="<?php echo esc_url($cart_url); ?>" 
+                           id="walkbyme-cart-trigger" 
+                           class="cart-customlocation"
+                           title="<?php esc_attr_e('View your shopping cart', 'walkbyme'); ?>">
+                            
                             <span class="cart-icon-wrapper">
-                                <i class="fas fa-shopping-bag"></i>
+                                <i class="fas fa-shopping-bag" style="font-size: 20px;"></i>
                                 <?php if ($cart_count > 0) : ?>
                                     <span class="cart-dot"></span>
                                 <?php endif; ?>
@@ -137,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </a>
                     </li>
 
-                    <li class="header-actions__item">
+                    <li class="header-theme-toggle">
                         <label class="theme-switch" for="theme-checkbox">
                             <input type="checkbox" id="theme-checkbox" />
                             <div class="theme-slider"></div>
@@ -145,9 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </li>
 
                 </ul>
-            </div> 
-        </div> 
-    </div> 
-</header>
+            </div> </div> </div> </header>
 
 <main id="primary" class="site-main">

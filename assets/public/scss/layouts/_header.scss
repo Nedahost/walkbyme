@@ -16,7 +16,8 @@
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
         padding: 1rem 2rem;
-        background-color: var(--clr-background);
+        background-color: var(--header-bg);
+        transition: background-color 0.3s ease;
         
         @include a.up('md') {
             padding: 1rem 2rem;
