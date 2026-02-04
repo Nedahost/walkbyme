@@ -19,7 +19,7 @@
   }
   
   // Κλασική διαίρεση
-  @return (strip-unit($pixels) / strip-unit($context)) * 1rem;
+  @return calc((strip-unit($pixels) / strip-unit($context))) * 1rem;
 }
 
 // -----------------------------------------------------------------------------

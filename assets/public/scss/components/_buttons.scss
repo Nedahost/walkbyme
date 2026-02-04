@@ -1,5 +1,62 @@
 @use '../abstracts' as a;
 
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  font-family: var(--f-primary);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+  
+  // Default θα είναι το medium
+  padding: rem(12) rem(24);
+  font-size: rem(18);
+  
+  // Αποφυγή text selection στο click
+  user-select: none;
+  
+  &:focus-visible {
+    outline: 2px solid var(--clr-primary);
+    outline-offset: 2px;
+  }
+}
+
+
+.btn--primary {
+  background-color: #010101;
+  color: var(--clr-white);
+  border-color: #010101;
+  
+  &:hover {
+    background-color: var(--clr-gray-800);
+    border-color: var(--clr-gray-800);
+  }
+}
+
+
+.btn--sm {
+  padding: rem(8) rem(16);
+  font-size: rem(14);
+}
+
+.btn--lg {
+  padding: rem(16) rem(32);
+  font-size: rem(20);
+}
+
+// Full width (για product buttons)
+.btn--full {
+  width: 100%;
+}
+
+
 // Container για κουμπιά
 .outerbuttons {
   display: flex;

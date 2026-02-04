@@ -1,6 +1,7 @@
 @use '../abstracts/colors' as c;
 @use '../abstracts/breakpoints' as b; // Χρήσιμο αν θέλουμε τιμές από τα breakpoints
 
+
 :root {
   // ==========================================================================
   // 1. COLORS AUTOMATION
@@ -28,6 +29,12 @@
   // Primary Variations (Generated live, no need for Sass map if you prefer this)
   --clr-primary-light: hsl(from var(--clr-primary) h s calc(l + 20%));
   --clr-primary-dark: hsl(from var(--clr-primary) h s calc(l - 20%));
+
+
+  --font-size-body: var(--font-size-base);
+  --font-size-body-large: var(--font-size-md);
+  --font-size-small: var(--font-size-sm);
+  --font-size-quote: var(--font-size-lg);
 
   // ==========================================================================
   // 3. LAYOUT & GRID
@@ -103,20 +110,15 @@
   --z-above: 10;
   --z-modal: 100;
 
-  // ==========================================================================
-  // 7. PIXEL HELPERS (Generated via Loop)
-  // ==========================================================================
-  $px-values: 1, 2, 3, 4, 5, 8, 10, 12, 15, 16, 20, 24, 30, 32, 40, 48;
-  @each $val in $px-values {
-    --px-#{$val}: #{$val}px;
-  }
+ 
+ 
 }
 
 // ==========================================================================
 // DARK MODE CONFIGURATION
 // ==========================================================================
 
-// Μέθοδος 2: Toggle Switch Class (body.dark-mode)
+
 body.dark-mode {
   --clr-background: var(--clr-gray-900);
   --clr-text: var(--clr-gray-100);

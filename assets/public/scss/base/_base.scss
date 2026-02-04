@@ -1,9 +1,4 @@
-@use '../abstracts/breakpoints' as b;
-// Δεν χρειάζεται @use colors, χρησιμοποιούμε CSS Variables
-
-// -----------------------------------------------------------------------------
-// GLOBAL BASE STYLES
-// -----------------------------------------------------------------------------
+@use '../abstracts' as a;
 
 html {
   font-size: 100%; // Κρατάμε το default (16px συνήθως)
@@ -18,6 +13,9 @@ body {
   min-height: 100vh;
   margin: 0;
   
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+
   // Χρήση των Variables που φτιάξαμε
   background-color: var(--clr-background);
   color: var(--clr-text);
@@ -42,8 +40,8 @@ main {
   // Responsive Padding με χρήση των Spacing Variables
   padding: var(--space-3) 0;
   
-  @include b.up('md') { padding: var(--space-4) 0; }
-  @include b.up('lg') { padding: var(--space-5) 0; }
+  @include a.up('md') { padding: var(--space-4) 0; }
+  @include a.up('lg') { padding: var(--space-5) 0; }
 }
 
 // Selection Color (Όταν μαρκάρεις κείμενο)

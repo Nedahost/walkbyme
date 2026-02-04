@@ -24,13 +24,6 @@ html {
   -webkit-text-size-adjust: 100%; // Prevent font scaling in landscape on iOS
 }
 
-// 5. Body Defaults
-body {
-  min-height: 100vh;
-  line-height: 1.5;
-  text-rendering: optimizeSpeed;
-}
-
 // 6. Media Elements
 img, picture, video, canvas, svg {
   display: block;

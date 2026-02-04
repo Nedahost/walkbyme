@@ -43,11 +43,9 @@ get_header();
         <section class="style-section mb-6">
             <h2 class="h1 mb-4" style="border-bottom: 2px solid var(--clr-gray-200);">3. Buttons</h2>
             
-            <div class="d-flex flex-wrap" style="gap: var(--space-3);">
-                <button class="btn btn-primary">Primary Button</button>
-                <button class="btn btn-secondary">Secondary Button</button>
-                <button class="btn btn-outline">Outline Button</button>
-            </div>
+            <button class="btn btn--primary">Κουμπί</button>
+            <button class="btn btn--primary btn--full btn--lg">Προσθήκη στο καλάθι</button>
+            
         </section>
 
         <section class="style-section mb-6">
