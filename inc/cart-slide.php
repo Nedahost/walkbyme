@@ -127,7 +127,54 @@ class WalkByMe_Slide_Cart {
                     <?php
                 }
             } else {
-                echo '<div class="empty-cart-msg"><p>' . __('Your cart is empty.', 'walkbyme') . '</p></div>';
+                // Empty Cart State
+                ?>
+                <div class="empty-cart">
+                    <h3 class="empty-cart__title"><?php _e('YOUR CART IS EMPTY', 'walkbyme'); ?></h3>
+                    <p class="empty-cart__text"><?php _e('Explore and add your favorite products to the cart.', 'walkbyme'); ?></p>
+                    
+                    <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>" class="empty-cart__btn">
+                        <?php _e('Continue Shopping', 'walkbyme'); ?>
+                    </a>
+                    
+                    <?php if (!is_user_logged_in()) : ?>
+                        <p class="empty-cart__login">
+                            <?php _e("Don't lose your bag.", 'walkbyme'); ?> 
+                            <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>"><?php _e('Log in', 'walkbyme'); ?></a>.
+                        </p>
+                    <?php endif; ?>
+                    
+                    <?php
+                    // Featured Categories
+                    $categories = get_terms(array(
+                        'taxonomy'   => 'product_cat',
+                        'hide_empty' => true,
+                        'number'     => 4,
+                        'parent'     => 0, // Μόνο parent categories
+                    ));
+                    
+                    if (!empty($categories) && !is_wp_error($categories)) : ?>
+                        <div class="empty-cart__categories">
+                            <h4><?php _e('Popular Categories', 'walkbyme'); ?></h4>
+                            <ul>
+                                <?php foreach ($categories as $cat) : 
+                                    $thumbnail_id = get_term_meta($cat->term_id, 'thumbnail_id', true);
+                                    $image = wp_get_attachment_url($thumbnail_id);
+                                ?>
+                                    <li>
+                                        <a href="<?php echo esc_url(get_term_link($cat)); ?>">
+                                            <?php if ($image) : ?>
+                                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($cat->name); ?>">
+                                            <?php endif; ?>
+                                            <span><?php echo esc_html($cat->name); ?></span>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php
             } ?>
         </div>
         <?php
@@ -185,6 +232,108 @@ class WalkByMe_Slide_Cart {
             .walkbyme-progress .fill{height:100%;transition:width .3s}
             .empty-cart-msg{text-align:center;padding:40px 0;color:#777}
             @media(max-width:480px){#walkbyme-cart{width:100%}}
+
+            /* Empty Cart - Light Theme */
+.empty-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    height: 100%;
+}
+
+.empty-cart__title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--clr-text, #333);
+}
+
+.empty-cart__text {
+    font-size: 14px;
+    color: var(--clr-gray-500, #777);
+    margin: 0 0 30px;
+}
+
+.empty-cart__btn {
+    display: inline-block;
+    padding: 14px 40px;
+    background: #010101;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.empty-cart__btn:hover {
+    background: #333;
+    color: #fff;
+}
+
+.empty-cart__login {
+    font-size: 13px;
+    color: var(--clr-gray-500, #777);
+    margin-top: 25px;
+}
+
+.empty-cart__login a {
+    color: var(--clr-text, #333);
+    text-decoration: underline;
+}
+
+/* Categories */
+.empty-cart__categories {
+    margin-top: 50px;
+    width: 100%;
+    border-top: 1px solid var(--clr-gray-200, #eee);
+    padding-top: 30px;
+}
+
+.empty-cart__categories h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--clr-text, #333);
+}
+
+.empty-cart__categories ul {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.empty-cart__categories li a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--clr-text, #333);
+    transition: color 0.3s;
+}
+
+.empty-cart__categories li a:hover {
+    color: var(--clr-primary, #9a715b);
+}
+
+.empty-cart__categories img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 1px solid var(--clr-gray-200, #eee);
+}
+
+.empty-cart__categories span {
+    font-size: 13px;
+}
         </style>
 
         <script>

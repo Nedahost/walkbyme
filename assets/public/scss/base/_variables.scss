@@ -1,53 +1,36 @@
 @use '../abstracts/colors' as c;
-@use '../abstracts/breakpoints' as b; // Χρήσιμο αν θέλουμε τιμές από τα breakpoints
-
+@use '../abstracts/breakpoints' as b;
 
 :root {
   // ==========================================================================
   // 1. COLORS AUTOMATION
-  // Διαβάζει το map $colors από το abstracts και φτιάχνει CSS Variables.
-  // Παράγει: --clr-primary, --clr-gray-100, --clr-text-body, --clr-accordion-title κλπ.
   // ==========================================================================
   @each $name, $value in c.$colors {
     --clr-#{$name}: #{$value};
   }
 
   // ==========================================================================
-  // 2. DYNAMIC / RELATIVE COLORS
-  // Χρώματα που υπολογίζονται ζωντανά από τον browser (Modern CSS)
+  // 2. THEME SEMANTICS (Light Mode Default)
   // ==========================================================================
-  
-  // Το βασικό background/text της σελίδας (Default Theme)
-  --clr-background: var(--clr-white); 
-  --clr-text: var(--clr-body);
+  --clr-background: var(--clr-white);
+  --clr-text:       var(--clr-body);
+  --clr-text-muted: var(--clr-muted); // Προσθήκη για συνέπεια
+  --clr-header-bg:  var(--clr-header-beige);
 
-  --header-bg: var(--clr-header-beige);
-
-  // Card Background: 5% πιο σκοτεινό από το background
-  --clr-card-bg: hsl(from var(--clr-background) h s calc(l - 5%));
-
-  // Primary Variations (Generated live, no need for Sass map if you prefer this)
+  // Dynamic Colors (Modern CSS)
+  --clr-card-bg:       hsl(from var(--clr-background) h s calc(l - 5%));
   --clr-primary-light: hsl(from var(--clr-primary) h s calc(l + 20%));
-  --clr-primary-dark: hsl(from var(--clr-primary) h s calc(l - 20%));
-
-
-  --font-size-body: var(--font-size-base);
-  --font-size-body-large: var(--font-size-md);
-  --font-size-small: var(--font-size-sm);
-  --font-size-quote: var(--font-size-lg);
+  --clr-primary-dark:  hsl(from var(--clr-primary) h s calc(l - 20%));
+  
+  // Form Specifics (Default)
+  --clr-input-bg:     var(--clr-white);
+  --clr-input-border: var(--clr-gray-300);
 
   // ==========================================================================
-  // 3. LAYOUT & GRID
+  // 3. TYPOGRAPHY SCALE (Fluid)
   // ==========================================================================
-  --container-max-width: 1400px; // Ή όσο είναι το xxl breakpoint σου
-  --grid-gutter: 1.5rem;         // Το κενό ανάμεσα στις στήλες
-
-  // ==========================================================================
-  // 4. TYPOGRAPHY (Fluid Scale)
-  // Κρατάμε τα Clamps σου, είναι τέλεια.
-  // ==========================================================================
-  --f-primary: 'Noto Sans', sans-serif; 
-  --f-secondary: 'Roboto', sans-serif;
+  --f-primary:   'Noto Sans', system-ui, sans-serif;
+  --f-secondary: 'Roboto', system-ui, sans-serif;
 
   // Scale
   --font-size-xs:   clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
@@ -58,44 +41,52 @@
   --font-size-xl:   clamp(1.5rem, 1.3rem + 1vw, 2rem);
   --font-size-2xl:  clamp(1.875rem, 1.5rem + 1.875vw, 2.5rem);
   --font-size-3xl:  clamp(2.25rem, 1.875rem + 1.875vw, 3rem);
-  
-  // Headings
-  --font-size-h1: var(--font-size-2xl); // Μπορείς να κάνεις reference τα πάνω
+
+  // Semantic Aliases
+  --font-size-body:       var(--font-size-base);
+  --font-size-body-large: var(--font-size-md);
+  --font-size-small:      var(--font-size-sm);
+  --font-size-quote:      var(--font-size-lg);
+
+  // Headings Map
+  --font-size-h1: var(--font-size-2xl);
   --font-size-h2: var(--font-size-xl);
   --font-size-h3: var(--font-size-lg);
   --font-size-h4: var(--font-size-md);
   --font-size-h5: var(--font-size-base);
   --font-size-h6: var(--font-size-sm);
-
-  // Component Specific
-  --font-size-hero-title: clamp(2.5rem, 2rem + 2.5vw, 4rem);
-  --font-size-section-title: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
   
+  // Components
+  --font-size-hero-title:    clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  --font-size-section-title: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
 
   // ==========================================================================
-  // 5. SPACING SYSTEM
+  // 4. SPACING & LAYOUT
   // ==========================================================================
+  --container-max-width: 1400px;
+  --grid-gutter: 1.5rem;
+
+ 
+
   --space-1: 0.25rem;
+  --space-1-5: 0.375rem; // Half-step
   --space-2: 0.5rem;
+  --space-2-5: 0.625rem; // Half-step
   --space-3: 1rem;
   --space-4: 1.5rem;
   --space-5: 2rem;
   --space-6: 3rem;
   --space-7: 4rem;
   --space-8: 5rem;
-  
-  // Half-steps
-  --space-1-5: 0.375rem;
-  --space-2-5: 0.625rem;
 
   // ==========================================================================
-  // 6. UI ELEMENTS (Borders, Shadows, Z-Index)
+  // 5. UI ELEMENTS & DEPTH
   // ==========================================================================
-  --border-radius-sm: 0.125rem;
-  --border-radius: 0.25rem;
-  --border-radius-md: 0.375rem;
-  --border-radius-lg: 0.5rem;
-  --border-radius-xl: 1rem;
+  --border-radius-sm:   0.125rem;
+  --border-radius:      0.25rem;
+  --border-radius-md:   0.375rem;
+  --border-radius-lg:   0.5rem;
+  --border-radius-xl:   1rem;
   --border-radius-full: 9999px;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -105,32 +96,37 @@
 
   --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   
-  --z-below: -1;
-  --z-normal: 1;
-  --z-above: 10;
-  --z-modal: 100;
+  // Z-Index Stack (Πολύ σημαντικό να διατηρηθεί)
+  --z-below:  -1;
+  --z-normal:  1;
+  --z-above:   10;
+  --z-header:  100; // Πρόσθεσα αυτό γιατί πάντα χρειάζεται
+  --z-modal:   1000;
+}
 
- 
- 
+@include b.up('xxxl') { 
+  :root {
+    --container-max-width: 1640px; 
+    --grid-gutter: 2rem;
+  }
 }
 
 // ==========================================================================
 // DARK MODE CONFIGURATION
 // ==========================================================================
-
-
 body.dark-mode {
   --clr-background: var(--clr-gray-900);
-  --clr-text: var(--clr-gray-100);
+  --clr-text:       var(--clr-gray-100);
   --clr-text-muted: var(--clr-gray-400);
+  --clr-header-bg:  var(--clr-gray-900);
 
-  --header-bg: var(--clr-gray-900);
-
-  // Ξανα-υπολογισμός για το Dark Mode
+  // Recalculate dynamic colors
   --clr-card-bg: hsl(from var(--clr-background) h s calc(l + 5%));
   
-  // Extra Dark Mode μεταβλητές που ίσως χρειαστείς
-  --clr-input-bg: var(--clr-gray-800);
+  // Dark Mode Specifics
+  --clr-input-bg:     var(--clr-gray-800);
   --clr-input-border: var(--clr-gray-700);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4); // Πιο έντονες σκιές στο dark mode
+  
+  // Stronger shadows for dark mode visibility
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
 }

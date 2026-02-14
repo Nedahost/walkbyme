@@ -1,0 +1,68 @@
+@use '../abstracts' as a;
+
+/* --- Accordion Styles --- */
+.accordion__item {
+  margin-bottom: 10px; // a.rem(10)
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.accordion__title {
+  position: relative;
+  padding: 15px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  // Το εικονίδιο
+  .accordion__icon {
+      width: 12px;
+      height: 12px;
+      position: relative;
+      transition: transform 0.3s ease;
+      
+      &::before, &::after {
+          content: '';
+          position: absolute;
+          background-color: currentColor;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+      
+      &::before { width: 100%; height: 2px; } // Οριζόντια γραμμή
+      &::after { width: 2px; height: 100%; transition: transform 0.3s ease; } // Κάθετη γραμμή
+  }
+
+  // Όταν είναι ενεργό
+  &.is-active {
+      .accordion__icon {
+          // Περιστροφή όλου του εικονιδίου ή απόκρυψη της κάθετης γραμμής
+          &::after { transform: translate(-50%, -50%) rotate(90deg); } 
+      }
+  }
+}
+
+.accordion__content {
+  display: none;    // Ξεκινάει κρυφό
+  overflow: hidden; // Κρύβει το περιεχόμενο καθώς κλείνει
+  // ΠΡΟΣΟΧΗ: Μην βάλεις padding ή margin εδώ!
+}
+
+/* Εσωτερικό - Το διαχειρίζεται το CSS (Opacity) */
+.accordion__inner {
+  padding: 0 10px 15px 10px; // Το padding μπαίνει εδώ
+  
+  // Αρχική κατάσταση (Κρυφό/Μετατοπισμένο)
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Όταν η JS βάλει την κλάση .is-open, το inner εμφανίζεται */
+.accordion__content.is-open .accordion__inner {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s; // Μικρή καθυστέρηση για smooth εφέ
+}

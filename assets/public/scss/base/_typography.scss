@@ -1,51 +1,109 @@
-// Σημείωση: Δεν χρειάζεται @use '../abstracts' εδώ, 
-// γιατί χρησιμοποιούμε CSS Variables (--var) που είναι ήδη φορτωμένες στο browser!
-
 // ==================================================
-// TYPOGRAPHY CONFIG (Local Helper Variables)
+// TYPOGRAPHY BASE (Tags only)
 // ==================================================
 $lh-tight: 1.2;
 $lh-base:  1.5;
 $lh-loose: 1.8;
+$fw-bold:  700;
 
-$fw-light:    300;
-$fw-normal:   400;
-$fw-medium:   500;
-$fw-semibold: 600;
-$fw-bold:     700;
+// Base text settings
+body {
+  font-family: var(--f-primary);
+  font-weight: 300;
+  line-height: $lh-base;
+  color:       var(--clr-text);
+}
 
-// ==================================================
-// SEMANTIC HEADINGS (h1-h6)
-// ==================================================
-// Κοινά styles για όλα τα headings
+// --------------------------------------------------
+// HEADINGS
+// --------------------------------------------------
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   font-family: var(--f-primary);
   font-weight: $fw-bold;
   line-height: $lh-tight;
   margin-bottom: 0.5em;
-  color: var(--clr-text); // Explicit color inheritance
+  color: var(--clr-text);
 }
 
-// Loop για τα μεγέθη (DRY - Don't Repeat Yourself)
-// Αντιστοιχεί το h1 με το --font-size-h1, το h2 με το --font-size-h2 κλπ.
+// Loop for responsive sizing (mapped to variables)
 @for $i from 1 through 6 {
   h#{$i}, .h#{$i} {
     font-size: var(--font-size-h#{$i});
   }
 }
 
-// Custom Titles Area
-.generic-titles h2 {
-  font-size: var(--font-size-h3);
-  font-weight: $fw-normal;
-  text-align: center;
+// --------------------------------------------------
+// BODY TEXT
+// --------------------------------------------------
+p {
+  margin-bottom: var(--space-4);
+  
+  &:last-child { margin-bottom: 0; }
+}
+
+// --------------------------------------------------
+// LINKS
+// --------------------------------------------------
+a {
+  color: var(--clr-link);
+  text-decoration: none;
+  transition: color var(--transition-normal);
+  cursor: pointer;
+
+  &:hover, &:focus-visible {
+    color: var(--clr-link-hover);
+    text-decoration: underline;
+  }
+}
+
+// --------------------------------------------------
+// INLINE ELEMENTS
+// --------------------------------------------------
+small { font-size: var(--font-size-small); }
+strong, b { font-weight: $fw-bold; }
+em, i { font-style: italic; }
+
+code {
+  font-family: monospace;
+  background-color: var(--clr-gray-200); // Λίγο πιο σκούρο από το 100 για contrast
+  padding: 0.2em 0.4em;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9em;
+  color: var(--clr-text);
+}
+
+// --------------------------------------------------
+// BLOCK ELEMENTS
+// --------------------------------------------------
+blockquote {
+  border-left: 4px solid var(--clr-primary);
+  padding-left: var(--space-3);
+  margin: var(--space-4) 0;
+  font-style: italic;
+  font-size: var(--font-size-quote);
+  color: var(--clr-text-muted);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--clr-gray-300);
+  margin: var(--space-6) 0;
 }
 
 // ==================================================
-// DISPLAY TYPOGRAPHY (Material Design Style)
+// TYPOGRAPHY HELPERS (Classes)
 // ==================================================
+
+// Lead Paragraph
+.lead {
+  font-size: var(--font-size-body-large);
+  line-height: $lh-loose;
+  color: var(--clr-text-muted);
+}
+
+// Display Headings (Hero/Banners)
 .display-1 {
-  font-size: var(--font-size-hero-title);
+  font-size: var(--font-size-hero-title); // Χρήση της dedicated μεταβλητής
   font-weight: $fw-bold;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -60,109 +118,17 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 
 .display-3 {
   font-size: var(--font-size-2xl);
-  font-weight: $fw-semibold;
+  font-weight: $fw-bold;
   line-height: $lh-tight;
 }
 
-.display-4 {
-  font-size: var(--font-size-xl);
-  font-weight: $fw-semibold;
-  line-height: 1.25;
-}
-
-// ==================================================
-// BODY TEXT & PARAGRAPHS
-// ==================================================
-p {
-  font-size: var(--font-size-body);
-  line-height: $lh-base;
-  margin-bottom: var(--space-4); // Χρήση του spacing system
-  color: var(--clr-text);
-
-  &:last-child { margin-bottom: 0; }
-}
-
-// Lead Paragraph (Εισαγωγικό κείμενο)
-.lead {
-  font-size: var(--font-size-body-large);
-  line-height: $lh-loose;
-  color: var(--clr-text-muted); // Συχνά θέλουμε το lead λίγο πιο απαλό
-}
-
-// ==================================================
-// COMPONENT-SPECIFIC OVERRIDES
-// ==================================================
-.hero-section,
-.banner-section,
-.outerimagelarge {
-  h1 {
-    font-size: var(--font-size-hero-title);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-  h2 {
-    font-size: var(--font-size-section-title);
-    font-weight: $fw-semibold;
-  }
-}
-
-// ==================================================
-// LINKS
-// ==================================================
-a {
-  color: var(--clr-link);
-  text-decoration: none;
-  transition: color var(--transition-normal); // Χρήση της global transition
-
-  &:hover, &:focus-visible { // focus-visible για accessibility
-    color: var(--clr-link-hover);
-    text-decoration: underline; // Καλό UX για να φαίνεται ότι είναι link
-  }
-}
-
-// ==================================================
-// LISTS (Styled only)
-// Το reset.scss έχει ήδη καθαρίσει τα margins/paddings
-// ==================================================
-.list {
+// Generic List Styling (Optional Helper)
+.list-styled {
   padding-left: var(--space-4);
   margin-bottom: var(--space-4);
   
   li { margin-bottom: var(--space-2); }
-
+  
   &--disc    { list-style-type: disc; }
   &--decimal { list-style-type: decimal; }
-  &--check   { list-style: none; /* Εδώ θα έμπαινε icon με ::before */ }
-}
-
-// ==================================================
-// MISC ELEMENTS
-// ==================================================
-small { font-size: var(--font-size-small); }
-strong, b { font-weight: $fw-bold; }
-em, i { font-style: italic; }
-
-blockquote {
-  border-left: 4px solid var(--clr-primary);
-  padding-left: var(--space-3);
-  margin: var(--space-4) 0;
-  font-style: italic;
-  font-size: var(--font-size-quote);
-  color: var(--clr-text-muted);
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid var(--clr-gray-200);
-  margin: var(--space-6) 0;
-}
-
-// Code blocks
-code {
-  font-family: monospace; // Ή κάποια Google Font αν έχεις
-  background-color: var(--clr-gray-100);
-  padding: 0.2em 0.4em;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.9em;
-  color: var(--clr-text);
 }

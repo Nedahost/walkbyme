@@ -16,8 +16,8 @@
   transition: all var(--transition-normal);
   
   // Default θα είναι το medium
-  padding: rem(12) rem(24);
-  font-size: rem(18);
+  padding: a.rem(12) a.rem(24);
+  font-size: a.rem(18);
   
   // Αποφυγή text selection στο click
   user-select: none;
@@ -42,13 +42,13 @@
 
 
 .btn--sm {
-  padding: rem(8) rem(16);
-  font-size: rem(14);
+  padding: a.rem(8) a.rem(16);
+  font-size: a.rem(14);
 }
 
 .btn--lg {
-  padding: rem(16) rem(32);
-  font-size: rem(20);
+  padding: a.rem(16) a.rem(32);
+  font-size: a.rem(20);
 }
 
 // Full width (για product buttons)

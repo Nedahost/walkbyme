@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // -----------------------------------------------------------------------------
 // BREAKPOINTS MAP
 // -----------------------------------------------------------------------------
@@ -15,14 +17,13 @@ $breakpoints: (
 // MIXIN: BREAKPOINT UP (Mobile-First)
 // -----------------------------------------------------------------------------
 @mixin up($size) {
-  // Χρήση παλιάς σύνταξης που παίζει παντού
-  @if map-has-key($breakpoints, $size) {
-    $width: map-get($breakpoints, $size);
+  @if map.has-key($breakpoints, $size) {
+    $width: map.get($breakpoints, $size);
     @media (min-width: $width) {
       @content;
     }
   } @else {
-    @warn "Το breakpoint: '#{$size}' δεν υπάρχει στο map.";
+    @error "Το breakpoint: '#{$size}' δεν υπάρχει στο map.";
   }
 }
 
@@ -30,13 +31,14 @@ $breakpoints: (
 // MIXIN: BREAKPOINT DOWN (Desktop-First)
 // -----------------------------------------------------------------------------
 @mixin down($size) {
-  @if map-has-key($breakpoints, $size) {
-    $width: map-get($breakpoints, $size);
+  @if map.has-key($breakpoints, $size) {
+    $width: map.get($breakpoints, $size);
+    // Αφαίρεση 0.02px για αποφυγή overlap σε high-dpi screens
     @media (max-width: ($width - 0.02px)) {
       @content;
     }
   } @else {
-    @warn "Το breakpoint: '#{$size}' δεν υπάρχει στο map.";
+    @error "Το breakpoint: '#{$size}' δεν υπάρχει στο map.";
   }
 }
 
@@ -44,14 +46,14 @@ $breakpoints: (
 // MIXIN: BREAKPOINT BETWEEN
 // -----------------------------------------------------------------------------
 @mixin between($lower, $upper) {
-  $min: map-get($breakpoints, $lower);
-  $max: map-get($breakpoints, $upper);
+  $min: map.get($breakpoints, $lower);
+  $max: map.get($breakpoints, $upper);
 
   @if $min and $max {
     @media (min-width: $min) and (max-width: ($max - 0.02px)) {
       @content;
     }
   } @else {
-    @warn "Κάποιο breakpoint δεν βρέθηκε.";
+    @error "Κάποιο breakpoint (#{$lower} ή #{$upper}) δεν βρέθηκε.";
   }
 }

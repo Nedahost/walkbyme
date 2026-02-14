@@ -1,11 +1,12 @@
+@use "sass:math";
+@use "sass:meta";
+
 // -----------------------------------------------------------------------------
 // STRIP UNIT
 // -----------------------------------------------------------------------------
 @function strip-unit($number) {
-  // type-of αντί για meta.type-of
-  @if type-of($number) == 'number' and not unitless($number) {
-    // Κλασική διαίρεση για να μην χτυπήσει το module system
-    @return $number / ($number * 0 + 1);
+  @if meta.type-of($number) == 'number' and not math.is-unitless($number) {
+    @return math.div($number, ($number * 0 + 1));
   }
   @return $number;
 }
@@ -14,21 +15,23 @@
 // REM CONVERTER
 // -----------------------------------------------------------------------------
 @function rem($pixels, $context: 16) {
-  @if type-of($pixels) != 'number' {
+  @if meta.type-of($pixels) != 'number' {
     @error "Η τιμή '#{$pixels}' πρέπει να είναι αριθμός.";
   }
   
-  // Κλασική διαίρεση
-  @return calc((strip-unit($pixels) / strip-unit($context))) * 1rem;
+  // Χρήση math.div για συμβατότητα με Dart Sass
+  $value: math.div(strip-unit($pixels), strip-unit($context));
+  @return $value * 1rem; 
 }
 
 // -----------------------------------------------------------------------------
 // EM CONVERTER
 // -----------------------------------------------------------------------------
 @function em($pixels, $context: 16) {
-  @if type-of($pixels) != 'number' {
+  @if meta.type-of($pixels) != 'number' {
     @error "Η τιμή '#{$pixels}' πρέπει να είναι αριθμός.";
   }
 
-  @return (strip-unit($pixels) / strip-unit($context)) * 1em;
+  $value: math.div(strip-unit($pixels), strip-unit($context));
+  @return $value * 1em;
 }

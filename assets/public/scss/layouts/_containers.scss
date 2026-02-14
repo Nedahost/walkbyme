@@ -1,65 +1,61 @@
 @use '../abstracts' as a;
 
 // ==================================================
-// MAIN CONTAINER
-// Fluid approach: Μεγαλώνει ομαλά μέχρι το max-width
+// MAIN CONTAINER (.wrapper)
 // ==================================================
 .wrapper {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   
-  // Το βασικό όριο που ορίσαμε στο variables.scss
-  max-width: var(--container-max-width, 1320px);
+  // Logical Properties: Αντικαθιστά margin-left/right: auto
+  margin-inline: auto;
   
-  // Responsive Padding (χρησιμοποιούμε τα gaps του Grid για συνέπεια)
-  padding-left: var(--space-3);
-  padding-right: var(--space-3);
+  // Το βασικό όριο (1400px ή 1320px ανάλογα το var)
+  max-width: var(--container-max-width);
   
+  // Logical Padding (Left/Right)
+  // Χρησιμοποιούμε το gutter για να "αναπνέει" το περιεχόμενο στις άκρες
+  padding-inline: var(--grid-gutter, 1rem); 
+
+  // Responsive Gutter Adjustment
   @include a.up('md') {
-    padding-left: var(--space-4);
-    padding-right: var(--space-4);
+    padding-inline: var(--space-4); // 1.5rem
   }
 
   @include a.up('xl') {
-    padding-left: var(--space-5);
-    padding-right: var(--space-5);
+    padding-inline: var(--space-5); // 2rem
   }
 
   // ------------------------------------------------
-  // VARIANTS (Modifiers)
+  // MODIFIERS
   // ------------------------------------------------
   
-  // Full width (για backgrounds ή sliders)
+  // Fluid: Πιάνει όλο το πλάτος (π.χ. για Hero Banner background)
   &--fluid {
     max-width: 100%;
-    // Μπορείς να κρατήσεις το padding ή να το μηδενίσεις
-    // padding-left: 0; 
-    // padding-right: 0;
+    // Προαιρετικά μηδενίζουμε το padding αν θέλουμε edge-to-edge
+    // padding-inline: 0; 
   }
   
-  // Narrow (για Blog posts / Articles για να διαβάζονται εύκολα)
+  // Narrow: Βέλτιστο για ανάγνωση κειμένου (Blog Posts)
   &--narrow {
-    max-width: 800px; 
-    // Ή πιο μοντέρνα: max-width: 65ch; (65 χαρακτήρες πλάτος)
+    // 65ch = πλάτος 65 χαρακτήρων (The Golden Standard for readability)
+    max-width: min(100%, 65ch); 
   }
   
-  // Wide (για Galleries ή Dashboards)
+  // Wide: Dashboard / Data Tables / Galleries
   &--wide {
-    max-width: 1500px; // Μεγαλύτερο από το default
+    max-width: 1600px; 
   }
 }
 
 // ==================================================
-// CONTENT WRAPPER (Vertical Spacing)
-// Χρήσιμο για να δίνεις "αέρα" πάνω-κάτω στα sections
+// VERTICAL SPACING WRAPPER (Sections)
 // ==================================================
 .content-wrapper {
-  padding-top: var(--space-6);
-  padding-bottom: var(--space-6);
+  // Logical Padding (Top/Bottom)
+  padding-block: var(--space-6);
   
   @include a.up('md') {
-    padding-top: var(--space-8);
-    padding-bottom: var(--space-8);
+    padding-block: var(--space-8);
   }
 }

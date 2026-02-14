@@ -2,46 +2,50 @@
 // MODERN RESET
 // -----------------------------------------------------------------------------
 
-// 1. Box Sizing (Ο πιο σημαντικός κανόνας)
+// Box Sizing: Το πιο σημαντικό
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-// 2. Reset Margins & Paddings
+// Reset Margins & Paddings
 body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, ul, ol {
   margin: 0;
   padding: 0;
 }
 
-// 3. List Styles
+// List Styles
 ul, ol {
   list-style: none;
 }
 
-// 4. HTML Setup
+// HTML & Body Setup
 html {
-  scroll-behavior: smooth; // Smooth scroll anchor links
-  -webkit-text-size-adjust: 100%; // Prevent font scaling in landscape on iOS
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  
+  // Απαραίτητο για το sticky footer technique
+  height: 100%; 
 }
 
-// 6. Media Elements
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+// Media Elements
 img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
 }
 
-// 7. Forms
+// Forms: Inherit fonts
 input, button, textarea, select {
-  font: inherit; // Κληρονομούν τη γραμματοσειρά του body
+  font: inherit;
+  color: inherit; // Καλό practice για inputs
 }
 
-// 8. Tables
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-// 9. Accessibility (Reduced Motion)
+// Accessibility: Reduced Motion
 @media (prefers-reduced-motion: reduce) {
   html:focus-within { scroll-behavior: auto; }
   

@@ -1,27 +1,25 @@
+@use "sass:map";
+
 // -----------------------------------------------------------------------------
 // 1. PRIMARY PALETTE
 // -----------------------------------------------------------------------------
-// Χρησιμοποιούμε $ αντί για $_ για να είμαστε σίγουροι ότι είναι ορατά παντού
-$primary-colors: (
-  "header-beige":    hsl(48, 45%, 98%),
-  "main":      hsl(0, 0%, 99%),
-  "white":     hsl(0, 0%, 100%),
-  "black":     hsl(0, 0%, 0%),
-  "primary":   hsl(0, 0%, 20%),
-  "secondary": hsl(280, 80%, 60%),
-  "accent":    hsl(30, 100%, 50%)
+$-primary-colors: (
+  "header-beige":  hsl(48, 45%, 98%),
+  "main":          hsl(0, 0%, 99%),
+  "white":         hsl(0, 0%, 100%),
+  "black":         hsl(0, 0%, 0%),
+  "primary":       hsl(0, 0%, 20%),
+  "secondary":     hsl(280, 80%, 60%),
+  "accent":        hsl(30, 100%, 50%)
 );
 
-// -----------------------------------------------------------------------------
-// 2. VARIATIONS
-// -----------------------------------------------------------------------------
-$variations: (
+$-variations: (
   "primary-light":   hsl(210, 100%, 65%),
   "primary-dark":    hsl(210, 100%, 35%),
   "secondary-light": hsl(280, 80%, 75%),
   "secondary-dark":  hsl(280, 80%, 45%),
   
-  // Gray scale
+  // Grayscale
   "gray-100": hsl(0, 0%, 95%),
   "gray-200": hsl(0, 0%, 85%),
   "gray-300": hsl(0, 0%, 75%),
@@ -33,50 +31,38 @@ $variations: (
   "gray-900": hsl(0, 0%, 15%)
 );
 
-// -----------------------------------------------------------------------------
-// 3. SEMANTIC COLORS
-// -----------------------------------------------------------------------------
-$semantic: (
+$-semantic: (
   "success": hsl(120, 60%, 50%),
   "warning": hsl(40, 100%, 50%),
   "error":   hsl(0, 100%, 50%),
   "info":    hsl(200, 80%, 60%)
 );
 
-// -----------------------------------------------------------------------------
-// 4. AREA COLORS
-// -----------------------------------------------------------------------------
-$areas: (
+$-areas: (
   "footer-bg":       hsl(0, 0%, 97%),
   "copyright-bg":    hsl(0, 0%, 88%),
   "image-bg":        hsl(0, 0%, 98%),
   "accordion-title": hsl(0, 0%, 95%)
 );
 
-// -----------------------------------------------------------------------------
-// 5. TEXT COLORS
-// -----------------------------------------------------------------------------
-$text: (
+$-text: (
   "body":       hsl(0, 0%, 20%),
   "muted":      hsl(0, 0%, 45%),
   "light":      hsl(0, 0%, 75%),
-  // Χρησιμοποιούμε map-get (χωρίς τελεία)
-  "link":       map-get($primary-colors, "primary"),
-  "link-hover": map-get($variations, "primary-dark")
+  // Αναφορά απευθείας στο map για ασφάλεια
+  "link":       map.get($-primary-colors, "primary"),
+  "link-hover": map.get($-variations, "primary-dark")
 );
 
-// -----------------------------------------------------------------------------
-// MERGE ALL TO MASTER MAP
-// Ενώνουμε όλα τα maps σε ένα τελικό $colors.
-// Κάνουμε nesting τα map-merge γιατί το Sass δέχεται μόνο 2 ορίσματα κάθε φορά.
-// -----------------------------------------------------------------------------
-$colors: map-merge(
-  $primary-colors,
-  map-merge(
-    $variations,
-    map-merge(
-      $semantic,
-      map-merge($areas, $text)
+
+// MASTER MAP (PUBLIC)
+$colors: map.deep-merge(
+  $-primary-colors,
+  map.deep-merge(
+    $-variations,
+    map.deep-merge(
+      $-semantic,
+      map.deep-merge($-areas, $-text)
     )
   )
 );

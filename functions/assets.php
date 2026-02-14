@@ -37,6 +37,14 @@ add_action( 'admin_enqueue_scripts', 'custom_admin_styles' );
 function walkbyme_load_js() {
     $theme_version = wp_get_theme()->get('Version');
     
+    wp_enqueue_script(
+        'gsap',
+        'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
+        array(),
+        '3.12.5',
+        true
+    );
+
     // Conditional Load: Slick Slider
     // Loads only on Front Page, Products, or pages with the [slider] shortcode
     if (is_front_page() || is_product() || (is_page() && has_shortcode(get_post()->post_content, 'slider'))) {
@@ -72,7 +80,7 @@ function walkbyme_load_js() {
     wp_enqueue_script(
         'walkbyme-main-js',
         get_template_directory_uri() . '/assets/js/myjs.js',
-        array('jquery'), // Depends on jQuery
+        array('jquery', 'gsap'), // Depends on jQuery
         $theme_version,
         true // Load in footer
     );

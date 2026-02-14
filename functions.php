@@ -19,6 +19,7 @@ $includes = [
     // Functionality
     'inc/cart-slide.php',
     'inc/details-product.php',          // Product specific details
+    'inc/product-tabs.php',
     'popup-builder/popup-builder.php',  // Custom popup builder
     'functions/analytics.php',          // Analytics tracking
     'functions/woocommerce.php',        // WooCommerce hooks & filters
@@ -46,7 +47,6 @@ add_action('after_setup_theme', function() {
         WC_Product_Badges_System::get_instance();
     }
 });
-
 
 
 

@@ -105,36 +105,39 @@ if ( post_password_required() ) {
                 </div>
 
                 <?php
-                // Accordions Logic - Optimized
-                $accordion_items = get_option('nedahost_tabs_items', array());
-                
-                if ( ! empty($accordion_items) ) {
-                    echo '<div class="product-accordions">';
+$accordion_items = get_option('product_tabs_data', array());
 
-                    // 1. Static Info Tab
-                    echo '<div class="accordion-item">';
-                    echo '<h3 class="accordion-title">Χαρακτηριστικά <span class="accordion-icon"></span></h3>';
-                    echo '<div class="accordion-content">';
-                    do_action('woocommerce_product_additional_information', $product);
-                    echo '</div></div>';
-
-                    // 2. Dynamic Tabs based on Category
-                    foreach ( $accordion_items as $item ) {
-                        if ( isset($item['question'], $item['answer'], $item['category']) ) {
-                            $target_cats = array_map('trim', explode(',', $item['category']));
-                            
-                            // Native WP check - Much faster than loops
-                            if ( has_term( $target_cats, 'product_cat', $product->get_id() ) ) {
-                                echo '<div class="accordion-item">';
-                                echo '<h3 class="accordion-title">' . esc_html($item['question']) . '<span class="accordion-icon"></span></h3>';
-                                echo '<div class="accordion-content">' . wpautop(wp_kses_post($item['answer'])) . '</div>';
-                                echo '</div>';
-                            }
-                        }
-                    }
-                    echo '</div>';
-                }
-                ?>
+if (!empty($accordion_items)) {
+    echo '<div class="accordion product-accordion">';
+    
+    // 1. Static Info Tab
+    echo '<div class="accordion__item">';
+    echo '<div class="accordion__title">Χαρακτηριστικά <span class="accordion__icon"></span></div>';
+    echo '<div class="accordion__content"><div class="accordion__inner">';
+    do_action('woocommerce_product_additional_information', $product);
+    echo '</div></div></div>';
+    
+    // 2. Dynamic Tabs
+    foreach ($accordion_items as $item) {
+        $title = isset($item['title']) ? $item['title'] : (isset($item['question']) ? $item['question'] : '');
+        $content = isset($item['content']) ? $item['content'] : (isset($item['answer']) ? $item['answer'] : '');
+        $cats = isset($item['categories']) ? $item['categories'] : (isset($item['category']) ? explode(',', $item['category']) : array());
+        
+        if (!empty($title) && !empty($content)) {
+            $target_cats = array_map('trim', (array)$cats);
+            
+            if (empty($target_cats) || has_term($target_cats, 'product_cat', $product->get_id())) {
+                echo '<div class="accordion__item">';
+                echo '<div class="accordion__title">' . esc_html($title) . '<span class="accordion__icon"></span></div>';
+                echo '<div class="accordion__content"><div class="accordion__inner">' . wpautop(wp_kses_post($content)) . '</div></div>';
+                echo '</div>';
+            }
+        }
+    }
+    
+    echo '</div>';
+}
+?>
             </section>
         </div>
     </div>

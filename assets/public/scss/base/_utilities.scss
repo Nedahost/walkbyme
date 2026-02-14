@@ -1,19 +1,35 @@
 @use '../abstracts/breakpoints' as b;
 
+// ==================================================
+// VISIBILITY & DISPLAY
+// ==================================================
 
-// Display (για responsive show/hide)
-.d-none  { display: none; }
-.d-block { display: block; }
-.d-flex  { display: flex; }
+// Standard Accessibility Class (αντικαθιστά την sr-only)
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important; // Fix for some browsers
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
 
-// Text θέση (σπάνια χρήση)
-.text-center { text-align: center; }
-.text-left   { text-align: left; }
+.d-none  { display: none !important; }
+.d-block { display: block !important; }
+.d-flex  { display: flex !important; }
 
-// Ένα-δυο spacing helpers (για exceptions)
-.mt-auto { margin-top: auto; }
-.mb-0    { margin-bottom: 0; }
+// ==================================================
+// HELPERS
+// ==================================================
+.text-center { text-align: center !important; }
+.text-start  { text-align: left !important; }   // Προτιμάμε text-start αντί για left (RTL support)
+.text-end    { text-align: right !important; }
 
+.mt-auto { margin-top: auto !important; }
+.mb-0    { margin-bottom: 0 !important; }
 // Screen reader only
 .sr-only {
   position: absolute;

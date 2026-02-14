@@ -1,71 +1,55 @@
 @use '../abstracts' as a;
 
-html {
-  font-size: 100%; // Κρατάμε το default (16px συνήθως)
-  height: 100%;
-  
-  // Font Smoothing για πιο καθαρά γράμματα
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-}
+// ==================================================
+// GLOBAL LAYOUT & BEHAVIOR
+// ==================================================
 
 body {
-  min-height: 100vh;
-  margin: 0;
-  
-  line-height: 1.5;
-  text-rendering: optimizeSpeed;
-
-  // Χρήση των Variables που φτιάξαμε
-  background-color: var(--clr-background);
-  color: var(--clr-text);
-  font-family: var(--f-primary);
-  font-weight: 300; // Ή var(--fw-light) αν το ορίσουμε
-  font-size: var(--font-size-body);
-  
-  // Sticky Footer Technique
+  // Sticky Footer Technique (Flexbox Column)
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   
-  // Mobile fixes
-  -webkit-tap-highlight-color: transparent;
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+  
+  // Mobile enhancements
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
-// Sticky Footer: Το main πιάνει όλο τον διαθέσιμο χώρο
+// Main Content Area
+// Πιάνει όλο τον διαθέσιμο χώρο ανάμεσα σε header/footer
 main {
   flex: 1 0 auto;
-  background-color: var(--clr-white); // Χρήση CSS Variable
+  width: 100%;
   
-  // Responsive Padding με χρήση των Spacing Variables
-  padding: var(--space-3) 0;
+  // Global Padding Logic
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+
+  @include a.up('md') { 
+    padding-top: var(--space-4); 
+    padding-bottom: var(--space-4); 
+  }
   
-  @include a.up('md') { padding: var(--space-4) 0; }
-  @include a.up('lg') { padding: var(--space-5) 0; }
+  @include a.up('lg') { 
+    padding-top: var(--space-5); 
+    padding-bottom: var(--space-5); 
+  }
 }
 
-// Selection Color (Όταν μαρκάρεις κείμενο)
+// ==================================================
+// GLOBAL INTERACTION STATES
+// ==================================================
+
+// Text Selection
 ::selection {
   color: var(--clr-white);
   background-color: var(--clr-primary);
 }
 
-// -----------------------------------------------------------------------------
-// HELPER CLASSES (Visually Hidden)
-// -----------------------------------------------------------------------------
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-// Focus Styles (Accessibility)
+// Focus Management (Accessibility)
 :focus-visible {
   outline: 2px solid var(--clr-primary);
   outline-offset: 2px;

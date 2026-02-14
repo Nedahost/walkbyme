@@ -83,16 +83,35 @@ jQuery(document).ready(function($) {
         $(this).closest('.woocommerce-product-gallery').find('.woocommerce-product-gallery__trigger').click();
     });
     
-    // Accordion functionality
-    $('.accordion-title').click(function() {
-        var $content = $(this).siblings('.accordion-content');
-        
-        if ($(this).hasClass('active')) {
-            $(this).removeClass('active');
-            $content.slideUp(300);
-        } else {
-            $(this).addClass('active');
-            $content.slideDown(300);
-        }
+
+
+
+    document.querySelectorAll('.accordion__title').forEach(title => {
+        title.addEventListener('click', function() {
+            console.log('CLICK!');
+            const content = this.nextElementSibling;
+            const isActive = this.classList.contains('is-active');
+            
+            if (isActive) {
+                this.classList.remove('is-active');
+                content.classList.remove('is-open');
+                gsap.to(content, {
+                    height: 0,
+                    duration: 0.3,
+                    ease: "power1.inOut",
+                    onComplete: () => gsap.set(content, { display: 'none' })
+                });
+            } else {
+                this.classList.add('is-active');
+                content.classList.add('is-open');
+                gsap.set(content, { display: 'block', height: 0, overflow: 'hidden' });
+                gsap.to(content, {
+                    height: "auto",
+                    duration: 0.3,
+                    ease: "power1.inOut"
+                });
+            }
+        });
     });
+    
 });
