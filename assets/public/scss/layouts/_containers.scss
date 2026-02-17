@@ -18,11 +18,11 @@
 
   // Responsive Gutter Adjustment
   @include a.up('md') {
-    padding-inline: var(--space-4); // 1.5rem
+    padding-inline: var(--space-5); // 25rem
   }
 
   @include a.up('xl') {
-    padding-inline: var(--space-5); // 2rem
+    padding-inline: var(--space-6); // 3rem
   }
 
   // ------------------------------------------------
@@ -44,7 +44,7 @@
   
   // Wide: Dashboard / Data Tables / Galleries
   &--wide {
-    max-width: 1600px; 
+    max-width: 1800px;  
   }
 }
 
