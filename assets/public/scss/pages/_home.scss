@@ -1,6 +1,17 @@
 @use '../abstracts' as a;
 @use '../base' as t;
 
+.generic-titles{
+  font-size: var(--font-size-h3);
+  font-weight: 700;
+  text-align: center;
+  p{
+    font-weight: 400;
+    font-size: var(--font-size-small);
+    margin-bottom: var(--space-4);
+  }
+}
+
 // Categories section
 .hm_categories {
   margin: 40px 0 50px;
@@ -47,7 +58,7 @@
         }
       }
       
-      h3 {
+      h2 {
         font-size: var(--font-size-h5);
         font-weight: normal;
         padding-top: 15px;

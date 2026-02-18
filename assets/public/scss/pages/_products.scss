@@ -30,66 +30,8 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+          
             
-            // ===========================================
-            // PRODUCT BADGES - ΝΕΟ ΚΟΜΜΑΤΙ
-            // ===========================================
-            .product-badges {
-                position: absolute;
-                top: var(--space-2); // 8px από την κορυφή
-                right: var(--space-2); // 8px από τα δεξιά
-                z-index: 10;
-                display: flex;
-                flex-direction: column;
-                gap: var(--space-1); // 4px μεταξύ των badges
-                
-                .product-badge {
-                    display: inline-block;
-                    padding: 4px 8px;
-                    font-size: 0.75rem; // 12px
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    border-radius: 3px;
-                    white-space: nowrap;
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-                    transition: transform 0.2s ease;
-                    
-                    // Hover effect
-                    &:hover {
-                        transform: scale(1.05);
-                    }
-                    
-                    // Position variants
-                    &.badge-top-left {
-                        // Αυτό θα το χειριστούμε με position absolute αν χρειαστεί
-                    }
-                    
-                    &.badge-top-right {
-                        // Default position (ήδη στο container)
-                    }
-                    
-                    &.badge-bottom-left,
-                    &.badge-bottom-right {
-                        // Για bottom badges, θα χρειαστεί διαφορετικό positioning
-                    }
-                }
-            }
-            
-            // Alternative positioning για bottom badges
-            &:has(.badge-bottom-left) .product-badges,
-            &:has(.badge-bottom-right) .product-badges {
-                top: auto;
-                bottom: var(--space-2);
-            }
-            
-            &:has(.badge-bottom-left) .product-badges {
-                right: auto;
-                left: var(--space-2);
-            }
-            // ===========================================
-            // ΤΕΛΟΣ BADGES STYLING
-            // ===========================================
             
             .product-image-link {
                 position: relative;
@@ -119,7 +61,7 @@
                     border: 0;
                     vertical-align: bottom;
                     transition: transform var(--transition-normal) var(--transition-ease);
-                    background-color: var(--clr-image-bg);            
+                    //background-color: var(--clr-image-bg);            
                     &:hover{
                         -webkit-transform: scale(1.05);
                         -moz-transform: scale(1.05);

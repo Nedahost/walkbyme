@@ -63,7 +63,9 @@
                 </div>
             <?php endif; ?>
         </div>
-    </div><div class="outercarousel"><div class="generic-titles"><h2><?php esc_html_e('ΟΙ ΠΡΟΤΑΣΕΙΣ ΜΑΣ', 'walkbyme'); ?></h2>
+    </div>
+    <div class="outercarousel"><div class="generic-titles">
+        <?php esc_html_e('Επιλογές που Ξεχωρίζουν', 'walkbyme'); ?>
         </div><div class="carousel"><?php 
             if (function_exists('display_featured_products')) {
                 display_featured_products(); 
@@ -71,38 +73,41 @@
                 echo '<p>' . esc_html__('Δεν υπάρχουν διαθέσιμα προϊόντα προς το παρόν.', 'walkbyme') . '</p>';
             }
             ?>
-        </div></div></div><section class="home-intro-section">
+        </div></div></div>
+        
+        <section class="home-intro-section">
     <div class="felxbox">
         <div class="outerimagelarge">
-            <div class="imagewrapper">
-                </div>
-            <div class="imagecontent">
-                <header class="sectionheader"><h3><u><?php esc_html_e('Χειροποίητα Κοσμήματα', 'walkbyme'); ?></u></h3>
-                    <h4 class="sectionheader_title">
-                        <?php esc_html_e('Το πάθος μας για χειροποίητα κοσμήματα από ασήμι 925 και χρυσό!', 'walkbyme'); ?>
-                    </h4>
+            <div class="imagewrapper"></div> <div class="imagecontent">
+                <header class="sectionheader">
+                    <h2><?php esc_html_e('Χειροποίητα Κοσμήματα', 'walkbyme'); ?></h2>
+                    
+                    <h3 class="sectionheader_title">
+                        <?php esc_html_e('Ασήμι 925 και Χρυσό σε μοναδικά σχέδια', 'walkbyme'); ?>
+                    </h3>
+                    
                     <div class="sectionheadaer_description">
                         <p>
                             <?php 
-                            // Using printf allows translation of the sentence structure while keeping bold tags
-                            printf(
-                                /* translators: %s starts underline/bold, %s ends underline/bold */
-                                esc_html__('Η κατασκευή %sχειροποίητων ασημένιων και χρυσών%s κοσμημάτων είναι το πάθος μας. Δίνουμε μεγάλη προσοχή σε κάθε βήμα της διαδικασίας.', 'walkbyme'),
-                                '<strong><u>', '</u></strong>'
-                            ); 
+                            /* COPYWRITING UPDATE: 
+                                Αφαιρέσαμε το "κατασκευάζουμε" και το "πάθος".
+                                Μιλάμε για "Ελληνική Υπογραφή" και "Λεπτομέρεια".
+                                Αυτό ταιριάζει και σε Curator και σε Maker.
+                            */
+                            esc_html_e('Η αυθεντική ομορφιά του χειροποίητου σε κάθε λεπτομέρεια. Κοσμήματα με ταυτότητα, που ξεχωρίζουν για το φινίρισμα και την αντοχή τους.', 'walkbyme'); 
                             ?>
                         </p>
+                        
                         <p>
                             <?php 
-                            // Better logic to find the About page
-                            $about_url = home_url('/about/'); // Default fallback
+                            $about_url = home_url('/about/'); 
                             $about_page = get_page_by_path('η-εταιρεία-μας');
                             if ($about_page) {
                                 $about_url = get_permalink($about_page->ID);
                             }
                             ?>
                             <a href="<?php echo esc_url($about_url); ?>" class="read-more-link">
-                                <?php esc_html_e('Δείτε ποιοί είμαστε', 'walkbyme'); ?>
+                                <?php esc_html_e('Η Φιλοσοφία μας', 'walkbyme'); ?> &rarr;
                             </a>
                         </p>
                     </div>
@@ -112,8 +117,10 @@
     </div>
 </section>
 
-<div class="wrapper"><section class="hm_categories" aria-label="<?php esc_attr_e('Product Categories', 'walkbyme'); ?>"><div class="generic-titles"><h2><?php esc_html_e('ΑΓΟΡΕΣ ΑΝΑ ΚΑΤΗΓΟΡΙΑ', 'walkbyme'); ?></h2>
-            <p><?php esc_html_e('Λαμπρός σχεδιασμός και απαράμιλλη δεξιοτεχνία.', 'walkbyme'); ?></p>
+<div class="wrapper"><section class="hm_categories" aria-label="<?php esc_attr_e('Product Categories', 'walkbyme'); ?>">
+<div class="generic-titles">
+    <?php esc_html_e('Κοσμήματα ανά Κατηγορία', 'walkbyme'); ?>
+            <p><?php esc_html_e('Μοναδικά σχέδια από Ασήμι 925 & Χρυσό σε Δαχτυλίδια, Κολιέ και Βραχιόλια.', 'walkbyme'); ?></p>
         </div><ul>
             <?php
             $cache_key = 'homepage_categories_v2';
@@ -159,11 +166,11 @@
                             </figure>
                         <?php endif; ?>
                         
-                        <h3>
+                        <h2>
                             <a href="<?php echo esc_url($category_url); ?>">
                                 <?php echo esc_html($category->name); ?>
                             </a>
-                        </h3>
+                        </h2>
                         
                         <?php if (!empty($category->description)) : ?>
                             <p><?php echo wp_trim_words(esc_html($category->description), 15); ?></p>

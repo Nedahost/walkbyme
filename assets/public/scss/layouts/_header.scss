@@ -15,12 +15,12 @@
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
-        padding: 1rem 2rem;
+        padding: 1rem 0;
         background-color: var(--header-bg);
         transition: background-color 0.3s ease;
         
         @include a.up('md') {
-            padding: 1rem 2rem;
+            padding: 1rem 0;
         }
        
         @include a.down('md') {
@@ -153,3 +153,20 @@
         }
     }
 }
+
+.seo-tagline-container {
+    background-color: #f9f9f9; /* Ένα απαλό χρώμα που ταιριάζει με το brand */
+    text-align: center;
+    padding: 8px 0; /* Μικρό padding για να μην πιάνει χώρο */
+    border-bottom: 1px solid #e0e0e0;
+  
+    h1 {
+      font-size: 14px; /* ΝΑΙ, το H1 μπορεί να είναι μικρό! */
+      font-weight: 500;
+      color: #555; /* Όχι κατάμαυρο για να είναι διακριτικό */
+      margin: 0;
+      text-transform: uppercase; /* Για να μοιάζει με τίτλο κατηγορίας */
+      letter-spacing: 1px;
+      font-family: 'To Font Sou', sans-serif;
+    }
+  }

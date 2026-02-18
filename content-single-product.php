@@ -50,7 +50,7 @@ if ( post_password_required() ) {
                                 echo '<b>Ref.:</b> ' . esc_html($sku);
                             }
                             if ( $availability ) {
-                                echo ' • <b>Διαθεσιμότητα:</b> ' . esc_html($availability);
+                                echo ' • <b>Χρόνος Ετοιμασίας:</b> ' . esc_html($availability);
                             }
                         ?>
                     </div> 
@@ -99,6 +99,13 @@ if ( post_password_required() ) {
                 </div>
 
                 <?php echo woocommerce_template_single_add_to_cart(); ?>
+
+                <div style="font-size:13px; width:70%; text-align:center; margin: 10px auto 0;">
+                    <i>
+                        **Κάθε κόσμημα κατασκευάζεται στο χέρι αποκλειστικά για εσάς. Ευχαριστούμε που στηρίζετε το <b>ελληνικό χειροποίητο κόσμημα</b>.
+                    </i>
+                </div>
+                
 
                 <div class="productContent">
                     <?php the_content(); ?>

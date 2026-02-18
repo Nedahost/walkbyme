@@ -144,5 +144,9 @@
 
                 </ul>
             </div> </div> </div> </header>
-
+            <?php if ( is_front_page() ) : ?>
+            <div class="seo-tagline-container">
+                <h1>Ελληνικά χειροποίητα κοσμήματα από το Walk By Me</h1>
+            </div>
+            <?php endif; ?>
 <main id="primary" class="site-main">

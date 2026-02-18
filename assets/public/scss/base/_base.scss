@@ -25,16 +25,13 @@ main {
   width: 100%;
   
   // Global Padding Logic
-  padding-top: var(--space-3);
   padding-bottom: var(--space-3);
 
   @include a.up('md') { 
-    padding-top: var(--space-4); 
     padding-bottom: var(--space-4); 
   }
   
   @include a.up('lg') { 
-    padding-top: var(--space-5); 
     padding-bottom: var(--space-5); 
   }
 }
