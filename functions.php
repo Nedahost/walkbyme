@@ -18,6 +18,7 @@ $includes = [
     
     // Functionality
     'inc/cart-slide.php',
+    'inc/product-filters.php',
     'inc/details-product.php',          // Product specific details
     'inc/product-tabs.php',
     'popup-builder/popup-builder.php',  // Custom popup builder
