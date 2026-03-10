@@ -24,26 +24,13 @@ function walkbyme_woocommerce_support() {
     ) );
     
     // Gallery features
-    add_theme_support( 'wc-product-gallery-zoom' );
-    add_theme_support( 'wc-product-gallery-lightbox' );
-    add_theme_support( 'wc-product-gallery-slider' );
+    remove_theme_support( 'wc-product-gallery-zoom' );
+    remove_theme_support( 'wc-product-gallery-lightbox' );
+    remove_theme_support( 'wc-product-gallery-slider' );
 }
 add_action( 'after_setup_theme', 'walkbyme_woocommerce_support' );
 
-// 2. Mobile Gallery Modifications
-function modify_woo_gallery_on_mobile() {
-    if ( wp_is_mobile() ) {
-        remove_theme_support( 'wc-product-gallery-zoom' ); // Zoom is annoying on touch
-        
-        // CSS fix for mobile gallery layout
-        add_action( 'wp_footer', function() {
-            if ( is_product() ) {
-                echo '<style>@media (max-width: 480px) { .woocommerce-product-gallery__wrapper { display: flex; flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; } .woocommerce-product-gallery__image { flex: 0 0 100%; scroll-snap-align: center; } }</style>';
-            }
-        });
-    }
-}
-add_action( 'after_setup_theme', 'modify_woo_gallery_on_mobile', 11 );
+
 
 /**
  * PRICING & DISCOUNT FUNCTIONS
