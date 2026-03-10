@@ -1,599 +1,358 @@
 <?php
 /**
- * Advanced Popup Builder System for WooCommerce
- * Version 2.0 - Complete Rewrite
+ * Simple Welcome Popup
+ * Email capture + automatic WooCommerce coupon
  */
 
-// Αποτροπή άμεσης πρόσβασης
-if (!defined('ABSPATH')) {
-    exit;
-}
+if (!defined('ABSPATH')) exit;
 
-// Έλεγχος αν το WooCommerce είναι ενεργό
-if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-    return;
-}
+// =========================================================
+// ADMIN MENU
+// =========================================================
 
-class WC_Advanced_Popup_Builder {
-    
-    private static $instance = null;
-    
-    public static function get_instance() {
-        if (null === self::$instance) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+add_action('admin_menu', function() {
+    add_submenu_page('woocommerce', 'Welcome Popup', 'Welcome Popup', 'manage_options', 'welcome-popup', 'apb_admin_page');
+});
+
+function apb_admin_page() {
+    if (isset($_POST['apb_save']) && check_admin_referer('apb_save_nonce')) {
+        update_option('apb_enabled',       isset($_POST['apb_enabled']) ? 1 : 0);
+        update_option('apb_headline',      sanitize_text_field($_POST['apb_headline']));
+        update_option('apb_subheadline',   sanitize_textarea_field($_POST['apb_subheadline']));
+        update_option('apb_button_text',   sanitize_text_field($_POST['apb_button_text']));
+        update_option('apb_coupon_amount', floatval($_POST['apb_coupon_amount']));
+        update_option('apb_coupon_prefix', strtoupper(sanitize_text_field($_POST['apb_coupon_prefix'])));
+        update_option('apb_delay',         intval($_POST['apb_delay']));
+        update_option('apb_cookie_days',   intval($_POST['apb_cookie_days']));
+        update_option('apb_accent_color',  sanitize_hex_color($_POST['apb_accent_color']));
+        echo '<div class="notice notice-success"><p>Αποθηκεύτηκε!</p></div>';
     }
-    
-    public function __construct() {
-        add_action('init', array($this, 'init'));
-        add_action('admin_menu', array($this, 'add_admin_menu'));
-        add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
-        add_action('wp_footer', array($this, 'display_active_popups'));
-        add_action('wp_ajax_save_popup_campaign', array($this, 'save_popup_campaign'));
-        add_action('wp_ajax_delete_popup_campaign', array($this, 'delete_popup_campaign'));
-        add_action('wp_ajax_toggle_popup_status', array($this, 'toggle_popup_status'));
-        add_action('wp_ajax_get_popup_analytics', array($this, 'get_popup_analytics'));
-    }
-    
-    public function init() {
-        $this->register_post_type();
-        $this->create_database_tables();
-    }
-    
-    /**
-     * Εγγραφή Custom Post Type για Popup Campaigns
-     */
-    public function register_post_type() {
-        $args = array(
-            'label' => 'Popup Campaigns',
-            'labels' => array(
-                'name' => 'Popup Campaigns',
-                'singular_name' => 'Popup Campaign',
-                'add_new' => 'Add New Popup',
-                'add_new_item' => 'Add New Popup Campaign',
-                'edit_item' => 'Edit Popup Campaign',
-                'new_item' => 'New Popup Campaign',
-                'view_item' => 'View Popup',
-                'search_items' => 'Search Popups',
-                'not_found' => 'No popups found',
-                'not_found_in_trash' => 'No popups found in trash'
-            ),
-            'public' => false,
-            'show_ui' => false, // Θα χρησιμοποιήσουμε custom interface
-            'show_in_menu' => false,
-            'capability_type' => 'post',
-            'hierarchical' => false,
-            'supports' => array('title'),
-            'has_archive' => false,
-            'rewrite' => false,
-            'query_var' => false
-        );
-        
-        register_post_type('popup_campaign', $args);
-    }
-    
-    /**
-     * Δημιουργία πινάκων για analytics
-     */
-    public function create_database_tables() {
-        global $wpdb;
-        
-        $table_name = $wpdb->prefix . 'popup_analytics';
-        
-        $charset_collate = $wpdb->get_charset_collate();
-        
-        $sql = "CREATE TABLE $table_name (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            popup_id bigint(20) NOT NULL,
-            event_type varchar(20) NOT NULL,
-            user_ip varchar(45) DEFAULT '',
-            user_agent text DEFAULT '',
-            page_url text DEFAULT '',
-            timestamp datetime DEFAULT CURRENT_TIMESTAMP,
-            session_id varchar(100) DEFAULT '',
-            user_id bigint(20) DEFAULT 0,
-            conversion_value decimal(10,2) DEFAULT 0,
-            PRIMARY KEY (id),
-            KEY popup_id (popup_id),
-            KEY event_type (event_type),
-            KEY timestamp (timestamp)
-        ) $charset_collate;";
-        
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-    }
-    
-    /**
-     * Προσθήκη Admin Menu
-     */
-    public function add_admin_menu() {
-        add_submenu_page(
-            'woocommerce',
-            'Popup Builder',
-            'Popup Builder',
-            'manage_options',
-            'popup-builder',
-            array($this, 'admin_page')
-        );
-    }
-    
-    /**
-     * Enqueue Admin Scripts & Styles
-     */
-    public function admin_scripts($hook) {
-        if ($hook !== 'woocommerce_page_popup-builder') return;
-        
-        wp_enqueue_media();
-        wp_enqueue_script('wp-color-picker');
-        wp_enqueue_style('wp-color-picker');
-        
-        // Vue.js για reactive interface
-        wp_enqueue_script('vue-js', 'https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.min.js', array(), '2.6.14', true);
-        
-        // Custom Scripts
-        wp_enqueue_script('popup-builder-admin', plugin_dir_url(__FILE__) . 'admin.js', array('jquery', 'vue-js'), '1.0', true);
-        wp_enqueue_style('popup-builder-admin', plugin_dir_url(__FILE__) . 'admin.css', array(), '1.0');
-        
-        // Localize script
-        wp_localize_script('popup-builder-admin', 'popupBuilder', array(
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('popup_builder_nonce'),
-            'mediaUploadTitle' => 'Select Image/Video',
-            'mediaUploadButton' => 'Use This Media'
-        ));
-    }
-    
-    /**
-     * Main Admin Page
-     */
-    public function admin_page() {
-        $action = isset($_GET['action']) ? sanitize_text_field($_GET['action']) : 'list';
-        $popup_id = isset($_GET['popup_id']) ? intval($_GET['popup_id']) : 0;
-        
-        switch ($action) {
-            case 'edit':
-            case 'new':
-                $this->render_popup_editor($popup_id);
-                break;
-            case 'analytics':
-                $this->render_analytics_page($popup_id);
-                break;
-            default:
-                $this->render_popup_list();
-                break;
-        }
-    }
-    
-    /**
-     * Render Popup List Page
-     */
-    private function render_popup_list() {
-        $popups = $this->get_all_popups();
-        ?>
-        <div class="wrap">
-            <h1 class="wp-heading-inline">Popup Builder</h1>
-            <a href="<?php echo admin_url('admin.php?page=popup-builder&action=new'); ?>" class="page-title-action">Add New Popup</a>
-            
-            <div class="popup-stats-overview">
-                <?php $this->render_stats_overview(); ?>
+
+    $o = array(
+        'enabled'       => get_option('apb_enabled', 0),
+        'headline'      => get_option('apb_headline',    'Αποκτήστε -10€ στην πρώτη σας παραγγελία!'),
+        'subheadline'   => get_option('apb_subheadline', 'Εγγραφείτε και λάβετε αμέσως τον κωδικό έκπτωσής σας.'),
+        'button_text'   => get_option('apb_button_text', 'Θέλω την έκπτωσή μου!'),
+        'coupon_amount' => get_option('apb_coupon_amount', 10),
+        'coupon_prefix' => get_option('apb_coupon_prefix', 'WELCOME'),
+        'delay'         => get_option('apb_delay', 3),
+        'cookie_days'   => get_option('apb_cookie_days', 3),
+        'accent_color'  => get_option('apb_accent_color', '#000000'),
+    );
+    ?>
+    <div class="wrap" style="max-width:680px;">
+        <h1>Welcome Popup</h1>
+
+        <form method="post">
+            <?php wp_nonce_field('apb_save_nonce'); ?>
+
+            <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;margin-bottom:16px;">
+                <label style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;cursor:pointer;">
+                    <input type="checkbox" name="apb_enabled" value="1" <?php checked($o['enabled'], 1); ?> style="width:18px;height:18px;">
+                    Popup Ενεργό
+                </label>
             </div>
-            
-            <div class="popup-campaigns-table">
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">Status</th>
-                            <th>Campaign Name</th>
-                            <th>Type</th>
-                            <th>Display On</th>
-                            <th style="width: 100px;">Views</th>
-                            <th style="width: 100px;">Clicks</th>
-                            <th style="width: 80px;">CVR</th>
-                            <th>Schedule</th>
-                            <th style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($popups)): ?>
-                            <tr>
-                                <td colspan="9" style="text-align: center; padding: 40px;">
-                                    <div style="color: #666;">
-                                        <h3>🎨 No popups created yet</h3>
-                                        <p>Create your first popup campaign to start engaging your customers!</p>
-                                        <a href="<?php echo admin_url('admin.php?page=popup-builder&action=new'); ?>" class="button button-primary button-large">Create First Popup</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($popups as $popup): 
-                                $meta = $this->get_popup_meta($popup->ID);
-                                $analytics = $this->get_popup_analytics_summary($popup->ID);
-                                $status = get_post_meta($popup->ID, '_popup_status', true) ?: 'draft';
-                                ?>
-                                <tr data-popup-id="<?php echo $popup->ID; ?>">
-                                    <td>
-                                        <div class="popup-status-toggle">
-                                            <label class="switch">
-                                                <input type="checkbox" <?php checked($status, 'active'); ?> 
-                                                       onchange="togglePopupStatus(<?php echo $popup->ID; ?>)">
-                                                <span class="slider"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <strong><?php echo esc_html($popup->post_title); ?></strong>
-                                        <div class="row-actions">
-                                            <span class="edit">
-                                                <a href="<?php echo admin_url('admin.php?page=popup-builder&action=edit&popup_id=' . $popup->ID); ?>">Edit</a> |
-                                            </span>
-                                            <span class="duplicate">
-                                                <a href="#" onclick="duplicatePopup(<?php echo $popup->ID; ?>)">Duplicate</a> |
-                                            </span>
-                                            <span class="analytics">
-                                                <a href="<?php echo admin_url('admin.php?page=popup-builder&action=analytics&popup_id=' . $popup->ID); ?>">Analytics</a> |
-                                            </span>
-                                            <span class="delete">
-                                                <a href="#" onclick="deletePopup(<?php echo $popup->ID; ?>)" style="color: #a00;">Delete</a>
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        $type = $meta['popup_type'] ?? 'custom';
-                                        $type_icons = array(
-                                            'discount' => '💰',
-                                            'video' => '🎬',
-                                            'newsletter' => '📧',
-                                            'announcement' => '📢',
-                                            'exit_intent' => '🚪',
-                                            'custom' => '⚙️'
-                                        );
-                                        echo $type_icons[$type] . ' ' . ucfirst(str_replace('_', ' ', $type));
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        $pages = $meta['display_pages'] ?? array();
-                                        if (in_array('all', $pages)) {
-                                            echo '🌐 All Pages';
-                                        } else {
-                                            echo implode(', ', array_slice($pages, 0, 2));
-                                            if (count($pages) > 2) echo ' +' . (count($pages) - 2);
-                                        }
-                                        ?>
-                                    </td>
-                                    <td><?php echo number_format($analytics['views']); ?></td>
-                                    <td><?php echo number_format($analytics['clicks']); ?></td>
-                                    <td>
-                                        <?php 
-                                        $cvr = $analytics['views'] > 0 ? ($analytics['clicks'] / $analytics['views']) * 100 : 0;
-                                        echo number_format($cvr, 1) . '%';
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $schedule = $meta['schedule'] ?? array();
-                                        if (!empty($schedule['start_date'])) {
-                                            echo date('M j', strtotime($schedule['start_date']));
-                                            if (!empty($schedule['end_date'])) {
-                                                echo ' - ' . date('M j', strtotime($schedule['end_date']));
-                                            }
-                                        } else {
-                                            echo 'Always active';
-                                        }
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo admin_url('admin.php?page=popup-builder&action=edit&popup_id=' . $popup->ID); ?>" class="button button-small">Edit</a>
-                                        <a href="#" onclick="previewPopup(<?php echo $popup->ID; ?>)" class="button button-small">Preview</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
+
+            <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;margin-bottom:16px;">
+                <h3 style="margin-top:0;">Κείμενα</h3>
+                <table class="form-table" style="margin:0;">
+                    <tr>
+                        <th style="width:150px;">Τίτλος</th>
+                        <td><input type="text" name="apb_headline" value="<?php echo esc_attr($o['headline']); ?>" class="large-text"></td>
+                    </tr>
+                    <tr>
+                        <th>Υπότιτλος</th>
+                        <td><textarea name="apb_subheadline" class="large-text" rows="2"><?php echo esc_textarea($o['subheadline']); ?></textarea></td>
+                    </tr>
+                    <tr>
+                        <th>Κείμενο Button</th>
+                        <td><input type="text" name="apb_button_text" value="<?php echo esc_attr($o['button_text']); ?>" class="regular-text"></td>
+                    </tr>
+                    <tr>
+                        <th>Χρώμα</th>
+                        <td><input type="color" name="apb_accent_color" value="<?php echo esc_attr($o['accent_color']); ?>"></td>
+                    </tr>
                 </table>
             </div>
-        </div>
-        
-        <style>
-        .popup-stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .stat-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #2271b1;
-        }
-        
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: #2271b1;
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-        </style>
-        
-        <script>
-        function togglePopupStatus(popupId) {
-            jQuery.post(ajaxurl, {
-                action: 'toggle_popup_status',
-                popup_id: popupId,
-                nonce: '<?php echo wp_create_nonce('popup_builder_nonce'); ?>'
-            }, function(response) {
-                if (response.success) {
-                    console.log('Status updated');
-                } else {
-                    alert('Error updating status');
-                }
-            });
-        }
-        
-        function deletePopup(popupId) {
-            if (confirm('Are you sure you want to delete this popup?')) {
-                jQuery.post(ajaxurl, {
-                    action: 'delete_popup_campaign',
-                    popup_id: popupId,
-                    nonce: '<?php echo wp_create_nonce('popup_builder_nonce'); ?>'
-                }, function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert('Error deleting popup');
-                    }
-                });
-            }
-        }
-        
-        function previewPopup(popupId) {
-            // Άνοιγμα σε νέο tab για preview
-            window.open('<?php echo home_url('/?popup_preview='); ?>' + popupId, '_blank');
-        }
-        
-        function duplicatePopup(popupId) {
-            jQuery.post(ajaxurl, {
-                action: 'duplicate_popup_campaign',
-                popup_id: popupId,
-                nonce: '<?php echo wp_create_nonce('popup_builder_nonce'); ?>'
-            }, function(response) {
-                if (response.success) {
-                    location.reload();
-                } else {
-                    alert('Error duplicating popup');
-                }
-            });
-        }
-        </script>
-        <?php
-    }
-    
-    /**
-     * Render Stats Overview
-     */
-    private function render_stats_overview() {
-        $total_popups = wp_count_posts('popup_campaign')->publish;
-        $active_popups = $this->count_active_popups();
-        $total_analytics = $this->get_total_analytics();
-        
-        ?>
-        <div class="stat-card">
-            <div class="stat-number"><?php echo $total_popups; ?></div>
-            <div class="stat-label">Total Popups</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number"><?php echo $active_popups; ?></div>
-            <div class="stat-label">Active Popups</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number"><?php echo number_format($total_analytics['views']); ?></div>
-            <div class="stat-label">Total Views (30d)</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number"><?php echo number_format($total_analytics['clicks']); ?></div>
-            <div class="stat-label">Total Clicks (30d)</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">
-                <?php 
-                $cvr = $total_analytics['views'] > 0 ? ($total_analytics['clicks'] / $total_analytics['views']) * 100 : 0;
-                echo number_format($cvr, 1) . '%';
-                ?>
+
+            <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;margin-bottom:16px;">
+                <h3 style="margin-top:0;">Κουπόνι</h3>
+                <table class="form-table" style="margin:0;">
+                    <tr>
+                        <th style="width:150px;">Ποσό έκπτωσης</th>
+                        <td><input type="number" name="apb_coupon_amount" value="<?php echo esc_attr($o['coupon_amount']); ?>" min="1" style="width:80px;"> €</td>
+                    </tr>
+                    <tr>
+                        <th>Πρόθεμα κωδικού</th>
+                        <td>
+                            <input type="text" name="apb_coupon_prefix" value="<?php echo esc_attr($o['coupon_prefix']); ?>" style="width:120px;">
+                            <span style="color:#666;font-size:13px;"> π.χ. <?php echo esc_html($o['coupon_prefix']); ?>AB12CD</span>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div class="stat-label">Average CVR</div>
+
+            <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;margin-bottom:20px;">
+                <h3 style="margin-top:0;">Εμφάνιση</h3>
+                <table class="form-table" style="margin:0;">
+                    <tr>
+                        <th style="width:150px;">Καθυστέρηση</th>
+                        <td><input type="number" name="apb_delay" value="<?php echo esc_attr($o['delay']); ?>" min="1" max="60" style="width:70px;"> δευτερόλεπτα</td>
+                    </tr>
+                    <tr>
+                        <th>Να μη ξαναφανεί</th>
+                        <td><input type="number" name="apb_cookie_days" value="<?php echo esc_attr($o['cookie_days']); ?>" min="1" style="width:70px;"> μέρες</td>
+                    </tr>
+                </table>
+            </div>
+
+            <input type="submit" name="apb_save" class="button button-primary button-large" value="Αποθήκευση">
+        </form>
+
+        <?php apb_render_leads(); ?>
+    </div>
+    <?php
+}
+
+function apb_render_leads() {
+    global $wpdb;
+    $table = $wpdb->prefix . 'apb_leads';
+    $leads = $wpdb->get_results("SELECT * FROM $table ORDER BY created_at DESC LIMIT 100");
+    $total = $wpdb->get_var("SELECT COUNT(*) FROM $table");
+    ?>
+    <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;margin-top:24px;">
+        <h3 style="margin-top:0;">Εγγραφές (<?php echo intval($total); ?>)</h3>
+        <?php if (empty($leads)): ?>
+            <p style="color:#888;">Δεν υπάρχουν εγγραφές ακόμα.</p>
+        <?php else: ?>
+            <table class="wp-list-table widefat fixed striped">
+                <thead><tr><th>Email</th><th width="160">Κουπόνι</th><th width="150">Ημερομηνία</th></tr></thead>
+                <tbody>
+                <?php foreach ($leads as $l): ?>
+                    <tr>
+                        <td><?php echo esc_html($l->email); ?></td>
+                        <td><code><?php echo esc_html($l->coupon_code); ?></code></td>
+                        <td><?php echo date('d/m/Y H:i', strtotime($l->created_at)); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+// =========================================================
+// DATABASE
+// =========================================================
+
+add_action('init', function() {
+    global $wpdb;
+    $table = $wpdb->prefix . 'apb_leads';
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta("CREATE TABLE $table (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            email varchar(255) NOT NULL,
+            coupon_code varchar(100) DEFAULT '',
+            ip_address varchar(45) DEFAULT '',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY email (email)
+        ) " . $wpdb->get_charset_collate() . ";");
+    }
+});
+
+// =========================================================
+// AJAX
+// =========================================================
+
+add_action('wp_ajax_apb_subscribe',        'apb_handle_subscribe');
+add_action('wp_ajax_nopriv_apb_subscribe', 'apb_handle_subscribe');
+
+function apb_handle_subscribe() {
+    if (!wp_verify_nonce($_POST['nonce'] ?? '', 'apb_nonce')) {
+        wp_send_json_error(array('message' => 'Σφάλμα ασφαλείας.'));
+    }
+
+    $email = sanitize_email($_POST['email'] ?? '');
+    if (!is_email($email)) {
+        wp_send_json_error(array('message' => 'Παρακαλώ εισάγετε έγκυρο email.'));
+    }
+    if (empty($_POST['gdpr'])) {
+        wp_send_json_error(array('message' => 'Παρακαλώ αποδεχτείτε την πολιτική απορρήτου.'));
+    }
+
+    global $wpdb;
+    $table = $wpdb->prefix . 'apb_leads';
+
+    if ($wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE email = %s", $email))) {
+        wp_send_json_error(array('message' => 'Αυτό το email έχει ήδη εγγραφεί!'));
+    }
+
+    // ── IP RATE LIMITING ──
+    // Παίρνουμε το πραγματικό IP (λαμβάνουμε υπόψη proxies/CDN)
+    $ip = '';
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP']; // Cloudflare
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    }
+    $ip = sanitize_text_field(trim($ip));
+
+    // Max 2 εγγραφές ανά IP τις τελευταίες 24 ώρες
+    $ip_count = $wpdb->get_var($wpdb->prepare(
+        "SELECT COUNT(*) FROM $table WHERE ip_address = %s AND created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)",
+        $ip
+    ));
+    if ($ip_count >= 2) {
+        wp_send_json_error(array('message' => 'Έχετε φτάσει το όριο εγγραφών. Δοκιμάστε αύριο.'));
+    }
+
+    $prefix = strtoupper(get_option('apb_coupon_prefix', 'WELCOME'));
+    $code   = $prefix . strtoupper(wp_generate_password(6, false));
+    $amount = floatval(get_option('apb_coupon_amount', 10));
+
+    $coupon_id = wp_insert_post(array(
+        'post_title'  => $code,
+        'post_type'   => 'shop_coupon',
+        'post_status' => 'publish',
+    ));
+
+    if ($coupon_id && !is_wp_error($coupon_id)) {
+        update_post_meta($coupon_id, 'discount_type',        'fixed_cart');
+        update_post_meta($coupon_id, 'coupon_amount',        $amount);
+        update_post_meta($coupon_id, 'usage_limit',          1);
+        update_post_meta($coupon_id, 'usage_limit_per_user', 1);
+        update_post_meta($coupon_id, 'individual_use',       'yes');
+        update_post_meta($coupon_id, 'customer_email',       array($email));
+        update_post_meta($coupon_id, 'date_expires',         strtotime('+7 days'));
+        update_post_meta($coupon_id, 'is_for_new_customers',   'yes');
+    }
+
+    $wpdb->insert($table, array(
+        'email'      => $email,
+        'coupon_code'=> $code,
+        'ip_address' => $ip,
+    ));
+
+    // ── MAILER HOOK ──
+    // Εδώ "κρεμάς" όποιον mailer θέλεις χωρίς να αγγίξεις τον υπόλοιπο κώδικα.
+    // Παράδειγμα Klaviyo: add_action('apb_new_subscriber', 'my_klaviyo_sync', 10, 2);
+    // Παράδειγμα ActiveCampaign: add_action('apb_new_subscriber', 'my_ac_sync', 10, 2);
+    do_action('apb_new_subscriber', $email, $code);
+
+    wp_send_json_success(array('coupon_code' => $code));
+}
+
+// =========================================================
+// FRONTEND
+// =========================================================
+
+add_action('wp_footer', function() {
+    if (is_admin()) return;
+    if (!get_option('apb_enabled', 0)) return;
+
+    $headline    = esc_html(get_option('apb_headline',    'Αποκτήστε -10€ στην πρώτη σας παραγγελία!'));
+    $subheadline = esc_html(get_option('apb_subheadline', 'Εγγραφείτε και λάβετε αμέσως τον κωδικό έκπτωσής σας.'));
+    $button_text = esc_html(get_option('apb_button_text', 'Θέλω την έκπτωσή μου!'));
+    $accent      = esc_attr(get_option('apb_accent_color', '#000000'));
+    $delay       = intval(get_option('apb_delay', 3)) * 1000;
+    $cookie_days = intval(get_option('apb_cookie_days', 3));
+    $nonce       = wp_create_nonce('apb_nonce');
+    $ajax_url    = esc_url(admin_url('admin-ajax.php'));
+    $privacy_url = esc_url(get_privacy_policy_url());
+    ?>
+    <style>
+    #apb-overlay{display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.6);}
+    #apb-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;width:90%;max-width:440px;border-radius:12px;padding:36px 32px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.25);box-sizing:border-box;}
+    #apb-close{position:absolute;top:10px;right:14px;font-size:24px;background:none;border:none;cursor:pointer;color:#aaa;line-height:1;padding:4px;}
+    #apb-close:hover{color:#333;}
+    #apb-headline{font-size:22px;font-weight:700;margin:0 0 8px;line-height:1.3;}
+    #apb-sub{font-size:14px;color:#666;margin:0 0 20px;line-height:1.6;}
+    .apb-input{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:10px;box-sizing:border-box;font-family:inherit;}
+    #apb-gdpr-wrap{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:#888;line-height:1.5;margin-bottom:14px;cursor:pointer;}
+    #apb-gdpr-wrap input{margin-top:2px;flex-shrink:0;}
+    #apb-btn{width:100%;padding:13px;background:<?php echo $accent; ?>;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;}
+    #apb-btn:disabled{opacity:0.6;cursor:not-allowed;}
+    #apb-error{display:none;color:#c00;font-size:13px;margin-bottom:8px;}
+    #apb-success{display:none;text-align:center;}
+    #apb-code{font-size:22px;font-weight:700;letter-spacing:3px;padding:14px;background:#f5f5f5;border:2px dashed <?php echo $accent; ?>;border-radius:6px;margin:12px 0 6px;cursor:pointer;}
+    @media(max-width:480px){#apb-box{padding:28px 18px 22px;}#apb-headline{font-size:19px;}}
+    </style>
+
+    <div id="apb-overlay">
+        <div id="apb-box">
+            <button id="apb-close">&times;</button>
+
+            <div id="apb-form-wrap">
+                <h2 id="apb-headline"><?php echo $headline; ?></h2>
+                <p id="apb-sub"><?php echo $subheadline; ?></p>
+                <div id="apb-error"></div>
+                <input type="email" id="apb-email" class="apb-input" placeholder="Το email σας *">
+                <label id="apb-gdpr-wrap">
+                    <input type="checkbox" id="apb-gdpr">
+                    <span>Συμφωνώ με την <a href="<?php echo $privacy_url; ?>" target="_blank" style="color:inherit;">Πολιτική Απορρήτου</a>.</span>
+                </label>
+                <button id="apb-btn"><?php echo $button_text; ?></button>
+            </div>
+
+            <div id="apb-success">
+                <div style="font-size:44px;margin-bottom:10px;">🎉</div>
+                <p style="font-size:16px;font-weight:700;margin:0 0 6px;">Ο κωδικός σας είναι:</p>
+                <div id="apb-code" onclick="apbCopy(this)"></div>
+                <p style="font-size:11px;color:#aaa;margin:0 0 16px;">Κάντε κλικ για αντιγραφή</p>
+                <button onclick="apbClose()" style="background:<?php echo $accent; ?>;color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:14px;">Ξεκινήστε τις αγορές →</button>
+            </div>
         </div>
-        <?php
-    }
-    
-    /**
-     * Helper Functions
-     */
-    private function get_all_popups() {
-        return get_posts(array(
-            'post_type' => 'popup_campaign',
-            'post_status' => array('publish', 'draft'),
-            'numberposts' => -1,
-            'orderby' => 'date',
-            'order' => 'DESC'
-        ));
-    }
-    
-    private function get_popup_meta($popup_id) {
-        $meta = get_post_meta($popup_id, '_popup_settings', true);
-        return is_array($meta) ? $meta : array();
-    }
-    
-    private function count_active_popups() {
-        global $wpdb;
-        return $wpdb->get_var("
-            SELECT COUNT(*) 
-            FROM {$wpdb->posts} p 
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-            WHERE p.post_type = 'popup_campaign' 
-            AND pm.meta_key = '_popup_status' 
-            AND pm.meta_value = 'active'
-        ");
-    }
-    
-    private function get_total_analytics() {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'popup_analytics';
-        
-        $results = $wpdb->get_results("
-            SELECT 
-                SUM(CASE WHEN event_type = 'view' THEN 1 ELSE 0 END) as views,
-                SUM(CASE WHEN event_type = 'click' THEN 1 ELSE 0 END) as clicks
-            FROM {$table_name} 
-            WHERE timestamp >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-        ");
-        
-        return array(
-            'views' => $results[0]->views ?: 0,
-            'clicks' => $results[0]->clicks ?: 0
-        );
-    }
-    
-    private function get_popup_analytics_summary($popup_id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'popup_analytics';
-        
-        $results = $wpdb->get_results($wpdb->prepare("
-            SELECT 
-                SUM(CASE WHEN event_type = 'view' THEN 1 ELSE 0 END) as views,
-                SUM(CASE WHEN event_type = 'click' THEN 1 ELSE 0 END) as clicks
-            FROM {$table_name} 
-            WHERE popup_id = %d 
-            AND timestamp >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-        ", $popup_id));
-        
-        return array(
-            'views' => $results[0]->views ?: 0,
-            'clicks' => $results[0]->clicks ?: 0
-        );
-    }
-    
-    /**
-     * AJAX Handlers
-     */
-    public function toggle_popup_status() {
-        check_ajax_referer('popup_builder_nonce', 'nonce');
-        
-        $popup_id = intval($_POST['popup_id']);
-        $current_status = get_post_meta($popup_id, '_popup_status', true);
-        $new_status = ($current_status === 'active') ? 'inactive' : 'active';
-        
-        update_post_meta($popup_id, '_popup_status', $new_status);
-        
-        wp_send_json_success(array('new_status' => $new_status));
-    }
-    
-    public function delete_popup_campaign() {
-        check_ajax_referer('popup_builder_nonce', 'nonce');
-        
-        $popup_id = intval($_POST['popup_id']);
-        
-        // Διαγραφή analytics data
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'popup_analytics';
-        $wpdb->delete($table_name, array('popup_id' => $popup_id));
-        
-        // Διαγραφή post
-        wp_delete_post($popup_id, true);
-        
-        wp_send_json_success();
-    }
-    
-    /**
-     * Display Active Popups στο Frontend
-     */
-    public function display_active_popups() {
-        if (is_admin()) return;
-        
-        $active_popups = $this->get_active_popups_for_current_page();
-        
-        if (empty($active_popups)) return;
-        
-        foreach ($active_popups as $popup) {
-            $this->render_frontend_popup($popup);
-        }
-        
-        $this->enqueue_frontend_scripts();
-    }
-    
-    private function get_active_popups_for_current_page() {
-        // TODO: Θα υλοποιηθεί στο επόμενο κομμάτι
-        return array();
-    }
-    
-    private function render_frontend_popup($popup) {
-        // TODO: Θα υλοποιηθεί στο επόμενο κομμάτι
-    }
-    
-    private function enqueue_frontend_scripts() {
-        // TODO: Θα υλοποιηθεί στο επόμενο κομμάτι
-    }
-}
+    </div>
 
-// Initialize the plugin
-function init_popup_builder() {
-    return WC_Advanced_Popup_Builder::get_instance();
-}
+    <script>
+    (function(){
+        var COOKIE='apb_seen', DELAY=<?php echo $delay; ?>, DAYS=<?php echo $cookie_days; ?>;
+        var BTN_TEXT='<?php echo esc_js($button_text); ?>';
 
-// Start the plugin - Αμέσως, όχι στο plugins_loaded
-init_popup_builder();
+        function getCookie(n){var m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)'));return m?m[2]:null;}
+        function setCookie(n,v,d){var e=new Date();e.setTime(e.getTime()+d*86400000);document.cookie=n+'='+v+';expires='+e.toUTCString()+';path=/';}
 
-?>
+        window.apbClose=function(){document.getElementById('apb-overlay').style.display='none';setCookie(COOKIE,'1',DAYS);};
+        window.apbCopy=function(el){var t=el.textContent.trim();if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){el.textContent='Αντιγράφηκε!';setTimeout(function(){el.textContent=t;},2000);});}};
+
+        document.getElementById('apb-overlay').addEventListener('click',function(e){if(e.target===this)apbClose();});
+        document.getElementById('apb-close').addEventListener('click',apbClose);
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')apbClose();});
+
+        document.getElementById('apb-btn').addEventListener('click',function(){
+            var email=document.getElementById('apb-email').value.trim();
+            var gdpr=document.getElementById('apb-gdpr').checked;
+            var btn=this, err=document.getElementById('apb-error');
+            err.style.display='none';
+            if(!email||!/\S+@\S+\.\S+/.test(email)){err.textContent='Παρακαλώ εισάγετε έγκυρο email.';err.style.display='block';return;}
+            if(!gdpr){err.textContent='Παρακαλώ αποδεχτείτε την πολιτική απορρήτου.';err.style.display='block';return;}
+            btn.disabled=true; btn.textContent='...';
+            var xhr=new XMLHttpRequest();
+            xhr.open('POST','<?php echo $ajax_url; ?>');
+            xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+            xhr.onload=function(){
+                try{var r=JSON.parse(xhr.responseText);}catch(e){err.textContent='Σφάλμα.';err.style.display='block';btn.disabled=false;btn.textContent=BTN_TEXT;return;}
+                if(r.success){
+                    document.getElementById('apb-form-wrap').style.display='none';
+                    document.getElementById('apb-code').textContent=r.data.coupon_code;
+                    document.getElementById('apb-success').style.display='block';
+                    setCookie(COOKIE,'1',DAYS);
+                }else{
+                    err.textContent=r.data.message;err.style.display='block';
+                    btn.disabled=false;btn.textContent=BTN_TEXT;
+                }
+            };
+            xhr.onerror=function(){err.textContent='Σφάλμα σύνδεσης.';err.style.display='block';btn.disabled=false;btn.textContent=BTN_TEXT;};
+            xhr.send('action=apb_subscribe&nonce=<?php echo esc_js($nonce); ?>&email='+encodeURIComponent(email)+'&gdpr=1');
+        });
+
+        if(!getCookie(COOKIE)){setTimeout(function(){document.getElementById('apb-overlay').style.display='block';},DELAY);}
+    })();
+    </script>
+    <?php
+}, 20);
