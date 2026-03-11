@@ -49,3 +49,8 @@ add_action('after_setup_theme', function() {
     }
 });
 
+
+
+add_action('admin_enqueue_scripts', function($hook) {
+    if ($hook === 'woocommerce_page_welcome-popup') wp_enqueue_media();
+});
