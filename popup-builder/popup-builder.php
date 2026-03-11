@@ -23,6 +23,7 @@ function apb_admin_page() {
         update_option('apb_coupon_amount',   floatval($_POST['apb_coupon_amount']));
         update_option('apb_coupon_type',     sanitize_text_field($_POST['apb_coupon_type']));
         update_option('apb_coupon_prefix',   strtoupper(sanitize_text_field($_POST['apb_coupon_prefix'])));
+        update_option('apb_coupon_expiry',   intval($_POST['apb_coupon_expiry']));
         update_option('apb_delay',           intval($_POST['apb_delay']));
         update_option('apb_cookie_days',     intval($_POST['apb_cookie_days']));
         update_option('apb_accent_color',    sanitize_hex_color($_POST['apb_accent_color']));
@@ -39,6 +40,7 @@ function apb_admin_page() {
         'coupon_amount' => get_option('apb_coupon_amount', 10),
         'coupon_type'   => get_option('apb_coupon_type', 'fixed_cart'),
         'coupon_prefix' => get_option('apb_coupon_prefix', 'WELCOME'),
+        'coupon_expiry' => get_option('apb_coupon_expiry', 7),
         'delay'         => get_option('apb_delay', 3),
         'cookie_days'   => get_option('apb_cookie_days', 3),
         'accent_color'  => get_option('apb_accent_color', '#000000'),
@@ -132,6 +134,14 @@ function apb_admin_page() {
                         <td>
                             <input type="text" name="apb_coupon_prefix" value="<?php echo esc_attr($o['coupon_prefix']); ?>" style="width:120px;">
                             <span style="color:#666;font-size:13px;"> π.χ. <?php echo esc_html($o['coupon_prefix']); ?>AB12CD</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Λήξη κουπονιού</th>
+                        <td>
+                            <input type="number" name="apb_coupon_expiry" value="<?php echo esc_attr($o['coupon_expiry']); ?>" min="1" max="365" style="width:70px;">
+                            <span style="color:#666;font-size:13px;"> μέρες από την εγγραφή</span>
+                            <p class="description">π.χ. 7 = λήγει σε μια εβδομάδα. Δημιουργεί urgency!</p>
                         </td>
                     </tr>
                 </table>
@@ -331,7 +341,8 @@ function apb_handle_subscribe() {
     $prefix       = strtoupper(get_option('apb_coupon_prefix', 'WELCOME'));
     $code         = $prefix . strtoupper(wp_generate_password(6, false));
     $amount       = floatval(get_option('apb_coupon_amount', 10));
-    $coupon_type  = get_option('apb_coupon_type', 'fixed_cart'); // fixed_cart ή percent
+    $coupon_type  = get_option('apb_coupon_type', 'fixed_cart');
+    $expiry_days  = intval(get_option('apb_coupon_expiry', 7));
 
     $coupon_id = wp_insert_post(array(
         'post_title'  => $code,
@@ -346,7 +357,7 @@ function apb_handle_subscribe() {
         update_post_meta($coupon_id, 'usage_limit_per_user', 1);
         update_post_meta($coupon_id, 'individual_use',       'yes');
         update_post_meta($coupon_id, 'customer_email',       array($email));
-        update_post_meta($coupon_id, 'date_expires',         strtotime('+7 days'));
+        update_post_meta($coupon_id, 'date_expires', strtotime('+' . $expiry_days . ' days'));
         update_post_meta($coupon_id, 'is_for_new_customers',   'yes');
     }
 
