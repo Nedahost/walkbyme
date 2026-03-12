@@ -24,6 +24,8 @@ function apb_admin_page() {
         update_option('apb_coupon_type',     sanitize_text_field($_POST['apb_coupon_type']));
         update_option('apb_coupon_prefix',   strtoupper(sanitize_text_field($_POST['apb_coupon_prefix'])));
         update_option('apb_coupon_expiry',   intval($_POST['apb_coupon_expiry']));
+        update_option('apb_min_order',       floatval($_POST['apb_min_order']));
+        update_option('apb_footer_text',     sanitize_text_field($_POST['apb_footer_text']));
         update_option('apb_delay',           intval($_POST['apb_delay']));
         update_option('apb_cookie_days',     intval($_POST['apb_cookie_days']));
         update_option('apb_accent_color',    sanitize_hex_color($_POST['apb_accent_color']));
@@ -41,6 +43,8 @@ function apb_admin_page() {
         'coupon_type'   => get_option('apb_coupon_type', 'fixed_cart'),
         'coupon_prefix' => get_option('apb_coupon_prefix', 'WELCOME'),
         'coupon_expiry' => get_option('apb_coupon_expiry', 7),
+        'min_order'     => get_option('apb_min_order', 0),
+        'footer_text'   => get_option('apb_footer_text', 'Με την υποβολή του email σας συμφωνείτε να λαμβάνετε τα ενημερωτικά μας email. Μπορείτε να διαγραφείτε ανά πάσα στιγμή.'),
         'delay'         => get_option('apb_delay', 3),
         'cookie_days'   => get_option('apb_cookie_days', 3),
         'accent_color'  => get_option('apb_accent_color', '#000000'),
@@ -75,6 +79,13 @@ function apb_admin_page() {
                     <tr>
                         <th>Κείμενο Button</th>
                         <td><input type="text" name="apb_button_text" value="<?php echo esc_attr($o['button_text']); ?>" class="regular-text"></td>
+                    </tr>
+                    <tr>
+                        <th>Κείμενο Footer</th>
+                        <td>
+                            <input type="text" name="apb_footer_text" value="<?php echo esc_attr($o['footer_text']); ?>" class="large-text">
+                            <p class="description">Μικρό κείμενο κάτω από το button (GDPR info, unsubscribe κτλ).</p>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -142,6 +153,13 @@ function apb_admin_page() {
                             <input type="number" name="apb_coupon_expiry" value="<?php echo esc_attr($o['coupon_expiry']); ?>" min="1" max="365" style="width:70px;">
                             <span style="color:#666;font-size:13px;"> μέρες από την εγγραφή</span>
                             <p class="description">π.χ. 7 = λήγει σε μια εβδομάδα. Δημιουργεί urgency!</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Ελάχιστη παραγγελία</th>
+                        <td>
+                            <input type="number" name="apb_min_order" value="<?php echo esc_attr($o['min_order']); ?>" min="0" style="width:80px;"> €
+                            <p class="description">0 = χωρίς όριο. π.χ. 30 = ισχύει για παραγγελίες άνω των 30€.</p>
                         </td>
                     </tr>
                 </table>
@@ -343,6 +361,7 @@ function apb_handle_subscribe() {
     $amount       = floatval(get_option('apb_coupon_amount', 10));
     $coupon_type  = get_option('apb_coupon_type', 'fixed_cart');
     $expiry_days  = intval(get_option('apb_coupon_expiry', 7));
+    $min_order    = floatval(get_option('apb_min_order', 0));
 
     $coupon_id = wp_insert_post(array(
         'post_title'  => $code,
@@ -358,7 +377,10 @@ function apb_handle_subscribe() {
         update_post_meta($coupon_id, 'individual_use',       'yes');
         update_post_meta($coupon_id, 'customer_email',       array($email));
         update_post_meta($coupon_id, 'date_expires', strtotime('+' . $expiry_days . ' days'));
-        update_post_meta($coupon_id, 'is_for_new_customers',   'yes');
+        update_post_meta($coupon_id, 'is_for_new_customers', 'yes');
+        if ($min_order > 0) {
+            update_post_meta($coupon_id, 'minimum_amount', $min_order);
+        }
     }
 
     $wpdb->insert($table, array(
@@ -384,9 +406,10 @@ add_action('wp_footer', function() {
     if (is_admin()) return;
     if (!get_option('apb_enabled', 0)) return;
 
-    $headline    = esc_html(get_option('apb_headline',    'Αποκτήστε -10€ στην πρώτη σας παραγγελία!'));
-    $subheadline = esc_html(get_option('apb_subheadline', 'Εγγραφείτε και λάβετε αμέσως τον κωδικό έκπτωσής σας.'));
-    $button_text = esc_html(get_option('apb_button_text', 'Θέλω την έκπτωσή μου!'));
+    $headline    = esc_html(get_option('apb_headline',    '10€ ΕΚΠΤΩΣΗ ΓΙΑ ΤΗΝ ΠΡΩΤΗ ΣΑΣ ΑΓΟΡΑ'));
+    $subheadline = esc_html(get_option('apb_subheadline', 'Γίνετε μέλος του Walk By Me για να λάβετε τον εκπτωτικό σας κωδικό (για παραγγελίες άνω των 30€), καθώς και πρόσβαση σε νέες αφίξεις και αποκλειστικές προσφορές.'));
+    $button_text = esc_html(get_option('apb_button_text', 'Εγγραφή τώρα'));
+    $footer_text = esc_html(get_option('apb_footer_text', 'Με την υποβολή του email σας συμφωνείτε να λαμβάνετε τα ενημερωτικά μας email. Μπορείτε να διαγραφείτε ανά πάσα στιγμή.'));
     $accent      = esc_attr(get_option('apb_accent_color', '#000000'));
     $bg_color    = esc_attr(get_option('apb_bg_color', '#ffffff'));
     $image_url   = esc_url(get_option('apb_image_url', ''));
@@ -439,6 +462,7 @@ add_action('wp_footer', function() {
     #apb-btn{width:100%;padding:13px;background:<?php echo $accent; ?>;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.03em;}
     #apb-btn:hover{opacity:0.88;}
     #apb-btn:disabled{opacity:0.6;cursor:not-allowed;}
+    #apb-footer-text{font-size:11px;color:#aaa;line-height:1.5;margin:12px 0 0;text-align:center;}
     #apb-error{display:none;color:#c00;font-size:13px;margin-bottom:8px;}
     #apb-success{display:none;text-align:center;}
     #apb-code{font-size:22px;font-weight:700;letter-spacing:3px;padding:14px;background:#f5f5f5;border:2px dashed <?php echo $accent; ?>;border-radius:6px;margin:12px 0 6px;cursor:pointer;}
@@ -468,6 +492,9 @@ add_action('wp_footer', function() {
                         <span>Συμφωνώ με την <a href="<?php echo $privacy_url; ?>" target="_blank" style="color:inherit;">Πολιτική Απορρήτου</a>.</span>
                     </label>
                     <button id="apb-btn"><?php echo $button_text; ?></button>
+                    <?php if ($footer_text): ?>
+                        <p id="apb-footer-text"><?php echo $footer_text; ?></p>
+                    <?php endif; ?>
                 </div>
 
                 <div id="apb-success">
@@ -489,41 +516,71 @@ add_action('wp_footer', function() {
         function getCookie(n){var m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)'));return m?m[2]:null;}
         function setCookie(n,v,d){var e=new Date();e.setTime(e.getTime()+d*86400000);document.cookie=n+'='+v+';expires='+e.toUTCString()+';path=/';}
 
-        window.apbClose=function(){document.getElementById('apb-overlay').style.display='none';setCookie(COOKIE,'1',DAYS);};
-        window.apbCopy=function(el){var t=el.textContent.trim();if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){el.textContent='Αντιγράφηκε!';setTimeout(function(){el.textContent=t;},2000);});}};
+        // Δύο διαφορετικά cookies:
+        // COOKIE      = "είδε το popup" → λήγει σε DAYS μέρες (από admin)
+        // COOKIE_DONE = "εγγράφηκε"    → λήγει σε 365 μέρες (VIP εμπειρία)
+        var COOKIE_DONE = COOKIE + '_done';
 
-        document.getElementById('apb-overlay').addEventListener('click',function(e){if(e.target===this)apbClose();});
-        document.getElementById('apb-close').addEventListener('click',apbClose);
-        document.addEventListener('keydown',function(e){if(e.key==='Escape')apbClose();});
+        // Αν έχει ήδη εγγραφεί → ποτέ ξανά popup
+        if (getCookie(COOKIE_DONE)) return;
 
-        document.getElementById('apb-btn').addEventListener('click',function(){
-            var email=document.getElementById('apb-email').value.trim();
-            var gdpr=document.getElementById('apb-gdpr').checked;
-            var btn=this, err=document.getElementById('apb-error');
-            err.style.display='none';
-            if(!email||!/\S+@\S+\.\S+/.test(email)){err.textContent='Παρακαλώ εισάγετε έγκυρο email.';err.style.display='block';return;}
-            if(!gdpr){err.textContent='Παρακαλώ αποδεχτείτε την πολιτική απορρήτου.';err.style.display='block';return;}
-            btn.disabled=true; btn.textContent='...';
-            var xhr=new XMLHttpRequest();
-            xhr.open('POST','<?php echo $ajax_url; ?>');
-            xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-            xhr.onload=function(){
-                try{var r=JSON.parse(xhr.responseText);}catch(e){err.textContent='Σφάλμα.';err.style.display='block';btn.disabled=false;btn.textContent=BTN_TEXT;return;}
-                if(r.success){
-                    document.getElementById('apb-form-wrap').style.display='none';
-                    document.getElementById('apb-code').textContent=r.data.coupon_code;
-                    document.getElementById('apb-success').style.display='block';
-                    setCookie(COOKIE,'1',DAYS);
-                }else{
-                    err.textContent=r.data.message;err.style.display='block';
-                    btn.disabled=false;btn.textContent=BTN_TEXT;
+        window.apbClose = function() {
+            document.getElementById('apb-overlay').style.display = 'none';
+            // Κλείσιμο = cookie για DAYS μέρες (θα ξαναδεί αργότερα)
+            setCookie(COOKIE, '1', DAYS);
+        };
+
+        window.apbCopy = function(el) {
+            var t = el.textContent.trim();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(t).then(function() {
+                    el.textContent = 'Αντιγράφηκε!';
+                    setTimeout(function() { el.textContent = t; }, 2000);
+                });
+            }
+        };
+
+        document.getElementById('apb-overlay').addEventListener('click', function(e) { if (e.target === this) apbClose(); });
+        document.getElementById('apb-close').addEventListener('click', apbClose);
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') apbClose(); });
+
+        document.getElementById('apb-btn').addEventListener('click', function() {
+            var email = document.getElementById('apb-email').value.trim();
+            var gdpr  = document.getElementById('apb-gdpr').checked;
+            var btn   = this, err = document.getElementById('apb-error');
+            err.style.display = 'none';
+            if (!email || !/\S+@\S+\.\S+/.test(email)) { err.textContent = 'Παρακαλώ εισάγετε έγκυρο email.'; err.style.display = 'block'; return; }
+            if (!gdpr) { err.textContent = 'Παρακαλώ αποδεχτείτε την πολιτική απορρήτου.'; err.style.display = 'block'; return; }
+            btn.disabled = true; btn.textContent = '...';
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '<?php echo $ajax_url; ?>');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                try { var r = JSON.parse(xhr.responseText); } catch(e) { err.textContent = 'Σφάλμα.'; err.style.display = 'block'; btn.disabled = false; btn.textContent = BTN_TEXT; return; }
+                if (r.success) {
+                    document.getElementById('apb-form-wrap').style.display = 'none';
+                    document.getElementById('apb-code').textContent = r.data.coupon_code;
+                    document.getElementById('apb-success').style.display = 'block';
+                    // Εγγραφή = cookie 365 μέρες → δεν ξαναβλέπει ποτέ το popup (VIP)
+                    setCookie(COOKIE_DONE, '1', 365);
+                    setCookie(COOKIE, '1', 365); // και το κανονικό για backup
+                } else {
+                    err.textContent = r.data.message; err.style.display = 'block';
+                    btn.disabled = false; btn.textContent = BTN_TEXT;
                 }
             };
-            xhr.onerror=function(){err.textContent='Σφάλμα σύνδεσης.';err.style.display='block';btn.disabled=false;btn.textContent=BTN_TEXT;};
-            xhr.send('action=apb_subscribe&nonce=<?php echo esc_js($nonce); ?>&email='+encodeURIComponent(email)+'&gdpr=1');
+            xhr.onerror = function() { err.textContent = 'Σφάλμα σύνδεσης.'; err.style.display = 'block'; btn.disabled = false; btn.textContent = BTN_TEXT; };
+            xhr.send('action=apb_subscribe&nonce=<?php echo esc_js($nonce); ?>&email=' + encodeURIComponent(email) + '&gdpr=1');
         });
 
-        if(!getCookie(COOKIE)){setTimeout(function(){document.getElementById('apb-overlay').style.display='block';},DELAY);}
+        // Trigger: αν δεν έχει δει το popup → εμφάνιση μετά από DELAY
+        if (!getCookie(COOKIE)) {
+            setTimeout(function() {
+                document.getElementById('apb-overlay').style.display = 'block';
+                // Έτσι ακόμα και αν φύγει χωρίς να κλείσει, δεν ξαναφαίνεται
+                setCookie(COOKIE, '1', DAYS);
+            }, DELAY);
+        }
     })();
     </script>
     <?php
