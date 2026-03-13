@@ -54,3 +54,60 @@ add_action('after_setup_theme', function() {
 add_action('admin_enqueue_scripts', function($hook) {
     if ($hook === 'woocommerce_page_welcome-popup') wp_enqueue_media();
 });
+
+
+
+
+
+
+function get_product_handmade_note() {
+    global $product;
+    
+    // Όλα τα jewelry slugs (κύριες + ανδρικές υποκατηγορίες)
+    $jewelry_slugs = array(
+        'vraxiolia',
+        'daxtilidia', 
+        'kolie',
+        'skoularikia',
+        'andrika-vraxiolia',
+        'andrika-daxtilidia',
+        'andrika-kolie'
+    );
+    
+    // Καπέλα
+    $hats_slugs = array(
+        'hats',
+    );
+    
+    if (has_term($jewelry_slugs, 'product_cat', $product->get_id())) {
+        return 'Κάθε κόσμημα κατασκευάζεται στο χέρι αποκλειστικά για εσάς. Ευχαριστούμε που στηρίζετε το <b>ελληνικό χειροποίητο κόσμημα</b>.';
+    }
+    
+    if (has_term($hats_slugs, 'product_cat', $product->get_id())) {
+        return 'Κάθε καπέλο επιλέγεται με προσοχή για την ποιότητα και την αισθητική του. Ευχαριστούμε που στηρίζετε την <b>ελληνική επιχειρηματικότητα</b>.';
+    }
+    
+    return 'Ευχαριστούμε για την εμπιστοσύνη σας.';
+}
+
+
+function get_availability_label() {
+    global $product;
+    
+    // Όλα τα jewelry slugs (κύριες + ανδρικές υποκατηγορίες)
+    $jewelry_slugs = array(
+        'vraxiolia',
+        'daxtilidia', 
+        'kolie',
+        'skoularikia',
+        'andrika-vraxiolia',
+        'andrika-daxtilidia',
+        'andrika-kolie'
+    );
+    
+    if (has_term($jewelry_slugs, 'product_cat', $product->get_id())) {
+        return 'Χρόνος Ετοιμασίας';
+    }
+    
+    return 'Διαθεσιμότητα';
+}

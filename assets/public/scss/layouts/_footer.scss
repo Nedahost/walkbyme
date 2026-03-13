@@ -120,7 +120,6 @@
   }
 }
 
-// Footer styling
 footer {
   border-top: 1px solid var(--clr-gray-200, #e8e8e1);
   padding: 55px 0 35px;
@@ -139,9 +138,14 @@ footer {
       
       @include a.down(sm) {
         grid-template-columns: 1fr;
+        gap: 0;
       }
       
       .widget_nav_menu {
+        @include a.down(sm) {
+          border-bottom: 1px solid var(--clr-gray-200, #e8e8e1);
+        }
+
         h3 {
           color: var(--clr-text, black);
           font-size: a.rem(16);
@@ -157,10 +161,48 @@ footer {
             background-color: var(--clr-primary, inherit);
             margin-top: 10px;
           }
+
+          @include a.down(sm) {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 0;
+
+            &::after {
+              content: '+';
+              display: inline;
+              width: auto;
+              height: auto;
+              background: none;
+              margin-top: 0;
+              font-size: a.rem(20);
+              font-weight: 300;
+              transition: transform 0.3s ease;
+            }
+
+            &.is-active::after {
+              content: '−';
+            }
+          }
         }
         
         div {
           margin-top: 15px;
+
+          @include a.down(sm) {
+            margin-top: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0;
+
+            &.is-open {
+              max-height: 500px;
+              padding-bottom: 15px;
+            }
+          }
           
           ul {
             list-style: none;
@@ -183,7 +225,6 @@ footer {
                 }
               }
               
-              // Social media list
               ul {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
@@ -217,7 +258,6 @@ footer {
         }
       }
       
-      // Text widget styling
       .widget_text {
         h3 {
           color: var(--clr-primary, #233F71);

@@ -242,3 +242,59 @@ jQuery(document).ready(function($) {
     // Lightbox
     new ProductLightbox();
 });
+
+
+
+// Footer accordion (mobile only)
+function initFooterAccordion() {
+    const isMobile = window.innerWidth < 576;
+    const titles = document.querySelectorAll('.footer-widgets .widget_nav_menu h3');
+
+    titles.forEach(title => {
+        // Αφαίρεσε παλιό listener αν υπάρχει
+        title.removeEventListener('click', title._accordionHandler);
+
+        if (isMobile) {
+            const content = title.nextElementSibling;
+            
+            // Κλείσε όλα αρχικά
+            if (content) {
+                content.classList.remove('is-open');
+                title.classList.remove('is-active');
+            }
+
+            title._accordionHandler = function() {
+                const content = this.nextElementSibling;
+                if (!content) return;
+
+                const isActive = this.classList.contains('is-active');
+
+                // Κλείσε τα υπόλοιπα
+                titles.forEach(t => {
+                    t.classList.remove('is-active');
+                    if (t.nextElementSibling) {
+                        t.nextElementSibling.classList.remove('is-open');
+                    }
+                });
+
+                if (!isActive) {
+                    this.classList.add('is-active');
+                    content.classList.add('is-open');
+                }
+            };
+
+            title.addEventListener('click', title._accordionHandler);
+        } else {
+            // Desktop: σβήσε active states
+            title.classList.remove('is-active');
+            const content = title.nextElementSibling;
+            if (content) {
+                content.classList.remove('is-open');
+            }
+        }
+    });
+}
+
+// Init + resize
+initFooterAccordion();
+window.addEventListener('resize', initFooterAccordion);

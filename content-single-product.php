@@ -126,7 +126,8 @@ if ( post_password_required() ) {
                                 echo '<b>Ref.:</b> ' . esc_html($sku);
                             }
                             if ( $availability ) {
-                                echo ' • <b>Χρόνος Ετοιμασίας:</b> ' . esc_html($availability);
+                                $availability_label = get_availability_label();
+                                echo ' • <b>' . esc_html($availability_label) . ':</b> ' . esc_html($availability);
                             }
                         ?>
                     </div> 
@@ -172,9 +173,7 @@ if ( post_password_required() ) {
                 <?php echo woocommerce_template_single_add_to_cart(); ?>
 
                 <div class="product-handmade-note">
-                    <i>
-                        Κάθε κόσμημα κατασκευάζεται στο χέρι αποκλειστικά για εσάς. Ευχαριστούμε που στηρίζετε το <b>ελληνικό χειροποίητο κόσμημα</b>.
-                    </i>
+                    <i><?php echo wp_kses_post(get_product_handmade_note()); ?></i>
                 </div>
 
                 <div class="productContent">

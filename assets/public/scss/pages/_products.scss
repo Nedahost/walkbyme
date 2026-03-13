@@ -370,9 +370,52 @@
                 }
             }
 
+            
             form.cart {
                 margin: 45px 0 0;
+            
+                .variations {
+                    width: 100%;
+                    margin-bottom: 10px;
+                }
+            
+                .variations_button {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    align-items: center;
+                    gap: 10px;
+            
+                    input[type="hidden"] {
+                        display: none;
+                    }
+            
+                    .quantity {
+                        flex: 0 0 auto;
+                    }
+            
+                    .single_add_to_cart_button {
+                        flex: 1;
+                    }
+                }
+            
+                // Simple product (χωρίς variations_button wrapper)
+                > .quantity {
+                    flex: 0 0 auto;
+                }
+            
+                > .single_add_to_cart_button {
+                    flex: 1;
+                }
+            
+                // Κοινό layout
+                &:not(.variations_form) {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
             }
+
 
             .variations_button {
                 display: flex;
