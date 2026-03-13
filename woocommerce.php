@@ -1,18 +1,5 @@
 <?php get_header(); ?>
 
-<?php 
-// Έλεγχος για συγκεκριμένη κατηγορία (ID: 135)
-// Tip: Αν μπορείς, χρησιμοποίησε slug αντί για ID (π.χ. is_product_category('prosfores')) για σταθερότητα.
-if ( is_product_category(135) ) { ?>
-    <div class="category-header-banner">
-        <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/headerjpg.jpg' ); ?>" 
-             alt="<?php echo esc_attr( single_term_title('', false) ); ?>" 
-             width="100%" 
-             height="auto" 
-             loading="lazy" />
-    </div>
-<?php } ?>
-
 <div class="wrapper">
     <?php if ( is_product_category() ) : ?>
         <div class="outercategories">

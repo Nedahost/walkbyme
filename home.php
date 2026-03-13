@@ -1,6 +1,7 @@
 <?php get_header(); ?>
 
-<div class="wrapper"><div class="outerslider"><div class="slideshow">
+<div class="wrapper">
+    <div class="outerslider"><div class="slideshow">
             <?php
             $args = array(
                 'post_type'      => 'gallery',
@@ -20,34 +21,46 @@
                     $button_text = get_post_meta(get_the_ID(), '_slider_button_text', true);
             ?>
                 <div class="sliderimages">
-                    <figure><?php if (has_post_thumbnail()) : ?>
-                            <?php the_post_thumbnail('full', array(
-                                'loading' => 'lazy', // SEO: Lazy loading
-                                'alt'     => get_the_title(),
-                                'style'   => 'width: 100%; height: auto;'
-                            )); ?>
-                        <?php endif; ?>
-                        
-                        <figcaption class="slider-caption">
-                            <?php if (get_the_title()) : ?>
-                                <h2><?php the_title(); ?></h2>
-                            <?php endif; ?>
-                            
-                            <?php if (get_the_content()) : ?>
-                                <div class="slider-content">
-                                    <?php the_content(); ?>
-                                </div>
-                            <?php endif; ?>
-                            
-                            <?php if ($button_url && $button_text) : ?>
-                                <a href="<?php echo esc_url($button_url); ?>" 
-                                   class="cta-button"
-                                   rel="<?php echo (strpos($button_url, home_url()) === false) ? 'nofollow noopener' : ''; ?>">
-                                    <?php echo esc_html($button_text); ?>
-                                </a>
-                            <?php endif; ?>
-                        </figcaption>
-                    </figure></div>
+    <figure>
+        <?php if (has_post_thumbnail()) : 
+            $mobile_image_id = get_post_meta(get_the_ID(), '_slider_mobile_image', true);
+            $desktop_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
+        ?>
+            <picture>
+                <?php if ($mobile_image_id) : 
+                    $mobile_image_url = wp_get_attachment_image_url($mobile_image_id, 'large');
+                ?>
+                    <source media="(max-width: 575px)" srcset="<?php echo esc_url($mobile_image_url); ?>">
+                <?php endif; ?>
+                <img src="<?php echo esc_url($desktop_image_url); ?>" 
+                     alt="<?php echo esc_attr(get_the_title()); ?>"
+                     loading="lazy"
+                     width="100%" 
+                     height="auto">
+            </picture>
+        <?php endif; ?>
+        
+        <figcaption class="slider-caption">
+            <?php if (get_the_title()) : ?>
+                <h2><?php the_title(); ?></h2>
+            <?php endif; ?>
+            
+            <?php if (get_the_content()) : ?>
+                <div class="slider-content">
+                    <?php the_content(); ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($button_url && $button_text) : ?>
+                <a href="<?php echo esc_url($button_url); ?>" 
+                   class="cta-button"
+                   rel="<?php echo (strpos($button_url, home_url()) === false) ? 'nofollow noopener' : ''; ?>">
+                    <?php echo esc_html($button_text); ?>
+                </a>
+            <?php endif; ?>
+        </figcaption>
+    </figure>
+</div>
             <?php
                 endwhile;
                 wp_reset_postdata();
@@ -64,6 +77,7 @@
             <?php endif; ?>
         </div>
     </div>
+
     <div class="outercarousel"><div class="generic-titles">
         <?php esc_html_e('Επιλογές που Ξεχωρίζουν', 'walkbyme'); ?>
         </div><div class="carousel"><?php 

@@ -70,15 +70,27 @@ function add_slider_meta_boxes() {
 add_action('add_meta_boxes', 'add_slider_meta_boxes');
 
 function render_slider_meta_box($post) {
-    // Secure retrieval
     $button_text  = get_post_meta($post->ID, '_slider_button_text', true);
     $button_url   = get_post_meta($post->ID, '_slider_button_url', true);
     $slider_order = get_post_meta($post->ID, '_slider_order', true);
+    $mobile_image = get_post_meta($post->ID, '_slider_mobile_image', true);
 
-    // Security Nonce
     wp_nonce_field('save_slider_details', 'slider_nonce');
     ?>
     <div class="walkbyme_meta_box_wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <p style="grid-column: 1 / -1;">
+            <label for="slider_mobile_image"><strong><?php esc_html_e('Mobile Image (Vertical)', 'walkbyme'); ?></strong></label><br>
+            <input type="hidden" name="slider_mobile_image" id="slider_mobile_image" value="<?php echo esc_attr($mobile_image); ?>" />
+            <button type="button" class="button" id="upload_mobile_image"><?php esc_html_e('Upload Mobile Image', 'walkbyme'); ?></button>
+            <button type="button" class="button" id="remove_mobile_image" style="<?php echo empty($mobile_image) ? 'display:none;' : ''; ?>"><?php esc_html_e('Remove', 'walkbyme'); ?></button>
+            <div id="mobile_image_preview" style="margin-top:10px;">
+                <?php if ($mobile_image) : ?>
+                    <?php echo wp_get_attachment_image($mobile_image, 'thumbnail'); ?>
+                <?php endif; ?>
+            </div>
+            <br><small><?php esc_html_e('Upload a vertical/portrait image for mobile devices. If empty, the featured image will be used.', 'walkbyme'); ?></small>
+        </p>
+
         <p style="grid-column: 1 / -1; margin-bottom: 0;">
             <label for="slider_button_text"><strong><?php esc_html_e('Button Text', 'walkbyme'); ?></strong></label><br>
             <input type="text" name="slider_button_text" id="slider_button_text" value="<?php echo esc_attr($button_text); ?>" class="widefat" />
@@ -95,6 +107,35 @@ function render_slider_meta_box($post) {
             <br><small><?php esc_html_e('Lower numbers appear first (e.g. 1, 2, 3)', 'walkbyme'); ?></small>
         </p>
     </div>
+
+    <script>
+    jQuery(document).ready(function($) {
+        $('#upload_mobile_image').on('click', function(e) {
+            e.preventDefault();
+            var frame = wp.media({
+                title: '<?php esc_html_e("Select Mobile Image", "walkbyme"); ?>',
+                multiple: false,
+                library: { type: 'image' }
+            });
+            
+            frame.on('select', function() {
+                var attachment = frame.state().get('selection').first().toJSON();
+                $('#slider_mobile_image').val(attachment.id);
+                $('#mobile_image_preview').html('<img src="' + attachment.sizes.thumbnail.url + '" />');
+                $('#remove_mobile_image').show();
+            });
+            
+            frame.open();
+        });
+
+        $('#remove_mobile_image').on('click', function(e) {
+            e.preventDefault();
+            $('#slider_mobile_image').val('');
+            $('#mobile_image_preview').html('');
+            $(this).hide();
+        });
+    });
+    </script>
     <?php
 }
 
@@ -113,6 +154,10 @@ function save_slider_meta_boxes($post_id) {
     // 3. Check Permissions (Security Fix)
     if (!current_user_can('edit_post', $post_id)) {
         return;
+    }
+
+    if (isset($_POST['slider_mobile_image'])) {
+        update_post_meta($post_id, '_slider_mobile_image', intval($_POST['slider_mobile_image']));
     }
     
     // Save Button Text

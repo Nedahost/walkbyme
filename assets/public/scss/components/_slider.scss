@@ -187,3 +187,26 @@ figure {
     }
   }
 }
+
+
+.slider-img {
+  width: 100%;
+  height: auto;
+  display: block;
+
+  &--desktop {
+      display: block;
+
+      @include a.down('sm') {
+          display: none;
+      }
+  }
+
+  &--mobile {
+      display: none;
+
+      @include a.down('sm') {
+          display: block;
+      }
+  }
+}

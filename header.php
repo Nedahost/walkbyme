@@ -13,7 +13,7 @@
     
     <?php wp_head(); ?>
 
-    <script>
+    <script> /*
     document.addEventListener('DOMContentLoaded', () => {
         const toggleSwitch = document.querySelector('#theme-checkbox');
         const body = document.body;
@@ -45,7 +45,7 @@
             applyTheme(isDark);
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
-    });
+    }); */
     </script>
 </head>
 

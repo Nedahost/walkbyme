@@ -3,8 +3,7 @@
 #masthead {
     // 1. TOP HEADER
     .topeader {
-        background-color: var(--clr-black);
-        color: var(--clr-white);
+        background-color: var(--clr-footer-bg, #ece7dc);
         text-align: center;
         padding: 5px 0;
         transition: background-color 0.3s ease;

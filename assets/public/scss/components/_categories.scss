@@ -9,6 +9,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   padding: a.rem(30) 0;
+  background-color: var(--clr-footer-bg, #ece7dc);
   
   @include a.down(md) {
     padding: a.rem(20) 0;

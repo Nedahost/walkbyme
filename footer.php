@@ -5,8 +5,6 @@
 ?>
 
 </main><?php 
-// Marketing Section (Newsletter & Services)
-// Only show on non-transactional pages
 if (!is_checkout() && !is_product() && !is_cart()) { ?>
     <div class="outermarketing">
         <div class="wrapper">
@@ -60,7 +58,7 @@ if (!is_checkout() && !is_product() && !is_cart()) { ?>
                 ?>
                 
                 <div class="module_cat widget_nav_menu">
-                    <h3 class="widgettitle"><?php esc_html_e('Walk By Me', 'walkbyme'); ?></h3>
+                    <h3 class="widgettitle"><?php esc_html_e('Επικοινωνήστε μαζί μας Walk By Me', 'walkbyme'); ?></h3>
                     <div class="contact-info">
                         <ul>
                             <li><address><?php esc_html_e('Ελασσώνος 16', 'walkbyme'); ?></address></li>

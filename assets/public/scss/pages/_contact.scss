@@ -121,7 +121,7 @@
         }
         
         &:hover {
-          background-color: var(--clr-primary, #9a715b);
+          background-color: var(--clr-footer-bg, #ece7dc);
         }
       }
     }
@@ -177,7 +177,7 @@
     transition: background-color 0.3s;
     
     &:hover {
-      background-color: var(--clr-primary-dark, #0056b3);
+      background-color: var(--clr-footer-bg, #ece7dc);
     }
   }
 }
